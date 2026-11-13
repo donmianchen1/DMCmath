@@ -1,0 +1,2720 @@
+\documentclass[oneside]{book}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{eso-pic}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{euscript}
+\usepackage{mathrsfs}
+\usepackage{soul}
+\usepackage[normalem]{ulem}
+\usepackage{ctex}
+\usepackage{tikz}
+\usepackage{fancyhdr} % 用于自定义页眉页脚
+\usepackage{lipsum}
+\usepackage{transparent}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{geometry}
+\usepackage{cancel}
+\usepackage{enumitem}
+\usetikzlibrary{positioning}
+
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{geometry}
+\geometry{a4paper,left=2.8cm,right=2.8cm,top=2.7cm,bottom=2.7cm}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage[breakable]{tcolorbox}
+\usepackage[colorlinks=true,allcolors=blue]{hyperref}
+
+
+\theoremstyle{definition}
+\newtheorem*{notation}{Notation}
+\newtheorem*{properties}{Properties}
+
+% ---------- 注解框 ----------
+\newtcolorbox{note}[1][注]{breakable, colback=white, colframe=black,
+	boxrule=0.5pt, arc=0pt, left=7pt, right=7pt, top=5pt, bottom=5pt,
+	fonttitle=\bfseries\small, coltitle=black, colbacktitle=white, title={#1}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rc}{\mathcal{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\inner}[2]{\langle #1,#2\rangle}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\spann}{span}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\Ker}{ker}
+\newcommand{\Ltwo}{L^2}
+\newtcolorbox{link}[1][与教材的对应]{breakable, colback=blue!4!white, colframe=blue!55!black,
+	boxrule=0.6pt, arc=2pt, left=7pt, right=7pt, top=5pt, bottom=5pt,
+	fonttitle=\bfseries\small, coltitle=white, colbacktitle=blue!55!black, title={#1}}
+\providecommand{\Q}{\mathbb{Q}}
+
+\makeatletter
+\renewcommand{\sectionmark}[1]{%
+	\markright{\ifnum\c@secnumdepth>\z@\thesection\quad\fi #1}}
+\makeatother
+
+
+% 双面排版：右侧页左边距3cm，左侧页右边距3cm，上下边距2.5cm
+\geometry{a4paper, left=3cm, right=3cm, top=2.5cm, bottom=2.5cm}
+\AddToShipoutPictureBG*{%
+	\AtPageLowerLeft{%
+		\transparent{0.6}% 透明度：0.3（0-1之间）
+		\includegraphics[
+		width=\paperwidth,
+		height=\paperheight
+		]{background.jpg}% 你的图片路径
+	}%
+}
+\title{傅里叶分析\\ Fourier Analysis}
+\author{Donmianchen\\哈尔滨工业大学\\数学学院\\2026}
+
+
+
+
+
+\theoremstyle{definition}
+\newtheorem{example}{Example}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{reremark}{Re:Remark}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem*{ap}{Another proof}
+\newtheorem*{sol}{Solution}
+\newtheorem*{solution}{Solution}
+\newtheorem*{analysis}{Analysis}
+\newtheorem{pct}{PC-theorem}
+\newtheorem{fct}{FC-theorem}
+\newtheorem{fce}{FC-example}
+\newtheorem*{algorithm}{Algorithm}
+\graphicspath{{figures/}}
+\begin{document}
+	
+	\AddToShipoutPictureBG{%
+		\AtPageLowerLeft{%
+			\transparent{0.08}% 透明度：0.3（0-1之间）
+			\includegraphics[
+			width=\paperwidth,
+			height=\paperheight
+			]{background.jpg}% 你的图片路径
+		}%
+	}
+	
+	\AddToShipoutPictureFG{
+		% 你的原有定位逻辑完全保留，仅嵌套在钩子中
+		\begin{textblock*}{2cm}(% 图片宽度：2cm（可按需调整）
+			\dimexpr\paperwidth - 2cm - 1cm\relax,  % X坐标：页面宽度 - 图片宽度 - 右边距（1cm是图片到页边的距离）
+			1cm  % Y坐标：距离页面顶部1cm（可按需调整，避免与页眉重叠）
+			)
+			\includegraphics[width=2cm]{mutsumiww.png}  % 插入图片（example-image是LaTeX自带示例图，直接用）
+		\end{textblock*}
+	}
+	\AddToShipoutPictureFG{
+		% 你的原有定位逻辑完全保留，仅嵌套在钩子中
+		\begin{textblock*}{2cm}(% 图片宽度：2cm（可按需调整）
+			\dimexpr\paperwidth - 2cm - 3cm\relax,  % X坐标：页面宽度 - 图片宽度 - 右边距（1cm是图片到页边的距离）
+			1cm  % Y坐标：距离页面顶部1cm（可按需调整，避免与页眉重叠）
+			)
+			\includegraphics[width=2cm]{hit1.png}  % 插入图片（example-image是LaTeX自带示例图，直接用）
+		\end{textblock*}
+	}
+	
+	
+	
+	\maketitle
+	\chapter*{使用须知}
+	本文档尝试使用代数的视角建立fourier分析的部分理论，然后探讨fourier级数如何表示特定的函数线性空间。由于我暂时没有学习实变函数，所以涉及lebesgue可积的部分会有省略。由于我个人的水平原因，采用这种视角编写文档可能不能嵌入或严重大于数学分析III内对这部分的阐述，望读者理解。
+	
+	以下是参这篇文档的参考书目：
+	\begin{enumerate}
+		\item 丘维声.高等代数(上册)[M].北京：清华大学出版社.
+		\item 丘维声.高等代数(下册)[M].北京：清华大学出版社.
+		\item 史济怀等.数学分析教程(下册)[M]合肥：中国科学技术大学出版社.
+		\item 裴礼文.数学分析中的典型问题与方法[M]北京：高等教育出版社.
+		\item 楼红卫等.101计划-数学分析(下册)[M]北京：高等教育出版社.
+	\end{enumerate}
+	
+	
+	我的 QQ 号：3862617862，邮箱是3862617862@qq.com.发现问题麻烦联系我下，我会找到哈尔滨工业大学薪火笔记社进行笔记的更新迭代。
+	
+	如有不足烦请谅解，希望这本复习笔记能够帮到大家！
+	%		\begin{figure}[h]  % 位置参数控制图片优先放置的位置
+		%		\centering  % 图片居中对齐
+		%		\includegraphics[width=0.4\textwidth, keepaspectratio]{thank.jpg}  % 插入图片
+		%		\caption{囔囔囔(雪莉音效)}  % 图片标题（会自动编号）
+		%		\label{fig:thank}  % 标签（用于交叉引用，如\ref{fig:标签名}）
+		%	\end{figure}
+	
+	\hfill Donmianchen
+	
+	\hfill 2026 年 10 月 19 日
+	
+
+
+	
+	
+	\tableofcontents
+	
+	
+	
+	\part{代数结构}
+	\chapter{向量格}
+	
+	%第 4 节从内积出发得到正交、投影与标准正交系。本节从序出发建立另一条结构。
+	逐点比较是函数空间上最直接的序关系：对 $f,g\in L^{p}(\mu)$，$f\leqslant g$ 表示 $f(x)\leqslant g(x)$ 对几乎每个 $x$ 成立；在这个序下可以取 $f\vee g$、$f\wedge g$ 与 $|f|=f\vee(-f)$。
+	这些格运算与线性运算相容，%又与 $L^{p}$ 范数相容，两条相容性各是一条可以逐项检验的代数条件。
+	本节给出向量格（Riesz 空间）的定义与基本恒等式。%再证明 $L^{p}(\mu)$ 是 Banach 格，然后证明 $L^{1}$ 的不相交可加性，最后陈述并论证抽象 $L^{p}$ 空间的 Kakutani 表示定理：满足 $p$ 次幂可加性这一条代数条件的 Banach 格必格等距同构于某个 $L^{p}(\mu)$。
+	%一般理论取自（IDA, Ch.8）与（IDA, Ch.9），$L^{p}$ 空间的相应结论取自（IDA, Ch.13）。
+	
+	\section{偏序与格}
+	
+	\begin{definition}[\bfseries{偏序集与格}]
+		设 $X$ 是非空集，$\leqslant$ 是 $X$ 上的二元关系，满足
+		\begin{enumerate}[label=(\roman*),leftmargin=2.2em,itemsep=0.1em,topsep=0.3em]
+			\item 自反性：$x\leqslant x$；
+			\item 传递性：$x\leqslant y$ 且 $y\leqslant z \Rightarrow x\leqslant z$；
+			\item 反对称性：$x\leqslant y$ 且 $y\leqslant x \Rightarrow x=y$。
+		\end{enumerate}
+		称 $(X,\leqslant)$ 为\textbf{偏序集}，并记 $y\leqslant x$ 为 $x\geqslant y$。
+		若对任意 $x,y\in X$，集合 $\{x,y\}$  的上确界与下确界都在 $X$ 中，则称 $X$ 为\textbf{格}。此时记
+		\[
+		x\vee y:=\sup\{x,y\},\qquad x\wedge y:=\inf\{x,y\},
+		\]
+		并称映射 $(x,y)\mapsto x\vee y$ 与 $(x,y)\mapsto x\wedge y$ 为 $X$ 上的\textbf{格运算}。
+		设 $\{x_{1},\dots,x_{n}\}$ 是 $X$ 的有限非空子集，其确界记为 $\bigvee_{i=1}^{n}x_{i}$ 与 $\bigwedge_{i=1}^{n}x_{i}$。
+	\end{definition}
+	
+	\begin{proposition}[\bfseries{格的性质}]
+		设 $X$ 为格，$x,y,z\in X$。则
+		\begin{enumerate}[label=(\arabic*),leftmargin=2.2em,itemsep=0.1em,topsep=0.3em]
+			\item $x\vee x=x=x\wedge x$(幂等律)，$x\vee y=y\vee x$，$x\wedge y=y\wedge x$(交换律)，
+			\item $(x\vee y)\vee z=x\vee(y\vee z)$，$(x\wedge y)\wedge z=x\wedge(y\wedge z)$(结合律)；
+			\item $x\wedge(x\vee y)=x$，$x\vee(x\wedge y)=x$(消去律)；
+			\item 有限非空子集的上下确界存在，且
+			$\bigvee_{i=1}^{n}x_{i}=x_{1}\vee\cdots\vee x_{n}$，$\bigwedge_{i=1}^{n}x_{i}=x_{1}\wedge\cdots\wedge x_{n}$。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		(1) $x$ 是 $\{x\}$ 的最小上界，故 $x\vee x=x$；同理 $x\wedge x=x$。交换律由 $\{x,y\}=\{y,x\}$ 得出。
+		
+		(2)结合律，$u:=(x\vee y)\vee z$ 是 $\{x\vee y,z\}$ 的最小上界：由 $x\leqslant x\vee y\leqslant u$ 与 $y\leqslant x\vee y\leqslant u$ 知 $u$ 是 $\{x,y,z\}$ 的上界；若 $w$ 也是 $\{x,y,z\}$ 的上界，则 $w\geqslant x\vee y$ 且 $w\geqslant z$，故 $w\geqslant u$。因此 $u=\sup\{x,y,z\}$。同法可证 $x\vee(y\vee z)=\sup\{x,y,z\}$，由确界的唯一性得 $(x\vee y)\vee z=x\vee(y\vee z)$。$\wedge$ 的情形同理。
+		
+		(3) 由 $x\leqslant x\vee y$ 知 $x$ 是 $\{x,x\vee y\}$ 的下界；若 $u$ 也是下界，则 $u\leqslant x$，故 $x$ 是最大下界，即 $x\wedge(x\vee y)=x$。另一个等式对偶。
+		
+		(4) 对 $n$ 归纳。$n=1,2$ 由格的定义成立。设结论对 $n$ 成立，则 $\bigvee_{i=1}^{n+1}x_{i}=\Big(\bigvee_{i=1}^{n}x_{i}\Big)\vee x_{n+1}$ 等于 $\sup\{x_{1},\dots,x_{n+1}\}$，理由与 (1) 中结合律的证明相同。
+	\end{proof}
+	
+	
+	
+	\section{向量格}
+	
+	
+	
+	\begin{definition}[\bfseries{有序向量空间与正锥}]
+		设 $E$ 是实向量空间，$\leqslant$ 是 $E$ 上的偏序，且与代数结构相容：
+		\begin{enumerate}[label=(O\arabic*),leftmargin=2.8em,itemsep=0.1em,topsep=0.3em]
+			\item $x\leqslant y \Rightarrow x+z\leqslant y+z$，$\forall z\in E$；
+			\item $x\leqslant y \Rightarrow \alpha x\leqslant\alpha y$，$\forall\alpha\geqslant0$。
+		\end{enumerate}
+		则称 $(E,\leqslant)$ 为\textbf{有序向量空间}，称 $E^{+}:=\{x\in E:\ x\geqslant0\}$ 为 $E$ 的\textbf{正锥}。
+	\end{definition}
+	
+	正锥是 $E$ 中的一个尖凸锥(尖: $E^+\cap -E^+=\{0\}$)(凸: $ \forall x\in E^+,\forall y\in E^+\Rightarrow x+y\in E^+$)，并且 $x\leqslant y$ 等价于 $y-x\in E^{+}$。反过来，$E$ 中任一尖凸锥 $C$（即 $C+C\subset C$，$\alpha C\subset C\ (\alpha\geqslant0)$，$C\cap(-C)=\{0\}$）都按 $x\leqslant y\iff y-x\in C$ 确定一个满足 $(\mathrm{O}1)$、$(\mathrm{O}2)$ 的偏序。以下给出这一对应的证明。
+	
+	\begin{proposition}[\bfseries{序与正锥的对应}]
+		设 $E$ 为实向量空间。
+		\begin{enumerate}[label=(\arabic*),leftmargin=2.2em,itemsep=0.1em,topsep=0.3em]
+			\item 若 $\leqslant$ 满足 $(\mathrm{O}1)$、$(\mathrm{O}2)$，则 $E^{+}$ 是尖凸锥，且 $x\leqslant y\iff y-x\in E^{+}$。
+			\item 若 $C\subset E$ 是尖凸锥，则 $x\leqslant_{C}y\iff y-x\in C$ 定义的 $\leqslant_{C}$ 是满足 $(\mathrm{O}1)$、$(\mathrm{O}2)$ 的偏序，且 $C=E^{+}$。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		(1) 由 $(\mathrm{O}1)$，$x\geqslant0$、$y\geqslant0$ 蕴含 $x+y\geqslant y\geqslant0$，故 $E^{+}+E^{+}\subset E^{+}$；由 $(\mathrm{O}2)$，$\alpha\geqslant0$、$x\geqslant0$ 蕴含 $\alpha x\geqslant\alpha0=0$，故 $\alpha E^{+}\subset E^{+}$。若 $x\in E^{+}\cap(-E^{+})$，则 $x\geqslant0$ 且 $-x\geqslant0$；在 $-x\geqslant0$ 两边加 $x$ 得 $0\geqslant x$，再由反对称性得 $x=0$。
+		最后，由 $(\mathrm{O}1)$ 在 $y-x\geqslant0$ 两边加 $x$ 得 $y\geqslant x$；反之由 $x\leqslant y$ 两边加 $-x$ 得 $y-x\geqslant0$。
+		
+		(2) 自反性：$x-x=0\in C$。传递性：$y-x\in C$、$z-y\in C$ 蕴含 $z-x=(z-y)+(y-x)\in C$。反对称性：$y-x\in C$ 且 $x-y\in C$，即 $y-x\in C\cap(-C)=\{0\}$，故 $x=y$。$(\mathrm{O}1)$：$y-x\in C$ 蕴含 $(y+z)-(x+z)=y-x\in C$。$(\mathrm{O}2)$：$\alpha\geqslant0$ 时 $\alpha(y-x)\in C$。
+		由定义 $E^{+}=\{x:\ x\geqslant_{C}0\}=\{x:\ x-0\in C\}=C$。
+	\end{proof}
+	
+	\begin{definition}[\bfseries{向量格（Riesz 空间）}]
+		既是有序向量空间又是格的实向量空间称为\textbf{向量格}，或 \textbf{Riesz 空间}。
+	\end{definition}
+	
+	
+	\begin{proposition}[\bfseries{向量格的性质}]
+		设 $E$ 为向量格，$x,y,z\in E$，$\alpha\geqslant0$。则
+		\begin{enumerate}[label=(\arabic*),leftmargin=2.2em,itemsep=0.1em,topsep=0.3em]
+			\item $x+(y\vee z)=(x+y)\vee(x+z)$，\quad $x+(y\wedge z)=(x+y)\wedge(x+z)$；
+			\item $\alpha(x\vee y)=(\alpha x)\vee(\alpha y)$，\quad $\alpha(x\wedge y)=(\alpha x)\wedge(\alpha y)$；
+			\item $-(x\vee y)=(-x)\wedge(-y)$，\quad $-(x\wedge y)=(-x)\vee(-y)$；
+			\item $x\vee y+x\wedge y=x+y$。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		(1) 记 $a=x+(y\vee z)$。由 $y\leqslant y\vee z$ 与 $(\mathrm{O}1)$ 得 $x+y\leqslant a$，同理 $x+z\leqslant a$，故 $b:=(x+y)\vee(x+z)\leqslant a$。反之，由 $x+y\leqslant b$ 得 $y\leqslant b-x$，由 $x+z\leqslant b$ 得 $z\leqslant b-x$，故 $y\vee z\leqslant b-x$，即 $a=x+(y\vee z)\leqslant b$。于是 $a=b$。$\wedge$ 的情形同理。
+		
+		(2) 设 $\alpha>0$。由 $y\leqslant y\vee z$ 得 $\alpha y\leqslant\alpha(y\vee z)$，同理 $\alpha z\leqslant\alpha(y\vee z)$，故 $(\alpha y)\vee(\alpha z)\leqslant\alpha(y\vee z)$。反之，若 $u\geqslant\alpha y$ 且 $u\geqslant\alpha z$，则 $\tfrac{u}{\alpha}\geqslant y$ 且 $\tfrac{u}{\alpha}\geqslant z$，故 $\tfrac{u}{\alpha}\geqslant y\vee z$，即 $u\geqslant\alpha(y\vee z)$。故 $\alpha(y\vee z)$ 是 $\{\alpha y,\alpha z\}$ 的最小上界。$\alpha=0$ 时两端都是 $0$。$\wedge$ 的情形相同。
+		
+		(3) 对任意 $u\in E$，由 $(\mathrm{O}1)$，
+		\[
+		\begin{aligned}
+			u\leqslant x\ \text{且}\ u\leqslant y
+			&\iff -u\geqslant -x\ \text{且}\ -u\geqslant -y
+			\iff -u\geqslant (-x)\vee(-y)\\
+			&\iff u\leqslant -\big[(-x)\vee(-y)\big].
+		\end{aligned}
+		\]
+		因此 $-\big[(-x)\vee(-y)\big]$ 是 $\{x,y\}$ 的最大下界，即等于 $x\wedge y$。另一个等式对偶。
+		
+		(4) 由 $x\wedge y\leqslant y$ 得 $y-(x\wedge y)\geqslant0$，故 $x\leqslant x+y-(x\wedge y)$；同法 $y\leqslant x+y-(x\wedge y)$。于是 $x\vee y\leqslant x+y-(x\wedge y)$。
+		另一方面，由 $x\vee y\geqslant y$ 得 $y-(x\vee y)\leqslant0$，故 $x\geqslant x+y-(x\vee y)$；同法 $y\geqslant x+y-(x\vee y)$。于是 $x\wedge y\geqslant x+y-(x\vee y)$。两式分别给出 $x\vee y+x\wedge y\leqslant x+y$ 与 $\geqslant x+y$，故相等。
+	\end{proof}
+	
+	
+	\begin{note}[\bfseries{格恒等式原理}]
+		凡对实数成立、只涉及 $\vee$、$\wedge$ 与有限个变量的格恒等式与格不等式，在任意 Riesz 空间中都成立（IDA, Ch.8, Theorem 8.6 与 Corollary 8.7；定理 8.6 对 Archimedean 情形给出证明，其后说明结论对任意 Riesz 空间成立）。常见的证明是把 Archimedean Riesz 空间格同构地实现为函数空间，再逐点验证。
+		例如分配律
+		\[
+		x\wedge(y\vee z)=(x\wedge y)\vee(x\wedge z),\qquad x\vee(y\wedge z)=(x\vee y)\wedge(x\vee z)
+		\]
+		与 $x\wedge(y+z)\leqslant x\wedge y+x\wedge z\ (x,y,z\geqslant0)$ 在向量格中都成立。
+		本节在纯格恒等式的变形处引用该原理，涉及线性结构、序收敛与范数的结论则逐条证明。
+	\end{note}
+	
+%	\begin{properties}[\bfseries{若干向量格}]
+%			\item $\R^{n}$ 按坐标序是向量格，$(x\vee y)_{i}=\max\{x_{i},y_{i}\}$；
+%			\item 紧 Hausdorff 空间 $K$ 上的连续函数空间 $C(K)$ 按逐点序是向量格，格运算逐点取最大、最小值；
+%			\item $L^{p}(\mu)\ (1\leqslant p\leqslant\infty)$ 按几乎处处逐点序是向量格，见 \S\ref{sec:lp}；
+%			\item 可微函数空间 $C^{1}(\R)$ 按逐点序是有序向量空间，但不是向量格。
+%		\end{enumerate}
+%	\end{properties}
+%	
+%	\begin{proof}
+%		(1)--(3) 的确界由逐点（或几乎处处逐点）取最大、最小值给出，验证上、下确界的两个条件即可。
+%		
+%		(4) 设 $f(x)=x$，$g(x)=-x$。若 $h\in C^{1}(\R)$ 是 $\{f,g\}$ 的上界，则 $h(x)\geqslant|x|$ 对每个 $x$ 成立；反之，每个 $u_{\varepsilon}(x)=\sqrt{x^{2}+\varepsilon}\ (\varepsilon>0)$ 都属于 $C^{1}(\R)$ 并且是 $\{f,g\}$ 的上界。若 $h_{0}$ 是 $\{f,g\}$ 的上确界，则由 $h_{0}\leqslant u_{\varepsilon}$（$\forall\varepsilon>0$）与 $h_{0}\geqslant|x|$ 得
+%		\[
+%		|x|\leqslant h_{0}(x)\leqslant\sqrt{x^{2}+\varepsilon},\qquad \forall x\in\R,\ \forall\varepsilon>0 .
+%		\]
+%		令 $\varepsilon\downarrow0$ 得 $h_{0}(x)=|x|$ 对每个 $x$ 成立，而 $|x|$ 在 $x=0$ 处不可微，$h_{0}$ 在 $0$ 处可微，矛盾。故 $\{f,g\}$ 在 $C^{1}(\R)$ 中没有上确界。
+%	\end{proof}
+	\begin{definition}[序有界，序区间，序完备]
+		\leavevmode\par
+		\begin{enumerate}
+			\item \textbf{序有界: }$A\subset E$ 称为\textbf{序有界}的，若存在 $u,v\in E$ 使 $v\leqslant a\leqslant u$ 对每个 $a\in A$ 成立
+			\item \textbf{序区间: }形如 $[v,u]=\{z:\ v\leqslant z\leqslant u\}$ 的集合称为\textbf{序区间}
+			\item \textbf{序完备: }$E$ 称为\textbf{序完备}的（或 Dedekind 完备的），若每个非空有上界的子集有上确界
+			\item \textbf{Archimedean: }$E$ 称为 \textbf{Archimedean} 的，若对某个 $y$ 与一切 $n\geqslant1$ 有 $0\leqslant nx\leqslant y$ 时必有 $x=0$
+		\end{enumerate}
+	\end{definition}
+	
+	
+	\section{绝对值、不相交与 Riesz 分解}
+	
+	\begin{definition}[\bfseries{正部、负部与绝对值}]
+		设 $E$ 为向量格，$x\in E$。定义
+		\[
+		x^{+}:=x\vee0,\qquad x^{-}:=(-x)\vee0,\qquad |x|:=x\vee(-x),
+		\]
+		分别称为 $x$ 的\textbf{正部}、\textbf{负部}与\textbf{绝对值}。
+	\end{definition}
+	
+	\begin{proposition}[\bfseries{绝对值的基本性质}]
+		设 $E$ 为向量格，$x,y,z\in E$，$\alpha\in\R$。则
+		\begin{enumerate}[label=(\arabic*),leftmargin=2.2em,itemsep=0.1em,topsep=0.3em]
+			\item $x=x^{+}-x^{-}$，$|x|=x^{+}+x^{-}$，$x^{+}\wedge x^{-}=0$；
+			\item $x^{+}=\tfrac12\big(|x|+x\big)$，$x^{-}=\tfrac12\big(|x|-x\big)$；
+			\item $|x|\geqslant0$，$|x|=0\iff x=0$，$|\alpha x|=|\alpha|\,|x|$，$|-x|=|x|$；
+			\item $|x+y|\leqslant|x|+|y|$，$\big||x|-|y|\big|\leqslant|x-y|$；
+			\item $|x\vee y-z\vee y|\leqslant|x-z|$，$|x^{+}-y^{+}|\leqslant|x-y|$，$|x^{-}-y^{-}|\leqslant|x-y|$。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		(1) 在相容性命题 (4) 中取 $y=0$ 得 $x\vee0+x\wedge0=x$，即 $x^{+}+x\wedge0=x$；由相容性命题 (3) 有 $x\wedge0=-\big[(-x)\vee0\big]=-x^{-}$，故 $x=x^{+}-x^{-}$。
+		再证 $x^{+}\wedge x^{-}=0$。由 $x^{+}\geqslant0$ 与 $x^{-}\geqslant0$ 知 $0$ 是 $\{x^{+},x^{-}\}$ 的下界。若 $u\leqslant x^{+}$ 且 $u\leqslant x^{-}$，则 $u\leqslant x$ 且 $u\leqslant-x$，故 $u\leqslant x\wedge(-x)$；由相容性命题 (3)，$x\wedge(-x)=-\big[(-x)\vee x\big]=-|x|$。又 $|x|$ 是 $\{x,-x\}$ 的上界，故 $|x|\geqslant x$ 且 $|x|\geqslant-x$，两式相加得 $2|x|\geqslant0$，即 $|x|\geqslant0$。于是 $u\leqslant-|x|\leqslant0$，结合 $u\geqslant0$ 得 $u=0$，即 $0$ 是最大下界。
+		最后由 $x^{+}\wedge x^{-}=0$ 与相容性命题 (4)（取 $x=x^{+}$，$y=x^{-}$）得 $x^{+}\vee x^{-}=x^{+}+x^{-}$。另一方面，$\{x^{+},x^{-}\}=\{x\vee0,(-x)\vee0\}$ 的上确界是 $x\vee(-x)\vee0=x\vee(-x)=|x|$，故 $x^{+}+x^{-}=|x|$。
+		
+		(2) 由 (1)，$|x|+x=x^{+}+x^{-}+x^{+}-x^{-}=2x^{+}$；同法 $|x|-x=2x^{-}$。
+		
+		(3) 由 (1)，$|x|=x^{+}+x^{-}\geqslant x^{+}\geqslant0$。若 $|x|=0$，则 $0\leqslant x^{+}\leqslant|x|=0$，故 $x^{+}=0$，同法 $x^{-}=0$，于是 $x=0$。
+		$|\alpha x|=|\alpha||x|$：$\alpha>0$ 时由相容性命题 (2)，$|\alpha x|=(\alpha x)\vee(-\alpha x)=\alpha\big(x\vee(-x)\big)=\alpha|x|$；$\alpha<0$ 时记 $\beta=-\alpha>0$，则 $|\alpha x|=(\beta x)\vee(-\beta x)=\beta\big((-x)\vee x\big)=|\alpha||x|$；$\alpha=0$ 时两端为 $0$。$|-x|=(-x)\vee x=|x|$。
+		
+		(4) 由 $x\leqslant|x|$、$y\leqslant|y|$ 得 $x+y\leqslant|x|+|y|$；由 $-x\leqslant|x|$、$-y\leqslant|y|$ 得 $-(x+y)\leqslant|x|+|y|$。故 $|x+y|=(x+y)\vee\big(-(x+y)\big)\leqslant|x|+|y|$。又 $|x|=|(x-y)+y|\leqslant|x-y|+|y|$，故 $|x|-|y|\leqslant|x-y|$；交换 $x,y$ 得 $|y|-|x|\leqslant|x-y|$，于是 $\big||x|-|y|\big|\leqslant|x-y|$。
+		
+		(5) 在实数的格恒等式 $|u\vee v-u'\vee v'|\leqslant|u-u'|$ 中（格恒等式原理）取 $u=x$，$v=y$，$u'=z$，$v'=y$，得第一式；取 $u=x$，$v=0$，$u'=y$，$v'=0$ 得 $|x^{+}-y^{+}|\leqslant|x-y|$；取 $u=-x$，$u'=-y$ 得 $|x^{-}-y^{-}|\leqslant|x-y|$。
+	\end{proof}
+	
+	绝对值使“互不相交”这一概念可以陈述。它与内积空间中的正交是两个不同的概念：在 $L^{2}$ 中正交指 $\int f\bar g=0$，不相交指 $|f|\wedge|g|=0$。
+	
+	\begin{definition}[\bfseries{不相交}]
+		设 $E$ 为向量格，$x,y\in E$。若 $|x|\wedge|y|=0$，则称 $x$ 与 $y$ \textbf{不相交}，记 $x\perp y$。若集合 $A\subset E$ 中任意两个不同元素不相交，则称 $A$ 为\textbf{互不相交}族。
+	\end{definition}
+	
+	\begin{theorem}[\bfseries{不相交的等价刻画}]
+		设 $E$ 为向量格，$x,y\in E$。以下三条等价：
+		\begin{enumerate}[label=(\roman*),leftmargin=2.2em,itemsep=0.1em,topsep=0.3em]
+			\item $x\perp y$，即 $|x|\wedge|y|=0$；
+			\item $|x+y|=|x-y|$；
+			\item $|x+y|=|x|\vee|y|$。
+		\end{enumerate}
+		此时还有 $|x+y|=|x|+|y|=|x|\vee|y|$；若 $x,y\geqslant0$，则 $x+y=x\vee y$。（IDA, Ch.8, Theorem 8.12）
+	\end{theorem}
+	
+	\begin{proof}
+		用到实数格恒等式（格恒等式原理）
+		\[
+		|x|\vee|y|=\tfrac12\big(|x+y|+|x-y|\big),\qquad
+		|x|\wedge|y|=\tfrac12\big||x+y|-|x-y|\big| .
+		\]
+		(i)$\Rightarrow$(ii)：由第二式，$2|x|\wedge|y|=\big||x+y|-|x-y|\big|=0$，故 $|x+y|=|x-y|$。
+		(ii)$\Rightarrow$(iii)：由第一式，$|x|\vee|y|=\tfrac12\big(|x+y|+|x-y|\big)=|x+y|$。
+		(iii)$\Rightarrow$(i)：由 (iii) 与第一式得 $|x-y|=2\big(|x|\vee|y|\big)-|x+y|=|x+y|$，再由第二式得 $|x|\wedge|y|=0$。
+		最后，若 $x\perp y$，则由 (ii)(iii) 与第一式，$2|x+y|=|x+y|+|x-y|=2\big(|x|\vee|y|\big)$，故 $|x+y|=|x|\vee|y|$；而 $|x|\wedge|y|=0$ 时由相容性命题 (4) 有 $|x|\vee|y|=|x|+|y|$。$x,y\geqslant0$ 时 $|x|=x$，$|y|=y$，$|x+y|=x+y$。
+	\end{proof}
+	
+	\begin{corollary}[\bfseries{互不相交族的绝对值和}]
+		设 $x_{1},\dots,x_{n}$ 是向量格 $E$ 中的互不相交元素，则
+		\[
+		\Big|\sum_{i=1}^{n}x_{i}\Big|=\sum_{i=1}^{n}|x_{i}|=\bigvee_{i=1}^{n}|x_{i}| .
+		\]
+	\end{corollary}
+	
+	\begin{proof}
+		先证一个辅助事实：若 $x\perp y$ 且 $x\perp z$，则 $x\perp(y+z)$。由格恒等式原理，$|x|\wedge(|y|+|z|)\leqslant|x|\wedge|y|+|x|\wedge|z|=0$。
+		对 $n$ 归纳，同时证明两式。$n=1$ 显然。设对 $n-1$ 成立，即 $\big|\sum_{i=1}^{n-1}x_{i}\big|=\bigvee_{i=1}^{n-1}|x_{i}|=\sum_{i=1}^{n-1}|x_{i}|$。由辅助事实，$x_{n}\perp\sum_{i=1}^{n-1}x_{i}$，且 $|x_{n}|\perp|x_{i}|\ (i<n)$，故 $|x_{n}|\perp\bigvee_{i=1}^{n-1}|x_{i}|$，后者等于 $\sum_{i=1}^{n-1}|x_{i}|$。于是由前一定理
+		\[
+		\Big|\sum_{i=1}^{n}x_{i}\Big|=\Big|\sum_{i=1}^{n-1}x_{i}\Big|+|x_{n}|=\sum_{i=1}^{n}|x_{i}|,
+		\]
+		且不相交的非负元素满足 $u\vee v=u+v$，故
+		\[
+		\bigvee_{i=1}^{n}|x_{i}|=\Big(\bigvee_{i=1}^{n-1}|x_{i}|\Big)\vee|x_{n}|=\sum_{i=1}^{n-1}|x_{i}|+|x_{n}|=\sum_{i=1}^{n}|x_{i}| .
+		\]
+	\end{proof}
+	
+	\begin{theorem}[\bfseries{Riesz 分解性质}]
+		设 $E$ 为向量格，$y,x_{1},\dots,x_{n}\in E$ 满足
+		\[
+		|y|\leqslant\sum_{i=1}^{n}|x_{i}| .
+		\]
+		则存在 $y_{1},\dots,y_{n}\in E$ 使
+		\[
+		y=\sum_{i=1}^{n}y_{i},\qquad |y_{i}|\leqslant|x_{i}|\quad(i=1,\dots,n).
+		\]
+		若 $y\geqslant0$，则 $y_{i}$ 可取为 $\geqslant0$。（IDA, Ch.8, Theorem 8.9）
+	\end{theorem}
+	
+	\begin{proof}
+		先证一个稍一般的形式（$n=2$，右端第二项只需是非负元）：
+		\begin{equation}\label{eq:riesz2}
+			|y|\leqslant|x|+c,\ \ c\geqslant0
+			\ \Longrightarrow\
+			\exists\,y_{1},y_{2}:\ y=y_{1}+y_{2},\ \ |y_{1}|\leqslant|x|,\ \ |y_{2}|\leqslant c,
+		\end{equation}
+		并且 $y\geqslant0$ 时可要求 $y_{1},y_{2}\geqslant0$。
+		置 $y_{1}:=(-|x|)\vee\big(y\wedge|x|\big)$，$y_{2}:=y-y_{1}$。由定义 $-|x|\leqslant y_{1}\leqslant|x|$，故 $|y_{1}|\leqslant|x|$。若 $y\geqslant0$，则 $0\leqslant y\wedge|x|\leqslant y$ 且 $-|x|\leqslant0$，故 $0\leqslant y_{1}\leqslant y$，从而 $y_{2}=y-y_{1}\geqslant0$。
+		以下证 $|y_{2}|\leqslant c$。由 $|y|\leqslant|x|+c$ 与 $|y|=y\vee(-y)$ 得
+		\[
+		-|x|-c\leqslant y\leqslant|x|+c,
+		\]
+		即 $-c\leqslant|x|+y$ 且 $y-|x|\leqslant c$。于是
+		\[
+		-c\leqslant\big(|x|+y\big)\wedge0\leqslant0\leqslant c,\qquad y-|x|\leqslant c .
+		\]
+		另一方面，由相容性命题 (1)(3) 与格恒等式（分配律），
+		\[
+		y_{2}=y-\big[(-|x|)\vee(y\wedge|x|)\big]
+		=y+\Big[\big(|x|\wedge(-y)\big)\vee\big(-|x|\big)\Big]
+		=\big[(|x|+y)\wedge0\big]\vee\big(y-|x|\big).
+		\]
+		右端是 $\big[(|x|+y)\wedge0\big]$ 与 $y-|x|$ 的上确界。前者落在 $[-c,0]$ 中，后者 $\leqslant c$，故 $y_{2}\geqslant\big[(|x|+y)\wedge0\big]\geqslant-c$；又上确界不超过每个上界，故 $y_{2}\leqslant c$。因此 $-c\leqslant y_{2}\leqslant c$，即 $|y_{2}|\leqslant c$。\eqref{eq:riesz2} 得证。
+		
+		对 $n$ 归纳。$n=1$ 时取 $y_{1}=y$。设 $n\geqslant2$ 且结论对 $n-1$ 成立。令 $c:=\sum_{i=2}^{n}|x_{i}|\geqslant0$，则 $|y|\leqslant|x_{1}|+c$，由 \eqref{eq:riesz2} 得 $y=y_{1}+w$，$|y_{1}|\leqslant|x_{1}|$，$|w|\leqslant c=\sum_{i=2}^{n}|x_{i}|$，且 $y\geqslant0$ 时 $y_{1},w\geqslant0$。对 $w$ 与 $x_{2},\dots,x_{n}$ 用归纳假设，得 $w=\sum_{i=2}^{n}y_{i}$，$|y_{i}|\leqslant|x_{i}|$，且 $w\geqslant0$ 时 $y_{i}\geqslant0$。
+	\end{proof}
+	
+	\section{序收敛}
+	
+	序收敛用有向集（网）陈述；在序完备空间中，对序列它可以只用上、下极限刻画。
+	
+	\begin{definition}[\bfseries{有向集、网与序收敛}]
+		非空集 $A$ 与其上的关系 $\preceq$ 若满足自反性、传递性以及“任意两个元素有上界”，则称 $A$ 为\textbf{有向集}。$A$ 到 $E$ 的映射 $\alpha\mapsto x_{\alpha}$ 称为 $E$ 中的\textbf{网}。
+		称网 $\{x_{\alpha}\}$ \textbf{递减}，记 $x_{\alpha}\downarrow$，若 $\alpha\preceq\beta$ 蕴含 $x_{\alpha}\geqslant x_{\beta}$；若此外 $\inf_{\alpha}x_{\alpha}=x$，则记 $x_{\alpha}\downarrow x$。递增的记号类似。
+		设 $x\in E$。若存在与 $\{x_{\alpha}\}$ 同指标集的有向网 $\{y_{\alpha}\}$ 使
+		\[
+		y_{\alpha}\downarrow0,\qquad |x_{\alpha}-x|\leqslant y_{\alpha}\quad(\forall\alpha),
+		\]
+		则称 $\{x_{\alpha}\}$ \textbf{序收敛}于 $x$，记 $x_{\alpha}\xrightarrow{\,o\,}x$。
+	\end{definition}
+	
+	\begin{proposition}[\bfseries{序极限的唯一性}]
+		向量格中的序收敛网至多有一个序极限。
+	\end{proposition}
+	
+	\begin{proof}
+		设 $x_{\alpha}\xrightarrow{\,o\,}x$ 且 $x_{\alpha}\xrightarrow{\,o\,}y$，取 $\{u_{\alpha}\}$、$\{v_{\alpha}\}$ 使 $|x_{\alpha}-x|\leqslant u_{\alpha}\downarrow0$、$|x_{\alpha}-y|\leqslant v_{\alpha}\downarrow0$。则
+		\[
+		0\leqslant|x-y|\leqslant|x_{\alpha}-x|+|x_{\alpha}-y|\leqslant u_{\alpha}+v_{\alpha}\downarrow0 .
+		\]
+		故 $|x-y|\leqslant\inf_{\alpha}(u_{\alpha}+v_{\alpha})=0$，即 $x=y$。
+	\end{proof}
+	
+	\begin{lemma}[\bfseries{序收敛与代数运算的相容性}]
+		设 $x_{\alpha}\xrightarrow{\,o\,}x$，$y_{\beta}\xrightarrow{\,o\,}y$（$x_{\alpha}$ 与 $y_{\beta}$ 的指标集可以不同）。则
+		\begin{enumerate}[label=(\arabic*),leftmargin=2.2em,itemsep=0.1em,topsep=0.3em]
+			\item $x_{\alpha}+y_{\beta}\xrightarrow{\,o\,}x+y$；
+			\item $x_{\alpha}^{+}\xrightarrow{\,o\,}x^{+}$，$x_{\alpha}^{-}\xrightarrow{\,o\,}x^{-}$，$|x_{\alpha}|\xrightarrow{\,o\,}|x|$；
+			\item $\lambda x_{\alpha}\xrightarrow{\,o\,}\lambda x$，$\forall\lambda\in\R$；
+			\item $x_{\alpha}\vee y_{\beta}\xrightarrow{\,o\,}x\vee y$，$x_{\alpha}\wedge y_{\beta}\xrightarrow{\,o\,}x\wedge y$；
+			\item 若两个网有同一指标集且 $x_{\alpha}\leqslant y_{\alpha}$ 对一切 $\alpha$ 成立，则 $x\leqslant y$。
+		\end{enumerate}
+		（IDA, Ch.8, Lemma 8.15）
+	\end{lemma}
+	
+	\begin{proof}
+		取 $u_{\alpha}\downarrow0$、$v_{\beta}\downarrow0$ 使 $|x_{\alpha}-x|\leqslant u_{\alpha}$、$|y_{\beta}-y|\leqslant v_{\beta}$；乘积有向集上的网 $u_{\alpha}+v_{\beta}\downarrow0$。
+		(1) $|(x_{\alpha}+y_{\beta})-(x+y)|\leqslant u_{\alpha}+v_{\beta}$。
+		(2) 由绝对值性质 (5)，$|x_{\alpha}^{+}-x^{+}|\leqslant|x_{\alpha}-x|\leqslant u_{\alpha}$；同法处理 $x_{\alpha}^{-}$ 与 $|x_{\alpha}|$，后者用 $\big||x_{\alpha}|-|x|\big|\leqslant|x_{\alpha}-x|$。
+		(3) $|\lambda x_{\alpha}-\lambda x|\leqslant|\lambda|\,u_{\alpha}$。
+		(4) 由绝对值性质 (5)，
+		\[
+		|x_{\alpha}\vee y_{\beta}-x\vee y|\leqslant|x_{\alpha}\vee y_{\beta}-x\vee y_{\beta}|+|x\vee y_{\beta}-x\vee y|\leqslant|x_{\alpha}-x|+|y_{\beta}-y|\leqslant u_{\alpha}+v_{\beta}.
+		\]
+		(5) 设指标集相同。由 (1)，$x_{\alpha}-y_{\alpha}\xrightarrow{\,o\,}x-y$，即有 $w_{\alpha}\downarrow0$ 使 $\big|x_{\alpha}-y_{\alpha}-(x-y)\big|\leqslant w_{\alpha}$。由 $x_{\alpha}\leqslant y_{\alpha}$ 得
+		\[
+		0\leqslant(x-y)^{+}\leqslant x-y+w_{\alpha}=x_{\alpha}-y_{\alpha}+w_{\alpha}\leqslant w_{\alpha},
+		\]
+		故 $(x-y)^{+}\leqslant\inf_{\alpha}w_{\alpha}=0$，即 $x\leqslant y$。
+	\end{proof}
+	
+	\begin{proposition}[\bfseries{序完备空间中序列的序收敛}]
+		设 $E$ 为序完备向量格，$\{x_{n}\}$ 是 $E$ 中的序有界序列。则 $x_{n}\xrightarrow{\,o\,}x$ 当且仅当
+		\[
+		x=\liminf_{n\to\infty}x_{n}:=\sup_{n\geqslant1}\inf_{k\geqslant n}x_{k}
+		=\limsup_{n\to\infty}x_{n}:=\inf_{n\geqslant1}\sup_{k\geqslant n}x_{k}.
+		\]
+		（IDA, Ch.8, Theorem 8.16）
+	\end{proposition}
+	
+	\begin{proof}
+		设 $x_{n}\xrightarrow{\,o\,}x$，取 $y_{n}\downarrow0$ 使 $|x_{n}-x|\leqslant y_{n}$。对 $m\geqslant n$ 有 $x_{m}\leqslant x+y_{m}\leqslant x+y_{n}$，故 $\sup_{m\geqslant n}x_{m}\leqslant x+y_{n}$，从而
+		\[
+		\limsup_{n}x_{n}=\inf_{n}\sup_{m\geqslant n}x_{m}\leqslant\inf_{n}(x+y_{n})=x .
+		\]
+		同法由 $x_{m}\geqslant x-y_{m}\geqslant x-y_{n}$ 得 $\liminf_{n}x_{n}\geqslant x$。而 $\liminf\leqslant\limsup$，故三者相等。
+		
+		反之，设 $x=\liminf_{n}x_{n}=\limsup_{n}x_{n}$。置 $a_{n}:=\sup_{k\geqslant n}x_{k}$，$b_{n}:=\inf_{k\geqslant n}x_{k}$，$y_{n}:=a_{n}-b_{n}$。则 $a_{n}\downarrow x$，$b_{n}\uparrow x$，故 $y_{n}\downarrow$ 且
+		\[
+		\inf_{n}y_{n}=\inf_{n}a_{n}-\sup_{n}b_{n}=x-x=0 .
+		\]
+		又 $b_{n}\leqslant x\leqslant a_{n}$，故 $x_{n}\leqslant a_{n}=b_{n}+y_{n}\leqslant x+y_{n}$ 且 $x_{n}\geqslant b_{n}=a_{n}-y_{n}\geqslant x-y_{n}$，即 $|x_{n}-x|\leqslant y_{n}$。于是 $x_{n}\xrightarrow{\,o\,}x$。
+	\end{proof}
+	
+	\section{带有序的 Riemann 可积函数空间 }\label{sec:preorder}
+	
+	第 2 节在构造 $L^{p}(I)$ 之前先研究了未完备化的对象 $\Rc^{p}(I)$，并逐条验证了它已经具备的结构与它缺少的东西。本节要建立的 Banach 格理论以这些结构为具体的例子，故在给出抽象定义之前，先把 Riemann 世界里的序结构按本节的需要重述一遍：哪些已经成立，哪些不能无条件使用。以下结论都取自 \S 2，只补上格相容范数那一条的证明；记号也与 \S 2 相同。
+	
+	\begin{proposition}[\bfseries{Riemann 世界已有的序结构}]
+		设 $I=[a,b]$，$1\leqslant p\leqslant+\infty$。则 $\Rc^{p}(I)$（$[a,b]$ 上 Riemann 可积函数全体；由 \S 2 的推论，它作为函数集合与 $p$ 无关）按 a.e.\ 逐点序是向量格，并且
+		\begin{enumerate}[label=(\arabic*),leftmargin=2.2em,itemsep=0.1em,topsep=0.3em]
+			\item 格运算逐点定义：$f\vee g=\max\{f,g\}$、$f\wedge g=\min\{f,g\}$，两者都属于 $\Rc^{p}(I)$，且分别给出 $\{f,g\}$ 的上确界与下确界；取绝对值、取 $\max$、取 $\min$ 都保持 Riemann 可积性（\S 2 的引理与命题“$\Rc^{p}(I)$ 是格”）；
+			\item 这些运算由代数运算表出：
+			\[
+			f\vee g=\tfrac12\big((f+g)+|f-g|\big),\qquad
+			f\wedge g=\tfrac12\big((f+g)-|f-g|\big),\qquad
+			|f|=f\vee(-f);
+			\]
+			\item 于是 $f^{+}=f\vee0=\tfrac12\big(|f|+f\big)$ 与 $f^{-}=(-f)\vee0=\tfrac12\big(|f|-f\big)$ 都属于 $\Rc^{p}(I)$，且 $f=f^{+}-f^{-}$、$|f|=f^{+}+f^{-}$；$f$ 与 $g$ 不相交，即 $|f|\wedge|g|=0$，当且仅当 $f(x)g(x)=0$ 对 a.e.\ $x$ 成立。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		(1) 的封闭性与确界性是 \S 2 的命题“$\Rc^{p}(I)$ 是格”的内容，其证明只用到 \S 1 的 Darboux 判别形式：对分割 $P$，
+		\[
+		U(P,f+g)-L(P,f+g)\leqslant\big(U(P,f)-L(P,f)\big)+\big(U(P,g)-L(P,g)\big),
+		\]
+		而在每个小区间 $J$ 上 $\sup_{J}|f|-\inf_{J}|f|\leqslant\sup_{J}f-\inf_{J}f$，故 $|f|$ Riemann 可积。
+		
+		(2) 两个恒等式对实数逐点成立：$a\geqslant b$ 时右端分别为 $\tfrac12\big((a+b)+(a-b)\big)=a$ 与 $\tfrac12\big((a+b)-(a-b)\big)=b$，$a<b$ 时为 $b$ 与 $a$。故对函数逐点成立，而 $|f|=f\vee(-f)$ 是绝对值的定义。
+		
+		(3) 正部与负部的表达式由 $|f|\pm f$ 与格运算的相容性得到，$|f|=f^{+}+f^{-}$ 见本节的绝对值性质。$|f|\wedge|g|=0$ 逐点等价于 $\min\{|f(x)|,|g(x)|\}=0$，即 $|f(x)|\,|g(x)|=0$，即 $f(x)g(x)=0$；按等价类陈述时要求它对 a.e.\ $x$ 成立。
+	\end{proof}
+	
+	\begin{proposition}[\bfseries{格相容范数在 Riemann 世界里已经成立}]
+		设 $1\leqslant p\leqslant+\infty$，$f,g\in\Rc^{p}(I)$。则
+		\begin{enumerate}[label=(\arabic*),leftmargin=2.2em,itemsep=0.1em,topsep=0.3em]
+			\item $\big\||f|\big\|_{p}=\|f\|_{p}$；
+			\item $|f|\leqslant|g|$ a.e.\ 蕴含 $\|f\|_{p}\leqslant\|g\|_{p}$；
+			\item 两条都按 a.e.\ 等价类陈述：$f=g$ a.e.\ 时 $\|f\|_{p}=\|g\|_{p}$，$|f|\leqslant|g|$ a.e.\ 只依赖 $[f]$ 与 $[g]$，故在商空间上得到赋范 Riesz 空间 $\big(\Rc^{p}(I)/\mathrm{a.e.},\|\cdot\|_{p}\big)$。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		(1) 由 $\big||f|\big|=|f|$，
+		\[
+		\big\||f|\big\|_{p}=\Big(\int_{I}\big||f|\big|^{p}\dd x\Big)^{1/p}=\Big(\int_{I}|f|^{p}\dd x\Big)^{1/p}=\|f\|_{p}.
+		\]
+		
+		(2) $|f|\leqslant|g|$ a.e.\ 蕴含 $|f|^{p}\leqslant|g|^{p}$ a.e.\ （$t\mapsto t^{p}$ 在 $[0,+\infty)$ 上单调），由积分的单调性（\S 1）与 $p$ 次根在 $[0,+\infty)$ 上单调即得；$p=+\infty$ 时由 $|f|\leqslant|g|\leqslant\|g\|_{\infty}$ a.e.\ 直接得到。
+		
+		(3) $f=g$ a.e.\ 时 $|f|^{p}=|g|^{p}$ a.e.，由“零测集上修改不改变积分”（\S 1）得 $\|f\|_{p}=\|g\|_{p}$，故 (1)(2) 与代表元的选取无关；$|f|\leqslant|g|$ a.e.\ 的例外集之并在更换代表元时仍是零测集，故它只依赖两个等价类。正定性与三角不等式由 \S 2 的半范数性与 Minkowski 不等式得到（$\|f\|_{p}=0$ 当且仅当 $f=0$ a.e.），故商空间上 $\|\cdot\|_{p}$ 是范数。(2) 正是格相容范数的定义条件，于是 $\Rc^{p}(I)/\mathrm{a.e.}$ 是赋范 Riesz 空间。
+	\end{proof}
+	
+	于是在 Riemann 世界里，本节开头两条定义的对象都已具备：$\Rc^{p}(I)/\mathrm{a.e.}$ 是赋范 Riesz 空间，$\|\cdot\|_{p}$ 与序相容。缺的是完备性，而完备性有两个互不蕴含的层面，两者在 $\Rc^{p}(I)$ 上都不成立；\S 2 已给出反例，这里按本节的需要重述结论。
+	
+	\begin{note}[\bfseries{序完备性在 Riemann 世界里不成立（\S 2）}]
+		由本节的序完备（Dedekind 完备）定义，$\Rc^{p}(I)$ 按逐点序、$\Rc^{p}(I)/\mathrm{a.e.}$ 按 a.e.\ 序都不是序完备的。
+		
+		函数空间的反例（逐点序，不取等价类）：取 $[0,1]$ 与 $[0,1]\cap\Q$ 的枚举 $q_{1},q_{2},\dots$，置 $f_{n}:=\chi_{\{q_{1},\dots,q_{n}\}}$。则 $0\leqslant f_{1}\leqslant f_{2}\leqslant\cdots\leqslant1$，每个 $f_{n}$ 属于 $\Rc^{p}(I)$（有限点集的特征函数的 $U(P,\cdot)-L(P,\cdot)$ 可以被包含这些点的子区间的总长控制），$1$ 是上界，但 $\{f_{n}\}$ 没有上确界。设 $u$ 是上确界。由 $u\geqslant f_{n}$ 对每个 $n$ 成立得 $u(q_{j})\geqslant1$ 对每个 $j$ 成立；另一方面，对无理点 $x$，函数 $1-\chi_{\{x\}}$ 也是上界，由上确界的最小性得 $u\leqslant1-\chi_{\{x\}}$，即 $u(x)\leqslant0$。于是 $u$ 在 $[0,1]$ 的每个非退化小区间上都取到 $\geqslant1$ 的值（该区间含有理点）与 $\leqslant0$ 的值（该区间含无理点），故 $U(P,u)\geqslant1$、$L(P,u)\leqslant0$ 对一切分割 $P$ 成立，$u$ 不 Riemann 可积，与 $u\in\Rc^{p}(I)$ 矛盾。$\{f_{n}\}$ 的逐点上确界是 $\chi_{[0,1]\cap\Q}$，它不是 Riemann 可积的。
+		
+		商空间的反例：上面的 $f_{n}$ 都是零测集的特征函数，故 $[f_{n}]=[0]$，这个反例在商空间里退化。把 $[0,1]\cap\Q$ 换成正测度的无处稠密闭集：取 $r_{k}>0$ 使 $\sum_{k\geqslant1}2r_{k}<\tfrac12$，置
+		\[
+		W:=\bigcup_{k\geqslant1}\bigl((q_{k}-r_{k},q_{k}+r_{k})\cap[0,1]\bigr),\qquad
+		F:=[0,1]\setminus W,\qquad
+		f_{n}(x):=\bigl(1-n\,d(x,F)\bigr)^{+},
+		\]
+		其中 $d(x,F)$ 是到 $F$ 的距离、$t^{+}=\max\{t,0\}$。则 $F$ 闭、内部为空、$|F|>\tfrac12$；$f_{n}$ 连续、$0\leqslant f_{n}\leqslant1$、$f_{n}\uparrow\chi_{F}$ 逐点；$\{[f_{n}]\}$ 在 $\Rc^{p}(I)/\mathrm{a.e.}$ 中递增且以 $[1]$ 为上界，但没有上确界（\S 2 的命题“$\Rc^{p}(I)/$a.e.\ 序意义下不完备”）。
+		
+		后果是直接的：在 $\Rc^{p}(I)$ 中不能对递增有界的族直接取上确界，故序收敛、上确界与下确界、序完备这些概念在完备化之前都不能无条件使用。它们要到度量完备化一并补上之后才可靠。
+	\end{note}
+	
+	补上度量完备化（\S 2 的 Riesz--Fischer 定理）得 $L^{p}(I)$，序结构在 $L^{p}$ 上才有完备性可用。
+	
+	\begin{link}[序线在完备化之前]
+		Riemann 世界里“向量格与格相容范数”已经齐备：$\Rc^{p}(I)$ 按 a.e.\ 逐点序是向量格，格运算逐点定义，
+		$f\vee g=\frac{(f+g)+|f-g|}{2}$，取绝对值、取 $\max$、取 $\min$ 都保持 Riemann 可积性；$\big\||f|\big\|_{p}=\|f\|_{p}$ 与
+		$|f|\leqslant|g|$ a.e.\ $\Rightarrow\|f\|_{p}\leqslant\|g\|_{p}$ 成立，两条都按 a.e.\ 等价类陈述，故 $\Rc^{p}(I)/\mathrm{a.e.}$ 是赋范 Riesz 空间。
+		缺的是两样，且互不蕴含。度量完备性：$\Rc^{p}(I)/\mathrm{a.e.}$ 中有 Cauchy 列没有极限（\S 2 的 $f_{n}=\min\{x^{-\frac1{2p}},n\}$）。序完备性：$\Rc^{p}(I)$（逐点序）与 $\Rc^{p}(I)/\mathrm{a.e.}$ 都不是 Dedekind 完备的（上面的两个反例）。故在完备化之前，序收敛、上确界与序完备都不能无条件使用。
+		补上度量完备化得 $L^{p}(I)$；$L^{p}$ 同时是序完备（从而 $\sigma$-序完备）的 Banach 格，$1\leqslant p<+\infty$ 时其范数还序连续（见 \S\ref{sec:lp} 之后的注）。于是 Banach 格的定义、序收敛、抽象 $L^{p}$ 的 Kakutani 表示，以及 \S\ref{sec:l1} 与 \S\ref{sec:abs} 的论证才有立足点：这三处都要取上确界、用序收敛，或用范数与序的相容，而这三样在 $\Rc^{p}(I)$ 上都不可用。
+	\end{link}
+	
+	\section{格相容范数与 Banach 格}
+	
+	\begin{definition}[\bfseries{格范数}]
+		设 $E$ 为向量格，$\|\cdot\|$ 是 $E$ 上的范数。若
+		\[
+		|x|\leqslant|y|\ \Longrightarrow\ \|x\|\leqslant\|y\|,
+		\]
+		则称 $\|\cdot\|$ 为 $E$ 上的\textbf{格范数}（或 Riesz 范数），称 $(E,\|\cdot\|)$ 为\textbf{赋范 Riesz 空间}。（IDA, Ch.8, Definition 8.45）
+	\end{definition}
+	
+	格范数的定义是一条单调性条件。它等价于两条更容易验证的条件。
+	
+	\begin{proposition}[\bfseries{格范数的等价刻画}]
+		设 $E$ 为向量格，$\|\cdot\|$ 是 $E$ 上的范数。则 $\|\cdot\|$ 是格范数当且仅当
+		\begin{enumerate}[label=(\roman*),leftmargin=2.2em,itemsep=0.1em,topsep=0.3em]
+			\item $\big\||x|\big\|=\|x\|$ 对每个 $x\in E$ 成立；
+			\item $0\leqslant x\leqslant y$ 蕴含 $\|x\|\leqslant\|y\|$。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		设 (i)(ii) 成立而 $|x|\leqslant|y|$。则 $0\leqslant|x|\leqslant|y|$，由 (ii) 得 $\big\||x|\big\|\leqslant\big\||y|\big\|$，再由 (i) 得 $\|x\|\leqslant\|y\|$。
+		反之设 $\|\cdot\|$ 是格范数，则 $|x|\leqslant|x|$ 与 $|x|\leqslant\big||x|\big|$ 分别给出 $\big\||x|\big\|\leqslant\|x\|$ 与 $\|x\|\leqslant\big\||x|\big\|$（后者用 $\big||x|\big|=|x|$），故 (i) 成立；(ii) 是格范数条件在正锥上的限制。
+	\end{proof}
+	
+	下面两个更强的不相交条件将在 \S\ref{sec:abs} 中出现：正锥上的范数可加（L-范数）与正锥上的范数取上确界（M-范数）。
+	
+	\begin{proposition}[\bfseries{格运算的连续性}]
+		设 $(E,\|\cdot\|)$ 为赋范 Riesz 空间，$x,y,x',y'\in E$。则
+		\begin{enumerate}[label=(\arabic*),leftmargin=2.2em,itemsep=0.1em,topsep=0.3em]
+			\item $\|x^{\pm}\|\leqslant\|x\|$，$\big\||x|\big\|=\|x\|$，$\|x\vee y\|\leqslant\|x\|+\|y\|$；
+			\item $\big\||x|-|y|\big\|\leqslant\|x-y\|$，$\|x^{\pm}-y^{\pm}\|\leqslant\|x-y\|$；
+			\item $\|x\vee y-x'\vee y'\|\leqslant\|x-x'\|+\|y-y'\|$，$\|x\wedge y-x'\wedge y'\|\leqslant\|x-x'\|+\|y-y'\|$；
+			\item $E^{+}$ 是范数闭的。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		(1) 由 $0\leqslant x^{+}\leqslant|x|$ 与格范数的单调性得 $\|x^{+}\|\leqslant\big\||x|\big\|=\|x\|$，$x^{-}$ 相同；由 $|x\vee y|\leqslant|x|+|y|$ 出发，
+		$\|x\vee y\|\leqslant\big\||x|+|y|\big\|\leqslant\|x\|+\|y\|$。
+		(2) 由绝对值性质 (4)(5) 有 $\big||x|-|y|\big|\leqslant|x-y|$ 与 $|x^{\pm}-y^{\pm}|\leqslant|x-y|$，再用单调性。
+		(3) 由绝对值性质 (5)，
+		\[
+		|x\vee y-x'\vee y'|\leqslant|x\vee y-x'\vee y|+|x'\vee y-x'\vee y'|\leqslant|x-x'|+|y-y'|,
+		\]
+		再用单调性与三角不等式。$\wedge$ 相同。
+		(4) 设 $x_{n}\geqslant0$ 且 $\|x_{n}-x\|\to0$。由 (2)，$\|x^{-}\|=\|x^{-}-x_{n}^{-}\|\leqslant\|x-x_{n}\|\to0$，故 $x^{-}=0$，即 $x\geqslant0$。
+	\end{proof}
+	
+	\begin{definition}[\bfseries{Banach 格}]
+		完备的赋范 Riesz 空间称为 \textbf{Banach 格}。（IDA, Ch.9）
+	\end{definition}
+	
+	于是 Banach 格上同时有范数结构与格结构，两条相容性条件分别是：范数取绝对值不变，且范数在绝对值的序下单调。下一小节的 $L^{p}(\mu)$ 满足这两条。
+	\section{$L^{p}(\mu)$ 是 Banach 格}\label{sec:lp}
+	
+	\begin{theorem}[\bfseries{$L^{p}(\mu)$ 是 Banach 格}]
+		设 $(X,\Sigma,\mu)$ 是测度空间，$1\leqslant p\leqslant\infty$。则 $L^{p}(\mu)$ 按几乎处处逐点序是向量格，$L^{p}$ 范数是格范数；连同 Riesz--Fischer 定理，$L^{p}(\mu)$ 是 Banach 格。（IDA, Ch.13, Theorem 13.5）
+	\end{theorem}
+	
+	\begin{proof}
+		\textbf{第一步：$L^{p}(\mu)$ 是向量格。}
+		在 $L^{p}(\mu)$ 上定义 $f\leqslant g$ 为 $f(x)\leqslant g(x)$ 对 $\mu$-几乎每个 $x$ 成立。这个关系与代表元的选取无关，并且是偏序（反对称性来自“几乎处处相等即同一等价类”）。
+		设 $f,g\in L^{p}(\mu)$，取代表元并置
+		\[
+		(f\vee g)(x):=\max\{f(x),g(x)\},\qquad (f\wedge g)(x):=\min\{f(x),g(x)\}.
+		\]
+		若 $f=f_{1}$、$g=g_{1}$ 几乎处处，则 $f\vee g=f_{1}\vee g_{1}$ 几乎处处，故 $f\vee g$ 的等价类不依赖代表元。由 $|f\vee g|\leqslant|f|+|g|$ 与 $|f\wedge g|\leqslant|f|+|g|$ 得
+		\[
+		\|f\vee g\|_{p}\leqslant\big\||f|+|g|\big\|_{p}\leqslant\|f\|_{p}+\|g\|_{p}<\infty,
+		\]
+		故 $f\vee g\in L^{p}(\mu)$，$f\wedge g$ 相同。
+		$f\vee g$ 是 $\{f,g\}$ 的上界：$f\vee g\geqslant f$ 且 $f\vee g\geqslant g$ 几乎处处成立。若 $h\in L^{p}(\mu)$ 也满足 $h\geqslant f$、$h\geqslant g$，则 $h\geqslant\max\{f,g\}=f\vee g$ 几乎处处。故 $f\vee g$ 是上确界。$\wedge$ 同理。于是 $L^{p}(\mu)$ 是格，因而按定义是向量格。$p=\infty$ 的情形相同，只需把“几乎处处”换成“除去一个零测集”。
+		
+		\textbf{第二步：$L^{p}$ 范数是格范数。}
+		按上小节的等价刻画验证两条。
+		（绝对性）由定义 $\|f\|_{p}=\big(\int|f|^{p}\dd\mu\big)^{1/p}$，而 $\big||f|\big|=|f|$，故 $\big\||f|\big\|_{p}=\|f\|_{p}$；$p=\infty$ 时 $\big\||f|\big\|_{\infty}=\|f\|_{\infty}$。
+		（单调性）设 $|f|\leqslant|g|$ 几乎处处，即 $|f(x)|\leqslant|g(x)|$ 对几乎每个 $x$ 成立。$1\leqslant p<\infty$ 时由 $t\mapsto t^{p}$ 在 $[0,\infty)$ 上单调得 $|f(x)|^{p}\leqslant|g(x)|^{p}$ 几乎处处，再由积分的单调性（\S 1）得
+		\[
+		\|f\|_{p}^{p}=\int|f|^{p}\dd\mu\leqslant\int|g|^{p}\dd\mu=\|g\|_{p}^{p},
+		\]
+		故 $\|f\|_{p}\leqslant\|g\|_{p}$。$p=\infty$ 时 $|f|\leqslant|g|$ 几乎处处直接给出 $\|f\|_{\infty}\leqslant\|g\|_{\infty}$。
+		
+		\textbf{第三步：完备性。}
+		Riesz--Fischer 定理（\S 2）给出 $L^{p}(\mu)$ 的完备性。故 $L^{p}(\mu)$ 是完备的赋范 Riesz 空间，即 Banach 格。
+	\end{proof}
+	
+	\begin{remark}[\bfseries{序完备性与序连续范数}]
+		$L^{p}(\mu)\ (1\leqslant p\leqslant\infty)$ 都是序完备的；$1\leqslant p<\infty$ 时 $L^{p}$ 的范数还是序连续的：$f_{\alpha}\downarrow0$ 蕴含 $\|f_{\alpha}\|_{p}\downarrow0$（IDA, Ch.13, Theorem 13.7）。$L^{\infty}$ 的范数不序连续。
+	\end{remark}
+	
+	\begin{link}[序线在这里成形]
+		上文证明的 $L^{p}(\mu)$ 是 Banach 格（$1\leqslant p\leqslant\infty$）对每个 $p$ 都成立；第 4 节的内积结构只在
+		$p=2$ 处与 $L^{p}$ 的范数相容。两条线的分界就在这里：序线对每个 $p$ 都有对象，几何线只有一个 $p$。
+		两条线提供的工具按性质分开。度量线给角度、正交与正交投影，判据是 $\inner{f}{g}=0$，由此得到正交补与最佳逼近；
+		序线给绝对值、正负分解 $f=f^{+}-f^{-}$、不相交可加 $\|f+g\|_{p}^{p}=\|f\|_{p}^{p}+\|g\|_{p}^{p}$（$f\perp g$，
+		$1\leqslant p<\infty$），以及范数与序的相容（$\big\||f|\big\|_{p}=\|f\|_{p}$ 与 $|f|\leqslant|g|\Rightarrow\|f\|_{p}\leqslant\|g\|_{p}$）。
+		后一组运算只用到序与范数，故对 $L^{1}$ 也成立；\S\ref{sec:l1} 与 \S\ref{sec:abs} 的结论都建立在这一组运算上。
+	\end{link}
+	
+	\section{$L^{1}$ 的不相交可加性}\label{sec:l1}
+	
+	\begin{theorem}[\bfseries{$L^{1}$ 的不相交可加性}]
+		设 $f,g\in L^{1}(\mu)$ 且 $|f|\wedge|g|=0$（即 $\min\{|f|,|g|\}=0$ 几乎处处）。则
+		\[
+		\|f+g\|_{1}=\|f\|_{1}+\|g\|_{1}.
+		\]
+		更精确地，几乎处处有 $|f+g|=|f|+|g|=|f|\vee|g|$。
+	\end{theorem}
+	
+	\begin{proof}
+		$|f|\wedge|g|=0$ 在 $L^{1}$ 的序中意味着 $\min\{|f(x)|,|g(x)|\}=0$ 对几乎每个 $x$ 成立。对这样的 $x$，$|f(x)|$ 与 $|g(x)|$ 中至少一个为 $0$，故 $f(x)$ 与 $g(x)$ 中至少一个为 $0$，于是
+		\[
+		|f(x)+g(x)|=|f(x)|+|g(x)|=|f(x)|\vee|g(x)| .
+		\]
+		把这一等式在 $X$ 上积分，用积分的可加性（\S 1）得
+		\[
+		\|f+g\|_{1}=\int|f+g|\dd\mu=\int|f|\dd\mu+\int|g|\dd\mu=\|f\|_{1}+\|g\|_{1}.
+		\]
+	\end{proof}
+	
+	\begin{proposition}[\bfseries{$p$ 次幂的可加性}]
+		设 $1\leqslant p<\infty$，$f,g\in L^{p}(\mu)$ 且 $|f|\wedge|g|=0$。则
+		\[
+		\|f+g\|_{p}^{p}=\|f\|_{p}^{p}+\|g\|_{p}^{p}.
+		\]
+	\end{proposition}
+	
+	\begin{proof}
+		与上一定理的证明相同：几乎处处 $|f+g|^{p}=|f|^{p}+|g|^{p}$，两边积分即可。
+	\end{proof}
+	
+	$p=1$ 在下面三点上与其他 $p$ 不同。
+	
+	（一）$L^{1}$ 的范数在正锥上不加任何条件就可加。若 $f,g\geqslant0$，则几乎处处 $|f+g|=f+g=|f|+|g|$，故
+	\[
+	\|f+g\|_{1}=\|f\|_{1}+\|g\|_{1}.
+	\]
+	这正是 L-范数的定义性质（见 \S\ref{sec:abs}），故 $L^{1}(\mu)$ 是 AL-空间，$L^{1}$ 范数在正锥上可加。
+	
+	（二）$p>1$ 时范数在正锥上不可加。在 $([0,1],\mathcal{B},m)$（$m$ 为 Lebesgue 测度）中取 $A=[0,\tfrac12)$，$B=[\tfrac12,1]$，$f=\chi_{A}$，$g=\chi_{B}$。则 $|f|\wedge|g|=0$，而
+	\[
+	\|f+g\|_{p}=\big(m(A)+m(B)\big)^{1/p}=2^{1/p}<2=\|f\|_{p}+\|g\|_{p}.
+	\]
+	可加的只是 $p$ 次幂：$\|f+g\|_{p}^{p}=2=\|f\|_{p}^{p}+\|g\|_{p}^{p}$。
+	
+	（三）$p=1$ 的可加性对变号函数仍然要求不相交。仍取上述 $A$，$f=\chi_{A}$，$g=-\chi_{A}$，则 $|f|\wedge|g|=\chi_{A}\neq0$，而 $\|f+g\|_{1}=0\neq2=\|f\|_{1}+\|g\|_{1}$。定理中的不相交条件不是正锥可加性的推论。
+	
+	\begin{corollary}[\bfseries{互不相交列的范数可加性}]
+		设 $f_{n}\in L^{1}(\mu)$ 两两不相交，且 $\sum_{n=1}^{\infty}\|f_{n}\|_{1}<\infty$。则 $\sum_{n=1}^{\infty}f_{n}$ 几乎处处绝对收敛，其和 $f$ 属于 $L^{1}(\mu)$，并且
+		\[
+		\|f\|_{1}=\sum_{n=1}^{\infty}\|f_{n}\|_{1}.
+		\]
+	\end{corollary}
+	
+	\begin{proof}
+		记 $S_{N}=\sum_{n=1}^{N}f_{n}$。由定理与归纳，$|S_{N}|=\sum_{n=1}^{N}|f_{n}|$ 几乎处处成立，故 $\|S_{N}\|_{1}=\sum_{n=1}^{N}\|f_{n}\|_{1}$。
+		由 $\sum_{n}\int|f_{n}|\dd\mu=\sum_{n}\|f_{n}\|_{1}<\infty$ 与单调收敛定理（\S 1），
+		\[
+		\int\sum_{n=1}^{\infty}|f_{n}|\dd\mu=\sum_{n=1}^{\infty}\|f_{n}\|_{1}<\infty,
+		\]
+		故 $\sum_{n}|f_{n}(x)|<\infty$ 对几乎每个 $x$ 成立，$\sum_{n}f_{n}(x)$ 几乎处处绝对收敛，记其和为 $f(x)$。又 $|S_{N}|\leqslant\sum_{n}|f_{n}|\in L^{1}(\mu)$，由控制收敛定理（\S 1）得 $\|S_{N}-f\|_{1}\to0$，特别地 $f\in L^{1}(\mu)$，且
+		\[
+		\|f\|_{1}=\lim_{N\to\infty}\|S_{N}\|_{1}=\lim_{N\to\infty}\sum_{n=1}^{N}\|f_{n}\|_{1}=\sum_{n=1}^{\infty}\|f_{n}\|_{1}.
+		\]
+	\end{proof}
+	
+	\begin{link}[教材 21.2 的定量核心]
+		取 $[0,2\pi]$ 上的 Dirichlet 核 $D_{n}(t)=\frac{1}{2\pi}\frac{\sin\left(n+\frac12\right)t}{\sin\frac t2}$，记 $N=n+\frac12$。由定义与偶性，
+		$\|D_{n}\|_{1}=\frac{1}{\pi}\int_{0}^{\pi}\frac{|\sin N\theta|}{\sin(\theta/2)}\dd\theta$；由 $\frac{1}{\sin(\theta/2)}-\frac{2}{\theta}$ 在 $[0,\pi]$ 上有界得
+		$\|D_{n}\|_{1}=\frac{2}{\pi}\int_{0}^{N\pi}\frac{|\sin u|}{u}\dd u+O(1)$。在 $\sin$ 的零点 $u=k\pi$ 处把区间分成互不相交的段，
+		由本小节的不相交可加性逐段相加（各段上 $|\sin u|$ 不变号）：
+		\[
+		\int_{0}^{N\pi}\frac{|\sin u|}{u}\dd u=\sum_{k=0}^{N-1}\int_{0}^{\pi}\frac{\sin v}{k\pi+v}\dd v
+		=\frac{2}{\pi}\sum_{k=1}^{N-1}\frac1k+O(1)=\frac{2}{\pi}\ln n+O(1).
+		\]
+		代入得 $\|D_{n}\|_{1}=\Lambda_{n}=\frac{4}{\pi^{2}}\ln n+O(1)$。又由 $\|f*D_{n}\|_{1}\leqslant\|f\|_{1}\|D_{n}\|_{1}$ 与取 $g=\sgn D_{n}$ 的反向估计得
+		$\|S_{n}\|_{\mathcal{L}(L^{1})}=\|D_{n}\|_{1}\to+\infty$（教材 21.2.8）：$L^{1}$ 上没有有界的截断展开。
+	\end{link}
+	
+	\section{抽象 $L^{p}$ 空间与 Kakutani 表示定理}\label{sec:abs}
+	
+	$L^{1}$ 的不相交可加性与 $L^{p}$ 的 $p$ 次幂可加性都是只用范数与格运算陈述的条件。把这样的条件作为公理，就得到一类抽象空间；Kakutani 表示定理断言这类抽象空间都可以实现为具体的 $L^{p}(\mu)$。
+	
+	\begin{definition}[\bfseries{抽象 $L^{p}$ 空间}]
+		设 $1\leqslant p<\infty$，$E$ 是 Banach 格。若
+		\[
+		x\perp y\ \Longrightarrow\ \|x+y\|^{p}=\|x\|^{p}+\|y\|^{p},
+		\]
+		则称 $E$ 为\textbf{抽象 $L^{p}$ 空间}。
+	\end{definition}
+	
+	由 \S\ref{sec:l1} 的命题，$L^{p}(\mu)$ 是抽象 $L^{p}$ 空间。与那里关于 $L^{1}$ 的推理一样，抽象 $L^{p}$ 空间中互不相交族的 $p$ 次幂可加性推广到可数族：设 $x_{n}$ 两两不相交，$S_{N}=\sum_{n\leqslant N}x_{n}$，则 $\|S_{M}-S_{N}\|^{p}=\sum_{N<n\leqslant M}\|x_{n}\|^{p}$，故 $\sum_{n}\|x_{n}\|^{p}<\infty$ 时 $\{S_{N}\}$ 是 Cauchy 列，其极限 $S$ 满足
+	\[
+	\|S\|^{p}=\sum_{n=1}^{\infty}\|x_{n}\|^{p}.
+	\]
+	这是范数与测度的可数可加性相联系的环节。
+	
+	\begin{theorem}[\bfseries{Kakutani 表示定理}]
+		设 $1\leqslant p<\infty$。每个抽象 $L^{p}$ 空间都格等距同构于某个测度空间上的 $L^{p}(\mu)$：存在测度空间 $(X,\Sigma,\mu)$ 与线性双射 $T:E\to L^{p}(\mu)$，使得
+		\[
+		T(x\vee y)=T(x)\vee T(y),\qquad \|Tx\|_{p}=\|x\|\quad(\forall x,y\in E).
+		\]
+		（$p=1$ 的情形见 IDA, Ch.9, Theorem 9.33；一般 $p$ 的论证相同）
+	\end{theorem}
+	
+	\begin{proof}[\bfseries{证明思路}]
+		完整证明见 IDA, Ch.9, Theorem 9.33 及其所引的 [12, Theorem 12.26]；$1<p<\infty$ 的情形是把 $\|\cdot\|$ 换成 $\|\cdot\|^{p}$ 的同一论证。思路分四步：前两步是构造，第三步是技术核心，第四步是满射性。
+		
+		\textbf{第一步（取极大不相交族）。} 用 Zorn 引理取 $E$ 中极大的互不相交正单位向量族 $\{e_{\alpha}\}_{\alpha\in A}$。由极大性，$E$ 中没有非零正元素与所有 $e_{\alpha}$ 不相交：若 $x>0$ 与所有 $e_{\alpha}$ 不相交，则 $x/\|x\|$ 是正单位向量，把它添入该族后仍互不相交，与极大性矛盾。
+		
+		\textbf{第二步（把元素分解为分量）。} 对 $x\in E$，记 $x_{\alpha}$ 为 $x$ 在由 $e_{\alpha}$ 生成的带（序闭的理想）中的分量。各 $x_{\alpha}$ 两两不相交，并且 $x$ 由族 $\{x_{\alpha}\}$ 决定：$|x|=\bigvee_{\alpha}|x_{\alpha}|$。这一步用序完备性，而序完备性由范数条件与完备性得到：互不相交正元素之和的范数以 $p$ 次幂相加，故可数和受范数控制，从而相应的上确界存在。
+		把 $A$ 当作指标集，把 $\alpha\mapsto x_{\alpha}$ 当作 $A$ 上的函数，则 $x$ 被实现为一个函数 $f_{x}$，并且由 $p$ 次幂可加性
+		\[
+		\|x\|^{p}=\sum_{\alpha\in A}\|x_{\alpha}\|^{p}.
+		\]
+		
+		\textbf{第三步（构造测度）。} 一般情形下 $A$ 不可数且分量可能连续分布，故不能取 $A$ 上的计数测度。改用分量所成的布尔代数 $\mathcal{B}$（由带生成）：对固定 $x\geqslant0$，集函数 $B\mapsto\|x_{B}\|^{p}$ 在 $\mathcal{B}$ 上有限可加，可数可加性由可数族的范数可加性与 $E$ 的完备性得到。于是存在测度空间 $(A,\mathcal{B},\mu)$ 与可测函数 $f_{x}$，使
+		\[
+		\|x_{B}\|^{p}=\int_{B}|f_{x}|^{p}\dd\mu,\qquad \|x\|^{p}=\int_{A}|f_{x}|^{p}\dd\mu .
+		\]
+		由可加集函数得到积分表示是定理的技术核心，其一般形式并不初等，见所引文献。
+		
+		\textbf{第四步（等距与满射）。} 映射 $x\mapsto f_{x}$ 是线性的，保持 $\vee$（分量逐点取最大），并由上式是等距。由第一步的极大性，$f_{x}=0$ 蕴含 $x=0$，故是单射。$E$ 与 $L^{p}(\mu)$ 都完备，故等距线性像在 $L^{p}(\mu)$ 中闭；再由极大性，像中包含了足够多的特征函数型元素，故像在 $L^{p}(\mu)$ 中稠密，从而等于 $L^{p}(\mu)$。
+	\end{proof}
+	
+	\begin{link}[教材 21.3 完备系与完全系的抽象版本]
+		教材 21.3 在 $L^{2}_{\#}$ 中取标准正交系 $\mathcal{M}$，问它的张成是否稠密（完备系）、它的正交补是否为零（完全系）；
+		在完备内积空间中这两个问题有同一个答案（定理 21.3.4--21.3.6）。上一段的表示定理是同一问题在公理层面的形式：
+		“格 $+$ 格范数 $+$ $p$ 次幂可加”这组条件把空间完全确定下来，抽象 $L^{p}$ 空间必格等距同构于某个 $L^{p}(\mu)$，
+		不存在别的模型，其中第四步的满射性正是“$\overline{\spann\mathcal{M}}=X$”的对应物。故 $1\leqslant p<\infty$ 时序结构的
+		这套刻画是完备的：一条代数可加性条件就决定了整个空间的格等距类。
+		三个特殊点各有一名：$p=1$ 是 (L)-空间（范数在正锥上可加，即 AL-空间），$p=2$ 是两条线的交点（抽象 $L^{2}$ 同时是
+		Hilbert 空间），$p=\infty$ 是 (M)-空间（$\|x\|=\inf\{\lambda>0:|x|\leqslant\lambda e\}$，其表示即 $C(K)$）。
+		(L)-空间与 (M)-空间的定义见紧接着的定义；三者之中只有 $p=2$ 与内积相容。
+	\end{link}
+	
+	$p=1$ 与 $p=\infty$ 两个极端情形有各自的名称。
+	
+	\begin{definition}[\bfseries{(L)-空间与 (M)-空间}]
+		设 $E$ 为赋范 Riesz 空间，$\|\cdot\|$ 是格范数。
+		\begin{enumerate}[label=(\arabic*),leftmargin=2.2em,itemsep=0.1em,topsep=0.3em]
+			\item 若 $x,y\geqslant0$ 蕴含 $\|x+y\|=\|x\|+\|y\|$，称 $\|\cdot\|$ 为 \textbf{L-范数}，称 $E$ 为 \textbf{(L)-空间}；完备的 (L)-空间称为 \textbf{AL-空间}。
+			\item 若 $x,y\geqslant0$ 蕴含 $\|x\vee y\|=\max\{\|x\|,\|y\|\}$，称 $\|\cdot\|$ 为 \textbf{M-范数}，称 $E$ 为 \textbf{(M)-空间}；完备的 (M)-空间称为 \textbf{AM-空间}。
+		\end{enumerate}
+		（IDA, Ch.9, Definition 9.26）
+	\end{definition}
+	
+	\begin{proposition}[\bfseries{抽象 $L^{1}$、AL-空间与 $L^{1}(\mu)$}]
+		设 $E$ 是 Banach 格。以下三条等价：
+		\begin{enumerate}[label=(\roman*),leftmargin=2.2em,itemsep=0.1em,topsep=0.3em]
+			\item $E$ 是 AL-空间，即其范数满足 $x,y\geqslant0\Rightarrow\|x+y\|=\|x\|+\|y\|$；
+			\item $E$ 是抽象 $L^{1}$ 空间，即 $x\perp y\Rightarrow\|x+y\|=\|x\|+\|y\|$；
+			\item $E$ 格等距同构于某个 $L^{1}(\mu)$。
+		\end{enumerate}
+		（IDA, Ch.9, Theorem 9.33）
+	\end{proposition}
+	
+	\begin{proof}
+		(i)$\Rightarrow$(ii)：设 $\|\cdot\|$ 是 L-范数，$x\perp y$。由不相交的等价刻画，$|x+y|=|x|\vee|y|$；而 $|x|\wedge|y|=0$ 时 $|x|\vee|y|=|x|+|y|$，故
+		\[
+		\|x+y\|=\big\||x+y|\big\|=\big\||x|+|y|\big\|=\big\||x|\big\|+\big\||y|\big\|=\|x\|+\|y\|.
+		\]
+		(ii)$\Rightarrow$(iii)：这是 Kakutani 表示定理的 $p=1$ 情形。
+		(iii)$\Rightarrow$(i)：$L^{1}(\mu)$ 的范数在正锥上可加（\S\ref{sec:l1}（一）），而格等距同构保持 $\vee$ 与范数，故 $E$ 的范数是 L-范数。
+	\end{proof}
+	
+	\begin{theorem}[\bfseries{Kakutani--Bohnenblust--Krein 定理（$p=\infty$）}]
+		设 $E$ 是带单位的 AM-空间，即存在 $e>0$ 使每个 $x\in E$ 有 $\lambda>0$ 满足 $|x|\leqslant\lambda e$，且范数为
+		\[
+		\|x\|=\inf\{\lambda>0:\ |x|\leqslant\lambda e\}.
+		\]
+		则 $E$ 格等距同构于某个紧 Hausdorff 空间上的 $C(K)$；$K$ 在同胚意义下唯一。（IDA, Ch.9, Theorem 9.32）
+	\end{theorem}
+	
+	\begin{proof}[\bfseries{证明思路}]
+		取 $E$ 的对偶单位球的正部 $U'^{+}=\{x'\in U':\ x'\geqslant0\}$，置
+		\[
+		K=\big\{x'\in U'^{+}:\ \|x'\|=x'(e)=1,\ x'\ \text{是}\ U'^{+}\ \text{的端点}\big\},
+		\]
+		赋以弱 $*$ 拓扑。由 Krein--Milman 定理与 $U'^{+}$ 的弱 $*$ 紧性，$K$ 非空且弱 $*$ 紧。$K$ 中的元素正是 $E$ 上的格同态，这是定理的困难部分。每个 $x\in E$ 通过赋值给出 $K$ 上的连续函数 $x'\mapsto x'(x)$，于是 $E$ 成为 $C(K)$ 的 Riesz 子空间，单位 $e$ 对应常值函数 $1$。由于 $U'$ 是 $K$ 的闭凸包，$E$ 是 $C(K)$ 的范数闭 Riesz 子空间；又 $E$ 分离 $K$ 中的点且含常值函数 $1$，由 Stone--Weierstrass 定理（IDA, Ch.9, Theorem 9.12）$E$ 在 $C(K)$ 中稠密，故 $E=C(K)$。
+	\end{proof}
+	
+	两个极端情形互为对偶。AL-空间的对偶是带单位的 AM-空间，其单位由 $e'(x)=\|x^{+}\|-\|x^{-}\|$ 给出（IDA, Ch.9, Theorem 9.30）；反向的结论是 (M)-空间的对偶为 (L)-空间（IDA, Ch.9, Theorem 9.27）。在 $L^{p}$ 的具体情形中，这给出
+	\[
+	\big(L^{1}(\mu)\big)'=L^{\infty}(\mu)\quad(\mu\ \sigma\text{-}\text{有限}),\qquad
+	\big(L^{p}(\mu)\big)'=L^{q}(\mu)\quad\Big(\frac1p+\frac1q=1,\ 1<p<\infty\Big),
+	\]
+	两处都是格等距同构（IDA, Ch.13, Theorem 13.26 与 Theorem 13.28）。
+	
+	\begin{note}[\bfseries{两条结构线的同类形式}]
+		第 4 节与本节给出同一种论证形式。几何线上，范数由内积给出，平行四边形律
+		$\|x+y\|^{2}+\|x-y\|^{2}=2\|x\|^{2}+2\|y\|^{2}$ 是内积存在的判别条件（Jordan--von Neumann），满足它的 Banach 空间等距同构于 Hilbert 空间。序线上，范数与格相容，互不相交元素的 $p$ 次幂可加
+		$\|x+y\|^{p}=\|x\|^{p}+\|y\|^{p}$ 是抽象 $L^{p}$ 的判别条件，满足它的 Banach 格格等距同构于 $L^{p}(\mu)$。两处都是先给出一个只涉及范数与代数运算的恒等式，再证明满足它的空间必为具体的函数空间或序列空间。$p=2$ 时两个条件同时成立，$L^{2}(\mu)$ 同时是 Hilbert 空间与抽象 $L^{2}$ 空间；这一交点以及 $p\neq2$ 的情形是第 6 节的内容。
+	\end{note}
+	
+	\begin{link}[两条线的唯一交点：$L^{2}$]
+		两条线的判别条件在 $p=2$ 处同时成立，并且只在 $p=2$ 处成立。上面这条注记里的两个恒等式已经给出证明的骨架：
+		在 $L^{p}$ 中取两个不相交的单位元 $x,y$，序线（$p$ 次幂可加）给 $\|x+y\|=\|x-y\|=2^{1/p}$，若平行四边形律也成立，
+		则 $2\cdot2^{2/p}=4$，即 $p=2$（\S 4，Jordan--von Neumann）。反过来 $p=2$ 时两个条件都成立。
+		定量形式是 Jordan--von Neumann 常数：$C_{\mathrm{NJ}}(\ell^{p})=2^{2/p-1}$（$1\leqslant p\leqslant2$），在 $p=2$ 处取值 $1$，
+		在 $p\ne2$ 处大于 $1$。故 $p\ne2$ 的 $L^{p}$ 上没有内积、没有正交投影，几何线缺位，只有序线可用；$L^{2}$ 是两条线
+		唯一的交点，它同时是 Hilbert 空间与抽象 $L^{2}$ 空间，两种论证在同一点上重合。
+	\end{link}
+	
+	\begin{link}[两条线与教材第 21 章的对应]
+		\small
+		\setlength{\tabcolsep}{4pt}
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{@{}p{5.4cm}p{6.5cm}p{2.0cm}@{}}
+			\toprule
+			教材结论 & 本文的结构 & 所属的线\\
+			\midrule
+			(21.1.2) 三角函数系的正交性 & \S 4 标准正交系 & 度量\\
+			(21.3.4) 勾股分解 & \S 4 正交投影，交叉项为零 & 度量\\
+			(21.3.7)、(21.3.8) & \S 4 Bessel 不等式与最佳逼近 & 度量\\
+			(21.3.15)、(21.3.14) & \S 4 Parseval 等式、极化公式 & 度量\\
+			定义 21.3.1、定理 21.3.4--21.3.6 & \S 4 完备系与完全系；\S 5 抽象形式 & 度量与序\\
+			(21.4.22) Plancherel 等式 & \S 4 等距同构 & 度量\\
+			(21.2.3) Dirichlet 积分与卷积 & \S 5 格范数与 $L^{1}$ 的范数估计 & 序\\
+			$\|D_{n}\|_{1}=\frac{4}{\pi^{2}}\ln n+O(1)$ & \S 5 不相交可加性；\S 1 积分的可加性 & 序\\
+			(21.2.8) $\|S_{n}\|_{\mathcal{L}(L^{1})}=\|D_{n}\|_{1}\to\infty$ & \S 5 $L^{1}$ 的范数；\S 3 一致有界原理 & 序\\
+			定理 21.2.12 Fej\'er 定理 & \S 5 正部与格范数的单调性 & 序\\
+			(21.3.17)、(21.3.19) 在 $p=1,\infty$ 处 & \S 5 范数只在 $p=2$ 与内积相容 & 序\\
+			交点 $p=2$ & \S 4 与 \S 5 在此重合 & 两条\\
+			\bottomrule
+		\end{tabular}
+	\end{link}
+	
+	\chapter{测度与积分}
+	
+	本节汇集后文所需的测度论与积分论结论。取舍以用途为准：\S2 由简单函数逼近与单调收敛定理得到 $L^{p}$ 空间的完备性；\S5 由积分的线性、单调性以及积分作为集函数的可数可加性得到 $L^{p}$ 空间的格结构；\S7 把 Dirichlet 核与卷积算子的范数放在 Lebesgue 积分下计算，并把 Riemann 积分下的计算原样移过来。这三处的需要合起来是：$\sigma$-代数与测度、零测集与几乎处处、可测函数对四则运算与逐点极限的封闭性、简单函数逼近、Lebesgue 积分（简单函数、非负可测函数、可积函数三步）、积分的线性与单调性、单调收敛定理、Fatou 引理、控制收敛定理、积分为零与几乎处处为零的等价，以及 Riemann 可积蕴含 Lebesgue 可积且两积分相等。
+	
+	Lebesgue 测度的存在性按（夏道行 上册）引用；外测度与 Carathéodory 条件的构造不在本节展开。乘积测度的一般理论与 Radon--Nikodym 定理后文不用，本节也不写。
+	
+	本节的读法：积分是定义在可测函数空间的一个子空间上的泛函，它线性、单调，并与非负单调递增序列的极限交换。后文反复使用的就是这三条性质。
+	
+	\section{$\sigma$-代数与可测空间}
+	
+	\begin{definition}[\bfseries{$\sigma$-代数与可测空间}]
+		设 $X$ 是非空集合，$\Sigma\subseteq\mathcal{P}(X)$。若
+		\begin{enumerate}
+			\item $X\in\Sigma$；
+			\item $A\in\Sigma\ \Rightarrow\ A^{c}:=X\setminus A\in\Sigma$；
+			\item $A_n\in\Sigma$（$n\geqslant1$）$\Rightarrow\ \bigcup_{n\geqslant1}A_n\in\Sigma$，
+		\end{enumerate}
+		则称 $\Sigma$ 为 $X$ 上的\textbf{$\sigma$-代数}，称 $(X,\Sigma)$ 为\textbf{可测空间}，$\Sigma$ 的元素称为\textbf{可测集}。（IDA, Ch.4；夏道行 上册）
+	\end{definition}
+	
+	\begin{proposition}[\bfseries{$\sigma$-代数的封闭性}]
+		设 $(X,\Sigma)$ 是可测空间。则 $\varnothing\in\Sigma$；且 $\Sigma$ 对有限并、可数交、差与对称差封闭：若 $A,B\in\Sigma$，$\{A_n\}\subseteq\Sigma$，则
+		\[
+		A\cup B,\qquad \bigcap_{n\geqslant1}A_n,\qquad A\setminus B,\qquad A\triangle B
+		\]
+		都属于 $\Sigma$。
+	\end{proposition}
+	
+	\begin{proof}
+		由 $X\in\Sigma$ 与 (ii) 得 $\varnothing=X^{c}\in\Sigma$。有限并：在 (iii) 中取 $A_n=A$（$n\leqslant m$）与 $A_n=\varnothing$（$n>m$），得 $A_1\cup\cdots\cup A_m\in\Sigma$；取 $m=2$ 即得 $A\cup B\in\Sigma$。可数交由 de Morgan 公式与 (ii)、(iii)：
+		\[
+		\bigcap_{n\geqslant1}A_n=\Bigl(\bigcup_{n\geqslant1}A_n^{c}\Bigr)^{c}\in\Sigma .
+		\]
+		差：$A\setminus B=A\cap B^{c}\in\Sigma$。对称差：$A\triangle B=(A\setminus B)\cup(B\setminus A)\in\Sigma$。
+	\end{proof}
+	
+	于是 $\Sigma$ 在有限并、有限交与补运算下封闭，即 $\Sigma$ 是 $X$ 上的 Boolean 代数；条件 (iii) 使它同时对可数并封闭，即它是 Boolean $\sigma$-代数。可测空间 $(X,\Sigma)$ 的全部信息就是这一个集族，与 $X$ 上可能存在的其他结构无关。
+	
+	\begin{definition}[\bfseries{由集族生成的 $\sigma$-代数}]
+		设 $\mathcal{E}\subseteq\mathcal{P}(X)$。称
+		\[
+		\sigma(\mathcal{E}):=\bigcap\bigl\{\Sigma:\ \Sigma\ \text{是}\ X\ \text{上的}\ \sigma\text{-代数},\ \Sigma\supseteq\mathcal{E}\bigr\}
+		\]
+		为\textbf{由 $\mathcal{E}$ 生成的 $\sigma$-代数}。
+	\end{definition}
+	
+	\begin{proposition}[\bfseries{生成 $\sigma$-代数的存在性与最小性}]
+		设 $\mathcal{E}\subseteq\mathcal{P}(X)$。则 $\sigma(\mathcal{E})$ 是 $X$ 上的 $\sigma$-代数，$\sigma(\mathcal{E})\supseteq\mathcal{E}$，并且任何包含 $\mathcal{E}$ 的 $\sigma$-代数都包含 $\sigma(\mathcal{E})$。
+	\end{proposition}
+	
+	\begin{proof}
+		$\mathcal{P}(X)$ 是包含 $\mathcal{E}$ 的 $\sigma$-代数，故定义中的交集族非空。逐条验证 $\sigma(\mathcal{E})$ 是 $\sigma$-代数：$X$ 属于每个包含 $\mathcal{E}$ 的 $\sigma$-代数，故 $X\in\sigma(\mathcal{E})$；若 $A\in\sigma(\mathcal{E})$，则 $A$ 属于每个这样的 $\sigma$-代数，故 $A^{c}$ 也属于每个这样的 $\sigma$-代数，即 $A^{c}\in\sigma(\mathcal{E})$；若 $A_n\in\sigma(\mathcal{E})$，同理 $\bigcup_n A_n$ 属于每个这样的 $\sigma$-代数。又 $\mathcal{E}$ 的每个元素属于每个包含 $\mathcal{E}$ 的 $\sigma$-代数，故 $\mathcal{E}\subseteq\sigma(\mathcal{E})$。最后，若 $\Sigma_0$ 是包含 $\mathcal{E}$ 的 $\sigma$-代数，则 $\Sigma_0$ 是定义中交集族的成员，故 $\sigma(\mathcal{E})\subseteq\Sigma_0$。
+	\end{proof}
+	
+	\begin{definition}[\bfseries{Borel $\sigma$-代数}]
+		设 $X$ 是度量空间，$\mathcal{T}$ 为其开集全体。称 $\mathcal{B}(X):=\sigma(\mathcal{T})$ 为 $X$ 上的\textbf{Borel $\sigma$-代数}，其元素称为 \textbf{Borel 集}。（IDA, Ch.4）
+	\end{definition}
+	
+	在 $\R$ 上，每个开集是可数个开区间的并，每个开区间是开集，故 $\mathcal{B}(\R)=\sigma\bigl(\{(a,b):a<b\}\bigr)$。闭区间属于 $\mathcal{B}(\R)$，因为 $[a,b]=\bigcap_{n\geqslant1}\bigl(a-\tfrac1n,\,b+\tfrac1n\bigr)$；单点集与可数集也属于 $\mathcal{B}(\R)$。
+	
+	\begin{definition}[\bfseries{迹 $\sigma$-代数}]
+		设 $(X,\Sigma)$ 是可测空间，$A\subseteq X$，$A\neq\varnothing$。称
+		\[
+		\Sigma_A:=\{A\cap B:\ B\in\Sigma\}
+		\]
+		为 $\Sigma$ 在 $A$ 上的\textbf{迹}。
+	\end{definition}
+	
+	\begin{proposition}[\bfseries{迹是 $\sigma$-代数}]
+		设 $(X,\Sigma)$ 是可测空间，$A\subseteq X$，$A\neq\varnothing$。则 $\Sigma_A$ 是 $A$ 上的 $\sigma$-代数。
+	\end{proposition}
+	
+	\begin{proof}
+		$A=A\cap X\in\Sigma_A$。若 $C=A\cap B\in\Sigma_A$，则它在 $A$ 中的补集为 $A\setminus C=A\cap B^{c}\in\Sigma_A$。若 $C_n=A\cap B_n\in\Sigma_A$，则 $\bigcup_n C_n=A\cap\bigl(\bigcup_n B_n\bigr)\in\Sigma_A$。
+	\end{proof}
+	
+	$\Sigma_A$ 的用处是：把 $X$ 上的测度限制到子集 $A$ 上，从而谈论 $A$ 上的可测函数与积分（第 8 小节要在 $[a,b]$ 上比较两种积分）。
+	
+	\section{测度、零测集与几乎处处}
+	
+	\begin{definition}[\bfseries{测度与测度空间}]
+		设 $(X,\Sigma)$ 是可测空间。若 $\mu:\Sigma\to[0,+\infty]$ 满足
+		\begin{enumerate}
+			\item $\mu(\varnothing)=0$；
+			\item 对两两不交的 $\{A_n\}\subseteq\Sigma$ 有 $\mu\Bigl(\bigcup_{n\geqslant1}A_n\Bigr)=\sum_{n\geqslant1}\mu(A_n)$，
+		\end{enumerate}
+		则称 $\mu$ 为 $(X,\Sigma)$ 上的\textbf{测度}，称 $(X,\Sigma,\mu)$ 为\textbf{测度空间}。条件 2 称为\textbf{可数可加性}。（IDA, Ch.10；夏道行 上册）
+	\end{definition}
+	
+	\begin{proposition}[\bfseries{测度的基本性质}]
+		设 $(X,\Sigma,\mu)$ 是测度空间，$A,B,A_n\in\Sigma$。则
+		\begin{enumerate}
+			\item 有限可加性：若 $A_1,\dots,A_m$ 两两不交，则 $\mu\Bigl(\bigcup_{k=1}^{m}A_k\Bigr)=\sum_{k=1}^{m}\mu(A_k)$；
+			\item 单调性：$A\subseteq B\Rightarrow\mu(A)\leqslant\mu(B)$；
+			\item 可减性：若 $A\subseteq B$ 且 $\mu(A)<+\infty$，则 $\mu(B\setminus A)=\mu(B)-\mu(A)$；
+			\item 次可加性：$\mu\Bigl(\bigcup_{n\geqslant1}A_n\Bigr)\leqslant\sum_{n\geqslant1}\mu(A_n)$。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		1.\ 在可数可加性中取 $A_n=\varnothing$（$n>m$），再用 $\mu(\varnothing)=0$。
+		
+		2.\ 由 1 与可数可加性，$\mu(B)=\mu(A)+\mu(B\setminus A)\geqslant\mu(A)$。
+		
+		3.\ 由 2 的等式 $\mu(B)=\mu(A)+\mu(B\setminus A)$，当 $\mu(A)<+\infty$ 时移项得 $\mu(B\setminus A)=\mu(B)-\mu(A)$；这里 $\mu(A)$ 有限是移项合法的条件。
+		
+		4.\ 令 $B_1=A_1$，$B_n=A_n\setminus\bigcup_{k<n}A_k$（$n\geqslant2$）。则 $\{B_n\}$ 两两不交，$\bigcup_n B_n=\bigcup_n A_n$，且 $B_n\subseteq A_n$，故由单调性与可数可加性
+		\[
+		\mu\Bigl(\bigcup_{n\geqslant1}A_n\Bigr)=\sum_{n\geqslant1}\mu(B_n)\leqslant\sum_{n\geqslant1}\mu(A_n).\qedhere
+		\]
+	\end{proof}
+	
+	\begin{proposition}[\bfseries{测度的连续性}]
+		设 $(X,\Sigma,\mu)$ 是测度空间，$A_n,A\in\Sigma$。
+		\begin{enumerate}
+			\item 若 $A_1\subseteq A_2\subseteq\cdots$ 且 $\bigcup_n A_n=A$，则 $\mu(A)=\lim_{n\to\infty}\mu(A_n)=\sup_n\mu(A_n)$；
+			\item 若 $A_1\supseteq A_2\supseteq\cdots$，$\bigcap_n A_n=A$ 且 $\mu(A_1)<+\infty$，则 $\mu(A)=\lim_{n\to\infty}\mu(A_n)=\inf_n\mu(A_n)$。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		1.\ 令 $B_1=A_1$，$B_n=A_n\setminus A_{n-1}$（$n\geqslant2$）。则 $\{B_n\}$ 两两不交，$\bigcup_n B_n=A$，且由有限可加性 $A_n=B_1\cup\cdots\cup B_n$ 给出
+		\[
+		\mu(A)=\sum_{n\geqslant1}\mu(B_n)=\lim_{N\to\infty}\sum_{n=1}^{N}\mu(B_n)=\lim_{N\to\infty}\mu(A_N).
+		\]
+		右端作为单调不减数列的极限等于其上确界。
+		
+		2.\ 令 $C_n=A_1\setminus A_n$。则 $C_1\subseteq C_2\subseteq\cdots$，$\bigcup_n C_n=A_1\setminus A$。由 1 得 $\mu(A_1)-\mu(A)=\lim_n\mu(C_n)$。由 $\mu(A_1)<+\infty$ 与可减性，$\mu(C_n)=\mu(A_1)-\mu(A_n)$，代入得
+		\[
+		\mu(A_1)-\mu(A)=\lim_{n\to\infty}\bigl(\mu(A_1)-\mu(A_n)\bigr)=\mu(A_1)-\lim_{n\to\infty}\mu(A_n),
+		\]
+		故 $\mu(A)=\lim_n\mu(A_n)$。单调性给出 $\mu(A_n)\geqslant\mu(A)$，故极限等于下确界。
+	\end{proof}
+	
+	条件 $\mu(A_1)<+\infty$ 在 2 中不可去掉：在 $(\R,\mathcal{B}(\R),\lambda)$ 上取 $A_n=[n,+\infty)$，则 $\bigcap_n A_n=\varnothing$ 而 $\lambda(A_n)=+\infty$。
+	
+	\begin{definition}[\bfseries{零测集、完备测度与几乎处处}]
+		设 $(X,\Sigma,\mu)$ 是测度空间。
+		\begin{enumerate}
+			\item 若 $N\in\Sigma$ 且 $\mu(N)=0$，称 $N$ 为\textbf{零测集}（$\mu$-零测集）。
+			\item 若每个满足 $\mu(N)=0$ 的 $N$ 的一切子集都属于 $\Sigma$（从而也是零测集），称 $\mu$ 是\textbf{完备的}。
+			\item 设 $P(x)$ 是关于 $x\in X$ 的命题。若 $\{x\in X:\ P(x)\ \text{不成立}\}$ 包含于某个零测集，则称 $P$ \textbf{关于 $\mu$ 几乎处处成立}，记作 $P$ a.e.，或 $\mu$-a.e.。特别地，$\{x:f(x)\neq g(x)\}$ 是零测集的子集时，称 $f=g$ \textbf{几乎处处相等}。
+		\end{enumerate}
+	\end{definition}
+	
+	在完备测度空间中，上述定义第 3 条的例外集本身可测且零测；在非完备情形，只要例外集包含于零测集，结论相同。本节只在完备情形使用这一概念。
+	
+	\begin{proposition}[\bfseries{零测集与几乎处处的运算}]
+		设 $(X,\Sigma,\mu)$ 是测度空间。
+		\begin{enumerate}
+			\item 可数个零测集之并是零测集；
+			\item 若对每个 $n\geqslant1$，命题 $P_n$ 都 a.e. 成立，则“一切 $P_n$ 同时成立”a.e. 成立；
+			\item 若 $\mu(A)=0$，则 $A$ 的每个可测子集是零测集。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		1.\ 设 $\mu(N_n)=0$。由次可加性，$\mu\Bigl(\bigcup_n N_n\Bigr)\leqslant\sum_n\mu(N_n)=0$。
+		
+		2.\ 设 $E_n=\{x:P_n(x)\ \text{不成立}\}$ 包含于零测集 $N_n$。则“某个 $P_n$ 不成立”的例外集 $\bigcup_n E_n$ 包含于 $\bigcup_n N_n$，由 1 它是零测集。
+		
+		3.\ 设 $B\subseteq A$ 且 $B\in\Sigma$，由单调性 $\mu(B)\leqslant\mu(A)=0$。
+	\end{proof}
+	
+	零测集与积分的关系有两条，在第 4、5 小节证明：零测集上积分为零（$\mu(A)=0\Rightarrow\int_A f\,\dd\mu=0$），以及非负函数几乎处处为零时积分为零。
+	
+	\begin{proposition}[\bfseries{零测集上的修改保持可测性}]
+		设 $(X,\Sigma,\mu)$ 是完备测度空间，$f:X\to[-\infty,+\infty]$ 可测，$g:X\to[-\infty,+\infty]$ 满足 $f=g$ a.e.。则 $g$ 可测；且对 $f$ 的每个使积分有定义的可测集上的积分，把 $f$ 换成 $g$ 后不变。
+	\end{proposition}
+	
+	\begin{proof}
+		设 $N$ 是零测集，$f=g$ 在 $X\setminus N$ 上成立。对 $a\in\R$，由 $\{f>a\}\subseteq\{g>a\}\cup N$ 与 $\{g>a\}\subseteq\{f>a\}\cup N$ 得
+		\[
+		\{g>a\}\triangle\{f>a\}\subseteq N .
+		\]
+		由完备性，$N$ 的可测子集都属 $\Sigma$，于是 $\{g>a\}=\bigl(\{f>a\}\setminus M\bigr)\cup M'$，其中 $M,M'\subseteq N$ 可测，故 $\{g>a\}\in\Sigma$。积分的不变性见第 4 小节的引理。
+	\end{proof}
+	
+	\begin{remark}[\bfseries{Lebesgue 测度}]
+		在 $\R$ 上存在完备测度 $\lambda$（定义在 $\mathcal{B}(\R)$ 的完备化 $\mathcal{L}$ 上），使 $\lambda([a,b])=b-a$ 对一切 $a<b$ 成立，且 $\lambda$ 在平移下不变：$\lambda(A+t)=\lambda(A)$。其构造（外测度、Carathéodory 条件、区间上的可加性）见（夏道行 上册）；本节第 8、9 小节只引用上述三条性质。以下除特别说明外，测度空间 $(X,\Sigma,\mu)$ 均设为完备的；$\R$ 与区间上的积分一律指关于 $\lambda$ 的 Lebesgue 积分，记 $\dd x=\dd\lambda(x)$。
+	\end{remark}
+	
+	\section{可测函数}
+	
+	以下记 $\overline{\R}=[-\infty,+\infty]$。可测函数允许取 $\pm\infty$ 值，这是为了在第 4 小节对非负函数取上确界并作单调极限。
+	
+	\begin{definition}[\bfseries{可测函数}]
+		设 $(X,\Sigma)$ 是可测空间，$f:X\to\overline{\R}$。若对每个 $a\in\R$ 有
+		\[
+		\{f>a\}:=\{x\in X:\ f(x)>a\}\in\Sigma ,
+		\]
+		则称 $f$ 为 $\Sigma$-\textbf{可测函数}，简称可测。记 $\mathcal{M}(X,\Sigma)$ 为可测函数全体。若 $f$ 的取值不含 $\pm\infty$，称 $f$ 为\textbf{实值}可测函数。（IDA, Ch.4）
+	\end{definition}
+	
+	\begin{proposition}[\bfseries{可测性的等价刻画}]
+		设 $f:X\to\overline{\R}$。以下四条等价：
+		\begin{enumerate}
+			\item 对一切 $a\in\R$，$\{f>a\}\in\Sigma$；
+			\item 对一切 $a\in\R$，$\{f\geqslant a\}\in\Sigma$；
+			\item 对一切 $a\in\R$，$\{f<a\}\in\Sigma$；
+			\item 对一切 $a\in\R$，$\{f\leqslant a\}\in\Sigma$。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		1$\Rightarrow$2：$\{f\geqslant a\}=\bigcap_{n\geqslant1}\{f>a-\tfrac1n\}$，由 $\sigma$-代数对可数交封闭。
+		
+		2$\Rightarrow$3：$\{f<a\}=\{f\geqslant a\}^{c}$。
+		
+		3$\Rightarrow$4：$\{f\leqslant a\}=\bigcap_{n\geqslant1}\{f<a+\tfrac1n\}$。
+		
+		4$\Rightarrow$1：$\{f>a\}=\{f\leqslant a\}^{c}$。
+	\end{proof}
+	
+	\begin{proposition}[\bfseries{可测函数对四则运算封闭}]
+		设 $f,g:X\to\R$ 是实值可测函数，$c\in\R$。则 $cf$、$f+g$、$f-g$、$fg$ 可测；若 $g$ 处处非零，则 $f/g$ 可测。
+	\end{proposition}
+	
+	\begin{proof}
+		数乘：当 $c>0$ 时 $\{cf>a\}=\{f>a/c\}$；当 $c<0$ 时 $\{cf>a\}=\{f<a/c\}$；当 $c=0$ 时 $cf\equiv0$ 可测。故 $cf$ 可测，特别地 $-f$ 可测。
+		
+		和：因 $f,g$ 实值，$f(x)+g(x)>a$ 等价于存在有理数 $q$ 使 $f(x)>q$ 且 $g(x)>a-q$。于是
+		\[
+		\{f+g>a\}=\bigcup_{q\in\Q}\bigl(\{f>q\}\cap\{g>a-q\}\bigr)\in\Sigma ,
+		\]
+		右端是可数并。
+		
+		平方：当 $a<0$ 时 $\{f^{2}>a\}=X$；当 $a\geqslant0$ 时 $\{f^{2}>a\}=\{f>\sqrt{a}\}\cup\{f<-\sqrt{a}\}$。故 $f^{2}$、$g^{2}$ 可测。于是
+		\[
+		fg=\tfrac12\bigl((f+g)^{2}-f^{2}-g^{2}\bigr)
+		\]
+		可测，其中用到已证的和、数乘与平方。
+		
+		商：先证 $1/g$，设 $g$ 处处非零。当 $a>0$ 时，若 $g>0$ 则 $1/g>a$ 等价于 $g<1/a$，若 $g<0$ 则 $1/g<0<a$，故 $\{1/g>a\}=\{0<g<1/a\}$。当 $a=0$ 时 $\{1/g>0\}=\{g>0\}$。当 $a<0$ 时，若 $g>0$ 则 $1/g>0>a$；若 $g<0$，在 $1/g>a$ 两端乘 $g<0$ 并除以 $a<0$ 得 $g<1/a<0$，故 $\{1/g>a\}=\{g>0\}\cup\{g<1/a\}$。三种情形都可测，故 $1/g$ 可测；再由乘积的结论得 $f/g=f\cdot(1/g)$ 可测。
+	\end{proof}
+	
+	\begin{proposition}[\bfseries{可测函数对格运算封闭}]
+		设 $f,g:X\to\overline{\R}$ 可测。则
+		\[
+		f\vee g:=\max(f,g),\qquad f\wedge g:=\min(f,g),\qquad f^{+}:=f\vee0,\qquad f^{-}:=(-f)\vee0
+		\]
+		都可测；$|f|:=f\vee(-f)$ 也可测。并且 $f=f^{+}-f^{-}$，$|f|=f^{+}+f^{-}$。
+	\end{proposition}
+	
+	\begin{proof}
+		由 $\{f\vee g>a\}=\{f>a\}\cup\{g>a\}$ 得 $f\vee g$ 可测；由 $\{f\wedge g>a\}=\{f>a\}\cap\{g>a\}$ 得 $f\wedge g$ 可测。取 $g\equiv0$ 得 $f^{+}$ 可测；对 $-f$ 用同一结论得 $f^{-}$ 可测。和的可测性（对取 $\pm\infty$ 值的函数，$f^{+}$ 与 $f^{-}$ 不同时为 $+\infty$）给出 $|f|=f^{+}+f^{-}$ 可测。逐点验证 $f=f^{+}-f^{-}$ 与 $|f|=f\vee(-f)$：当 $f(x)\geqslant0$ 时三者分别为 $f(x)$、$f(x)$、$f(x)$；当 $f(x)<0$ 时分别为 $f(x)$、$-f(x)$、$-f(x)$。
+	\end{proof}
+	
+	\begin{proposition}[\bfseries{可测函数对逐点极限封闭}]
+		设 $\{f_n\}\subseteq\mathcal{M}(X,\Sigma)$。则
+		\[
+		\sup_n f_n,\qquad \inf_n f_n,\qquad \limsup_{n\to\infty}f_n:=\inf_{N\geqslant1}\sup_{n\geqslant N}f_n,\qquad \liminf_{n\to\infty}f_n:=\sup_{N\geqslant1}\inf_{n\geqslant N}f_n
+		\]
+		都可测。若 $\lim_n f_n(x)$ 对每个 $x$ 存在（取 $\overline{\R}$ 中的值），则极限函数可测。
+	\end{proposition}
+	
+	\begin{proof}
+		由 $\{\sup_n f_n>a\}=\bigcup_n\{f_n>a\}$ 得 $\sup_n f_n$ 可测。由 $\inf_n f_n=-\sup_n(-f_n)$（数乘 $-1$ 保持可测性，其证明与上一条命题的数乘部分相同）得 $\inf_n f_n$ 可测。对上确界、下确界反复应用这两条即得 $\limsup$、$\liminf$ 可测。若逐点极限存在，则 $\lim_n f_n=\limsup_n f_n=\liminf_n f_n$，故可测。
+	\end{proof}
+	
+	\begin{corollary}[\bfseries{$\mathcal{M}(X,\Sigma)$ 是 Riesz 代数}]
+		实值可测函数全体 $\mathcal{M}(X,\Sigma)$ 在逐点加法、乘法与数乘下是 $\R$ 上的交换代数；在逐点 $\vee$、$\wedge$ 下是格，且乘法与格运算相容：当 $f\geqslant0$ 时 $f(g\vee h)=fg\vee fh$，$f(g\wedge h)=fg\wedge fh$。此外 $\mathcal{M}(X,\Sigma)$ 对逐点极限封闭。
+	\end{corollary}
+	
+	\begin{proof}
+		代数运算的封闭性与各条运算律由逐点定义立即成立（例如加法交换律 $f+g=g+f$ 逐点成立）。格运算的封闭性由可测函数对格运算封闭的命题给出；$\vee$、$\wedge$ 的结合律、交换律与吸收律逐点成立，故构成格。乘法与格运算的相容性在 $f(x)\geqslant0$ 时是实数的对应性质。对逐点极限的封闭性是上一命题。
+	\end{proof}
+	
+	上一条推论中的结构（$\R$-代数兼格，且乘法与序相容）就是 \S5 所说的向量格（Riesz 空间）的原型；\S2、\S5 的 $L^{p}$ 空间是这一结构按几乎处处相等的商，并加上一个范数。
+	
+	\begin{definition}[\bfseries{简单函数}]
+		设 $(X,\Sigma)$ 是可测空间。若 $s:X\to\R$ 只取有限多个值且每个 $\{s=y\}$（$y\in\R$）属于 $\Sigma$，称 $s$ 为\textbf{简单函数}。等价地，$s=\sum_{k=1}^{m}a_k\mathbf{1}_{A_k}$，其中 $a_k\in\R$，$A_k\in\Sigma$。
+	\end{definition}
+	
+	\begin{proposition}[\bfseries{简单函数的标准表示}]
+		设 $s$ 是简单函数，其值域为 $\{b_1,\dots,b_n\}$（互不相同），令 $B_j=s^{-1}(b_j)$。则 $B_j\in\Sigma$ 两两不交，$\bigcup_j B_j=X$，且
+		\[
+		s=\sum_{j=1}^{n}b_j\mathbf{1}_{B_j}.
+		\]
+		这一表示由 $s$ 唯一确定。
+	\end{proposition}
+	
+	\begin{proof}
+		由简单函数的定义 $B_j\in\Sigma$。对每个 $x$，$s(x)$ 恰等于一个 $b_j$，故 $x$ 属于且只属于一个 $B_j$；于是 $\{B_j\}$ 两两不交、并为 $X$，且右端在 $B_j$ 上取值为 $b_j=s(x)$。若 $s=\sum_j c_j\mathbf{1}_{C_j}$ 是另一表示，其中 $c_j$ 互不相同、$\{C_j\}$ 是 $X$ 的可测分割，则对 $x\in C_j$ 有 $s(x)=c_j$，故 $C_j\subseteq s^{-1}(c_j)$；由分割性 $C_j=s^{-1}(c_j)$，即与前一表示一致。
+	\end{proof}
+	
+	\begin{theorem}[\bfseries{简单函数逼近定理}]
+		设 $f:X\to[0,+\infty]$ 非负可测。则存在简单函数列 $\{s_n\}$ 使
+		\[
+		0\leqslant s_1\leqslant s_2\leqslant\cdots\leqslant f,\qquad \lim_{n\to\infty}s_n(x)=f(x)\quad(\forall x\in X).
+		\]
+		若 $f$ 有界，则 $\{s_n\}$ 一致收敛于 $f$，且 $\sup_x|f(x)-s_n(x)|\leqslant2^{-n}$。
+	\end{theorem}
+	
+	\begin{proof}
+		对 $n\geqslant1$ 与 $k=1,\dots,n2^{n}$ 令
+		\[
+		E_{k,n}:=\Bigl\{x:\ \tfrac{k-1}{2^{n}}\leqslant f(x)<\tfrac{k}{2^{n}}\Bigr\},\qquad F_n:=\{x:\ f(x)\geqslant n\},
+		\]
+		并令
+		\[
+		s_n:=\sum_{k=1}^{n2^{n}}\frac{k-1}{2^{n}}\,\mathbf{1}_{E_{k,n}}+n\,\mathbf{1}_{F_n}.
+		\]
+		这些集合属于 $\Sigma$，有限多个，且两两不交、并为 $X$，故 $s_n$ 是简单函数，且 $0\leqslant s_n\leqslant f$。
+		
+		单调性：固定 $x$。若 $f(x)\geqslant n+1$，则 $s_n(x)=n$，$s_{n+1}(x)=n+1$。若 $f(x)\geqslant n$ 而 $f(x)<n+1$，则由 $2^{n}f(x)\in[n2^{n},(n+1)2^{n})$ 得 $s_{n+1}(x)=2^{-(n+1)}\lfloor 2^{n+1}f(x)\rfloor\geqslant n=s_n(x)$。若 $f(x)<n$，取唯一的 $k$ 使 $f(x)\in E_{k,n}$，则 $s_n(x)=2^{-n}(k-1)$，而 $2^{n+1}f(x)\in[2k-2,2k)$ 给出 $s_{n+1}(x)\in\{2^{-(n+1)}(2k-2),\,2^{-(n+1)}(2k-1)\}$，故 $s_{n+1}(x)\geqslant2^{-n}(k-1)=s_n(x)$。
+		
+		收敛性：若 $f(x)<+\infty$，取 $n>f(x)$，则 $x\in\bigcup_k E_{k,n}$，从而
+		\[
+		0\leqslant f(x)-s_n(x)<2^{-n}.
+		\]
+		若 $f(x)=+\infty$，则 $s_n(x)=n\to+\infty=f(x)$。若 $f\leqslant M$，则对 $n\geqslant M$ 上式对一切 $x$ 成立，故一致收敛且有 $|f-s_n|\leqslant2^{-n}$。
+	\end{proof}
+	
+	\begin{corollary}[\bfseries{一般可测函数的简单函数逼近}]
+		设 $f:X\to\overline{\R}$ 可测。则存在简单函数列 $\{s_n\}$ 使 $|s_n|\leqslant|f|$ 处处成立，且 $s_n\to f$ 逐点。若 $f$ 有界，则 $\{s_n\}$ 一致收敛于 $f$。
+	\end{corollary}
+	
+	\begin{proof}
+		由上一命题取 $u_n\leqslant f^{+}$、$v_n\leqslant f^{-}$ 为简单函数，分别单调递增收敛到 $f^{+}$、$f^{-}$，令 $s_n:=u_n-v_n$。则 $s_n\to f^{+}-f^{-}=f$ 逐点，且
+		\[
+		|s_n|=u_n+v_n\leqslant f^{+}+f^{-}=|f|.
+		\]
+		有界情形的一致收敛性由 $|f(x)-s_n(x)|\leqslant|f^{+}(x)-u_n(x)|+|f^{-}(x)-v_n(x)|\leqslant2\cdot2^{-n}$ 得到。
+	\end{proof}
+	
+	\begin{note}[\bfseries{几乎处处的序结构}]
+		在可测函数全体中把几乎处处相等的函数等同，所得商集记 $L^{0}(\mu)$。$L^{0}(\mu)$ 上的序由代表元的逐点序定义：$[f]\leqslant[g]$ 当且仅当 $f\leqslant g$ a.e.。由第 2 小节关于零测集上修改的命题，这个定义与代表元的选取无关；商的运算由代表元的运算定义，同样与选取无关。于是 $L^{0}(\mu)$ 是 $\R$-代数兼格，$[f]\vee[g]=[f\vee g]$，$[f]\wedge[g]=[f\wedge g]$，零元素是 $[0]$。\S2 的 $L^{p}$ 空间与 \S5 的抽象 $L^{p}$ 空间都是这一结构的线性子空间，区别只在所附加的范数。
+	\end{note}
+	
+	\section{Lebesgue 积分：简单函数与非负可测函数}
+	
+	\begin{definition}[\bfseries{非负简单函数的积分}]
+		设 $s=\sum_{j=1}^{n}b_j\mathbf{1}_{B_j}$ 是非负简单函数的标准表示（$b_j\in[0,+\infty)$ 互不相同，$\{B_j\}$ 是 $X$ 的可测分割）。定义
+		\[
+		\int s\,\dd\mu:=\sum_{j=1}^{n}b_j\,\mu(B_j),
+		\]
+		其中约定 $0\cdot(+\infty)=0$。（IDA, Ch.11；夏道行 上册）
+	\end{definition}
+	
+	\begin{lemma}[\bfseries{非负简单函数积分的性质}]
+		设 $s,t$ 是非负简单函数，$c\geqslant0$。
+		\begin{enumerate}
+			\item 若 $s=\sum_{k=1}^{m}a_k\mathbf{1}_{A_k}$，其中 $a_k\in[0,+\infty)$，$\{A_k\}$ 是 $X$ 的可测分割，则 $\int s\,\dd\mu=\sum_{k=1}^{m}a_k\mu(A_k)$；
+			\item $\int\mathbf{1}_{A}\,\dd\mu=\mu(A)$；
+			\item 单调性：$s\leqslant t\Rightarrow\int s\,\dd\mu\leqslant\int t\,\dd\mu$；
+			\item 可加性：$\int(s+t)\,\dd\mu=\int s\,\dd\mu+\int t\,\dd\mu$；
+			\item 齐次性：$\int cs\,\dd\mu=c\int s\,\dd\mu$。
+		\end{enumerate}
+	\end{lemma}
+	
+	\begin{proof}
+		1.\ 固定 $s$ 的标准表示 $\sum_j b_j\mathbf{1}_{B_j}$，其中 $B_j=s^{-1}(b_j)$。把每个 $A_k$ 按 $s$ 的取值细分：$A_k=\bigcup_j(A_k\cap B_j)$。若 $A_k\cap B_j\neq\varnothing$，取 $x$ 属于它，则 $a_k=s(x)=b_j$。于是
+		\[
+		\sum_{k=1}^{m}a_k\mu(A_k)=\sum_{k=1}^{m}\sum_{j=1}^{n}a_k\mu(A_k\cap B_j)=\sum_{j=1}^{n}b_j\sum_{k=1}^{m}\mu(A_k\cap B_j)=\sum_{j=1}^{n}b_j\mu(B_j),
+		\]
+		中间一步是非负项级数的重排（各项非负，重排不改变和），最后一步用 $\{A_k\}$ 是 $X$ 的分割。
+		
+		2.\ 取 $m=1$，$a_1=1$，$A_1=A$。
+		
+		3.\ 取 $s=\sum_j b_j\mathbf{1}_{B_j}$、$t=\sum_k c_k\mathbf{1}_{C_k}$ 的标准表示，令 $G_{jk}:=B_j\cap C_k$。则 $\{G_{jk}\}$ 是 $X$ 的可测分割，$s=\sum_{jk}b_j\mathbf{1}_{G_{jk}}$，$t=\sum_{jk}c_k\mathbf{1}_{G_{jk}}$。由 1，
+		\[
+		\int s=\sum_{j,k}b_j\mu(G_{jk}),\qquad \int t=\sum_{j,k}c_k\mu(G_{jk}).
+		\]
+		若 $G_{jk}\neq\varnothing$，取 $x\in G_{jk}$，则 $b_j=s(x)\leqslant t(x)=c_k$；若 $G_{jk}=\varnothing$，则 $\mu(G_{jk})=0$，对应的两项都为零。逐项比较即得 $\int s\leqslant\int t$。
+		
+		4.\ 沿用上面的分割，$s+t=\sum_{j,k}(b_j+c_k)\mathbf{1}_{G_{jk}}$。由 1 与重排，
+		\[
+		\int(s+t)=\sum_{j,k}(b_j+c_k)\mu(G_{jk})=\sum_{j,k}b_j\mu(G_{jk})+\sum_{j,k}c_k\mu(G_{jk})=\int s+\int t .
+		\]
+		（各项非负，故 $0\cdot(+\infty)=0$ 的约定与重排相容：$\mu(G_{jk})=+\infty$ 时该两项同时为 $+\infty$，除非对应的系数为零，此时按约定两者都为零。）
+		
+		5.\ $cs$ 的标准表示由 $s$ 的标准表示把 $b_j$ 换成 $cb_j$ 得到（$c>0$；$c=0$ 时两端为零），由定义直接读出。
+	\end{proof}
+	
+	\begin{definition}[\bfseries{非负可测函数的积分}]
+		设 $f:X\to[0,+\infty]$ 非负可测。定义
+		\[
+		\int f\,\dd\mu:=\sup\Bigl\{\int s\,\dd\mu:\ s\ \text{是非负简单函数},\ s\leqslant f\Bigr\}\in[0,+\infty].
+		\]
+		对 $A\in\Sigma$，令
+		\[
+		\int_A f\,\dd\mu:=\int f\mathbf{1}_A\,\dd\mu .
+		\]
+		（IDA, Ch.11；夏道行 上册）
+	\end{definition}
+	
+	由引理的单调性，当 $f$ 本身是非负简单函数时，上式右端的上确界等于 $\int f\,\dd\mu$（$f$ 自身是容许的，且一切容许的 $s$ 满足 $\int s\leqslant\int f$），故定义是简单函数情形的延拓。
+	
+	\begin{proposition}[\bfseries{非负积分的单调性与齐次性}]
+		设 $f,g:X\to[0,+\infty]$ 非负可测，$c\geqslant0$。
+		\begin{enumerate}
+			\item 若 $f\leqslant g$ 处处成立，则 $\int f\,\dd\mu\leqslant\int g\,\dd\mu$；
+			\item $\int cf\,\dd\mu=c\int f\,\dd\mu$；
+			\item 若 $f=0$ a.e.，则 $\int f\,\dd\mu=0$；若 $f\leqslant g$ 在一个零测集之外成立，则 $\int f\leqslant\int g$；若 $f=g$ a.e.，则 $\int f=\int g$。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		1.\ 每个满足 $s\leqslant f$ 的非负简单函数也满足 $s\leqslant g$，故 $\{\int s:s\leqslant f\}\subseteq\{\int s:s\leqslant g\}$，取上确界即得。
+		
+		2.\ $c=0$ 时两端为零。设 $c>0$。映射 $s\mapsto cs$ 给出 $\{s\ \text{简单},\ s\leqslant f\}$ 与 $\{t\ \text{简单},\ t\leqslant cf\}$ 之间的双射（逆为 $t\mapsto t/c$），故
+		\[
+		\int cf=\sup\{\textstyle\int cs:\ s\leqslant f\}=\sup\{c\textstyle\int s:\ s\leqslant f\}=c\sup\{\textstyle\int s:\ s\leqslant f\}=c\int f,
+		\]
+		其中用到非负实数（含 $+\infty$）乘法的保序性。
+		
+		3.\ 设 $N$ 是零测集，$f=0$ 在 $X\setminus N$ 上成立。若 $s=\sum_j b_j\mathbf{1}_{B_j}\leqslant f$，则对 $b_j>0$ 有 $B_j\subseteq\{f>0\}\subseteq N$，故 $\mu(B_j)=0$，$b_j\mu(B_j)=0$；对 $b_j=0$ 该项按约定为零。故 $\int s=0$ 对一切容许的 $s$ 成立，$\int f=0$。
+		
+		若 $f\leqslant g$ 在 $X\setminus N$ 上成立，取 $s\leqslant f$ 非负简单，令 $s':=s\mathbf{1}_{X\setminus N}$。则 $s'$ 是非负简单函数；在 $X\setminus N$ 上 $s'=s\leqslant f\leqslant g$，在 $N$ 上 $s'=0\leqslant g$，故 $s'\leqslant g$。又 $s-s'=s\mathbf{1}_N$ 是非负简单函数，其积分 $\sum_j b_j\mu(B_j\cap N)=0$，故 $\int s'=\int s$（由引理的可加性）。于是 $\int g\geqslant\int s'=\int s$ 对一切容许的 $s$ 成立，$\int g\geqslant\int f$。
+		
+		若 $f=g$ a.e.，则把上一段用于两个方向得 $\int f\leqslant\int g$ 与 $\int g\leqslant\int f$。
+	\end{proof}
+	
+	\begin{proposition}[\bfseries{Chebyshev 不等式}]
+		设 $f:X\to[0,+\infty]$ 非负可测，$c>0$。则
+		\[
+		\mu\{f\geqslant c\}\leqslant\frac1c\int f\,\dd\mu .
+		\]
+	\end{proposition}
+	
+	\begin{proof}
+		由 $f\geqslant c\mathbf{1}_{\{f\geqslant c\}}$ 与单调性、$\int c\mathbf{1}_{A}=c\mu(A)$ 得
+		\[
+		\int f\,\dd\mu\geqslant\int c\mathbf{1}_{\{f\geqslant c\}}\,\dd\mu=c\,\mu\{f\geqslant c\}.
+		\]
+		除以有限正数 $c$ 即得；若左端为 $+\infty$，不等式自动成立。
+	\end{proof}
+	
+	\begin{definition}[\bfseries{可积函数与积分}]
+		设 $f:X\to\overline{\R}$ 可测。若
+		\[
+		\int f^{+}\,\dd\mu<+\infty\qquad\text{且}\qquad\int f^{-}\,\dd\mu<+\infty ,
+		\]
+		则称 $f$ \textbf{可积}（关于 $\mu$），并定义
+		\[
+		\int f\,\dd\mu:=\int f^{+}\,\dd\mu-\int f^{-}\,\dd\mu\in\R .
+		\]
+		可积函数全体记作 $L^{1}(\mu)$（作为函数全体；按 a.e. 相等取商后仍记 $L^{1}(\mu)$，见 \S2）。对 $A\in\Sigma$，令 $\int_A f\,\dd\mu:=\int f\mathbf{1}_A\,\dd\mu$。（IDA, Ch.11；夏道行 上册）
+	\end{definition}
+	
+	\begin{proposition}[\bfseries{可积性的等价刻画}]
+		设 $f:X\to\overline{\R}$ 可测。则 $f$ 可积当且仅当 $\int|f|\,\dd\mu<+\infty$；此时 $f$ 有限 a.e.，且
+		\[
+		\Bigl|\int f\,\dd\mu\Bigr|\leqslant\int|f|\,\dd\mu .
+		\]
+	\end{proposition}
+	
+	\begin{proof}
+		$|f|=f^{+}+f^{-}$。由非负函数积分的可加性（第 5 小节定理，对非负简单函数已验证，对非负可测函数在第 5 小节证明）得 $\int|f|=\int f^{+}+\int f^{-}$。两个非负项之和有限当且仅当各自有限，这给出等价性。
+		
+		再证 $f$ 有限 a.e.。若不然，$\mu\{|f|=+\infty\}>0$。由 $\{|f|\geqslant n\}\searrow\{|f|=+\infty\}$、$\mu\{|f|\geqslant1\}\leqslant\int|f|<+\infty$ 与测度的上连续性，
+		\[
+		\lim_{n\to\infty}\mu\{|f|\geqslant n\}=\mu\{|f|=+\infty\}>0,
+		\]
+		故存在 $\delta>0$ 使 $\mu\{|f|\geqslant n\}\geqslant\delta$ 对一切 $n$ 成立。由 Chebyshev 不等式，
+		\[
+		\int|f|\,\dd\mu\geqslant n\,\mu\{|f|\geqslant n\}\geqslant n\delta\qquad(n\geqslant1),
+		\]
+		与 $\int|f|<+\infty$ 矛盾。最后
+		\[
+		\int f=\int f^{+}-\int f^{-}\leqslant\int f^{+}+\int f^{-}=\int|f|,\qquad -\int f=\int f^{-}-\int f^{+}\leqslant\int|f|,
+		\]
+		故 $|\int f|\leqslant\int|f|$。
+	\end{proof}
+	
+	\begin{note}[\bfseries{积分作为正线性泛函}]
+		第 5 小节将证明：$\int\cdot\,\dd\mu$ 在 $L^{1}(\mu)$ 上是 $\R$ 值线性泛函，且为正的（$f\geqslant0$ a.e. 时 $\int f\,\dd\mu\geqslant0$）与保序的（$f\leqslant g$ a.e. 时 $\int f\leqslant\int g$）；单调收敛定理是它与非负单调递增序列极限的交换性。后文使用的全部内容就是这三条：\S2 用它证明 $L^{p}$ 的完备性，\S7 用它交换求和与积分。Fatou 引理与控制收敛定理是这一交换性的两个变形，前者只要求非负，后者要求一个可积的控制函数。
+	\end{note}
+	
+	\section{单调收敛定理}
+	
+	\begin{theorem}[\bfseries{单调收敛定理}]
+		设 $\{f_n\}$ 是非负可测函数，且
+		\[
+		0\leqslant f_1\leqslant f_2\leqslant\cdots\quad\text{a.e.},\qquad \lim_{n\to\infty}f_n=f\quad\text{a.e.}
+		\]
+		则
+		\[
+		\int f\,\dd\mu=\lim_{n\to\infty}\int f_n\,\dd\mu=\sup_{n\geqslant1}\int f_n\,\dd\mu .
+		\]
+		（IDA, Ch.11；夏道行 上册）
+	\end{theorem}
+	
+	\begin{proof}
+		先设单调性与收敛性处处成立。
+		
+		第一步，$\lim_n\int f_n\leqslant\int f$：由 $f_n\leqslant f$ 与单调性，$\int f_n\leqslant\int f$ 对一切 $n$ 成立；数列 $\{\int f_n\}$ 单调不减，其极限等于上确界，故不超过 $\int f$。
+		
+		第二步，$\int f\leqslant\lim_n\int f_n$。设 $s$ 是非负简单函数，$s\leqslant f$，取 $c\in(0,1)$，令
+		\[
+		A_n:=\{f_n\geqslant cs\}\in\Sigma .
+		\]
+		则 $A_1\subseteq A_2\subseteq\cdots$ 且 $\bigcup_n A_n=X$：若 $s(x)=0$，则 $cs(x)=0\leqslant f_n(x)$；若 $s(x)>0$，则 $f(x)\geqslant s(x)>cs(x)$，而 $f_n(x)\to f(x)$，故当 $n$ 充分大时 $f_n(x)>cs(x)$。由测度的下连续性，对 $s$ 的标准表示 $s=\sum_j b_j\mathbf{1}_{B_j}$ 的每一项，
+		\[
+		\mu(A_n\cap B_j)\nearrow\mu(B_j)\qquad(n\to\infty),
+		\]
+		于是 $\int_{A_n}s\,\dd\mu=\sum_j b_j\mu(A_n\cap B_j)\to\sum_j b_j\mu(B_j)=\int s\,\dd\mu$（有限项求和，各项单调上升）。又 $cs\mathbf{1}_{A_n}\leqslant f_n\mathbf{1}_{A_n}\leqslant f_n$ 处处成立，故由单调性
+		\[
+		c\int s\,\dd\mu=c\lim_{n\to\infty}\int_{A_n}s\,\dd\mu=\lim_{n\to\infty}\int_{A_n}cs\,\dd\mu\leqslant\lim_{n\to\infty}\int f_n\,\dd\mu .
+		\]
+		令 $c\nearrow1$ 得 $\int s\,\dd\mu\leqslant\lim_n\int f_n$。对一切容许的 $s$ 取上确界，即得 $\int f\leqslant\lim_n\int f_n$。
+		
+		若单调性与收敛性只在一个零测集 $N$ 之外成立，令 $f_n':=f_n\mathbf{1}_{X\setminus N}$、$f':=f\mathbf{1}_{X\setminus N}$。则 $0\leqslant f_1'\leqslant f_2'\leqslant\cdots$、$f_n'\to f'$ 处处成立，且由上一小节的命题（零测集上修改不改变积分）$\int f_n'=\int f_n$、$\int f'=\int f$。对 $f_n'$ 用第一步与第二步即得结论。
+	\end{proof}
+	
+	\begin{theorem}[\bfseries{非负函数积分的可加性}]
+		设 $f,g:X\to[0,+\infty]$ 非负可测。则
+		\[
+		\int(f+g)\,\dd\mu=\int f\,\dd\mu+\int g\,\dd\mu .
+		\]
+	\end{theorem}
+	
+	\begin{proof}
+		由简单函数逼近定理，取非负简单函数列 $u_n\nearrow f$、$v_n\nearrow g$。则 $u_n+v_n$ 是非负简单函数，且 $u_n+v_n\nearrow f+g$ 处处成立。由单调收敛定理与简单函数积分的可加性，
+		\[
+		\int(f+g)=\lim_{n\to\infty}\int(u_n+v_n)=\lim_{n\to\infty}\Bigl(\int u_n+\int v_n\Bigr)=\int f+\int g .\qedhere
+		\]
+	\end{proof}
+	
+	\begin{corollary}[\bfseries{非负项级数的逐项积分}]
+		设 $\{g_k\}$ 是非负可测函数。则
+		\[
+		\int\Bigl(\sum_{k=1}^{\infty}g_k\Bigr)\dd\mu=\sum_{k=1}^{\infty}\int g_k\,\dd\mu .
+		\]
+	\end{corollary}
+	
+	\begin{proof}
+		令 $f_n=\sum_{k=1}^{n}g_k$。则 $\{f_n\}$ 非负、单调递增，且 $f_n\to\sum_k g_k$ 处处成立；由可加性定理与归纳法，$\int f_n=\sum_{k=1}^{n}\int g_k$。故由单调收敛定理
+		\[
+		\int\sum_{k=1}^{\infty}g_k=\lim_{n\to\infty}\int f_n=\lim_{n\to\infty}\sum_{k=1}^{n}\int g_k=\sum_{k=1}^{\infty}\int g_k .\qedhere
+		\]
+	\end{proof}
+	
+	\begin{theorem}[\bfseries{积分的线性}]
+		设 $f,g\in L^{1}(\mu)$，$\alpha,\beta\in\R$。则 $\alpha f+\beta g\in L^{1}(\mu)$，且
+		\[
+		\int(\alpha f+\beta g)\,\dd\mu=\alpha\int f\,\dd\mu+\beta\int g\,\dd\mu .
+		\]
+	\end{theorem}
+	
+	\begin{proof}
+		可积函数有限 a.e.，在零测集上的取值不影响积分（上一小节命题），故可设 $f,g$ 处处有限，并在此前提下作逐点运算。
+		
+		第一步，和的积分。由 $|f+g|\leqslant|f|+|g|$、非负积分的单调性与可加性，
+		\[
+		\int|f+g|\leqslant\int\bigl(|f|+|g|\bigr)=\int|f|+\int|g|<+\infty ,
+		\]
+		故 $f+g$ 可积。逐点恒等式
+		\[
+		(f+g)^{+}+f^{-}+g^{-}=(f+g)^{-}+f^{+}+g^{+}
+		\]
+		两端都是非负可测函数（验证：两端之差为 $(f+g)^{+}-(f+g)^{-}-f^{+}+f^{-}-g^{+}+g^{-}=(f+g)-f-g=0$）。由非负积分的可加性，两端的积分相等，即
+		\[
+		\int(f+g)^{+}+\int f^{-}+\int g^{-}=\int(f+g)^{-}+\int f^{+}+\int g^{+}.
+		\]
+		各项都是有限实数（由 $|f+g|$、$|f|$、$|g|$ 可积），移项得
+		\[
+		\int(f+g)^{+}-\int(f+g)^{-}=\int f^{+}-\int f^{-}+\int g^{+}-\int g^{-},
+		\]
+		即 $\int(f+g)=\int f+\int g$。
+		
+		第二步，数乘。设 $\alpha\geqslant0$，则 $(\alpha f)^{+}=\alpha f^{+}$、$(\alpha f)^{-}=\alpha f^{-}$，由非负积分的齐次性得 $\int\alpha f=\alpha\int f$。设 $\alpha<0$，则 $(\alpha f)^{+}=|\alpha|f^{-}$、$(\alpha f)^{-}=|\alpha|f^{+}$，故
+		\[
+		\int\alpha f=|\alpha|\int f^{-}-|\alpha|\int f^{+}=-|\alpha|\Bigl(\int f^{+}-\int f^{-}\Bigr)=\alpha\int f .
+		\]
+		结合两步即得一般情形 $\alpha f+\beta g$ 的结论。
+	\end{proof}
+	
+	\begin{theorem}[\bfseries{积分的单调性}]
+		设 $f,g\in L^{1}(\mu)$ 且 $f\leqslant g$ a.e.。则 $\int f\,\dd\mu\leqslant\int g\,\dd\mu$。
+	\end{theorem}
+	
+	\begin{proof}
+		由上一小节的命题，可在零测集上修改 $f,g$ 使 $f\leqslant g$ 处处成立，且积分不变。此时 $g-f\geqslant0$ 可测，由非负积分的单调性（$\int0\leqslant\int(g-f)$）与线性，
+		\[
+		\int g-\int f=\int(g-f)\geqslant0 .\qedhere
+		\]
+	\end{proof}
+	
+	\begin{corollary}[\bfseries{$\int|f|$ 的三角不等式}]
+		设 $f,g\in L^{1}(\mu)$。则
+		\[
+		\int|f+g|\,\dd\mu\leqslant\int|f|\,\dd\mu+\int|g|\,\dd\mu .
+		\]
+	\end{corollary}
+	
+	\begin{proof}
+		$|f+g|\leqslant|f|+|g|$，由非负积分的单调性与可加性即得。这正是 \S2 中 $L^{1}$ 范数三角不等式的来源。
+	\end{proof}
+	
+	\begin{proposition}[\bfseries{积分作为集函数的可数可加性}]
+		设 $f\in L^{1}(\mu)$，$\{A_n\}\subseteq\Sigma$ 两两不交，$A=\bigcup_n A_n$。则
+		\[
+		\int_A f\,\dd\mu=\sum_{n=1}^{\infty}\int_{A_n}f\,\dd\mu ,
+		\]
+		右端绝对收敛。特别地，若 $\mu(A)=0$，则 $\int_A f\,\dd\mu=0$。
+	\end{proposition}
+	
+	\begin{proof}
+		先设 $f\geqslant0$。令 $B_n=\bigcup_{k\leqslant n}A_k$。由 $\mathbf{1}_{B_n}=\sum_{k\leqslant n}\mathbf{1}_{A_k}$ 与非负积分的可加性，$\int_{B_n}f=\sum_{k\leqslant n}\int_{A_k}f$。又 $f\mathbf{1}_{B_n}\nearrow f\mathbf{1}_A$ 处处成立，由单调收敛定理 $\int_A f=\lim_n\int_{B_n}f=\sum_{n}\int_{A_n}f$。
+		
+		一般情形对 $f^{+}$、$f^{-}$ 分别用上述结论，得两个收敛的非负级数，相减即得
+		\[
+		\int_A f=\sum_{n}\int_{A_n}f^{+}-\sum_{n}\int_{A_n}f^{-}=\sum_{n}\Bigl(\int_{A_n}f^{+}-\int_{A_n}f^{-}\Bigr)=\sum_{n}\int_{A_n}f .
+		\]
+		绝对收敛性：$\sum_n|\int_{A_n}f|\leqslant\sum_n\int_{A_n}|f|=\int_A|f|\leqslant\int|f|<+\infty$，其中最后一个等号是上一段对非负函数 $|f|$ 的结论。若 $\mu(A)=0$，则 $|f|\mathbf{1}_A=0$ a.e.，由第 4 小节命题得 $\int_A|f|=0$，故 $\int_A f=0$。
+	\end{proof}
+	
+	\section{Fatou 引理与控制收敛定理}
+	
+	\begin{theorem}[\bfseries{Fatou 引理}]
+		设 $\{f_n\}$ 是非负可测函数（$f_n\geqslant0$ a.e.）。则
+		\[
+		\int\liminf_{n\to\infty}f_n\,\dd\mu\leqslant\liminf_{n\to\infty}\int f_n\,\dd\mu .
+		\]
+		（IDA, Ch.11）
+	\end{theorem}
+	
+	\begin{proof}
+		令 $g_n:=\inf_{k\geqslant n}f_k$。则 $g_n$ 非负可测，$0\leqslant g_1\leqslant g_2\leqslant\cdots$ 且 $g_n\nearrow\liminf_k f_k$（a.e.；逐点处处成立，只需把 $f_k$ 在零测集上的值任意指定）。由 $g_n\leqslant f_n$ a.e. 与积分的单调性，$\int g_n\leqslant\int f_n$，故
+		\[
+		\lim_{n\to\infty}\int g_n=\liminf_{n\to\infty}\int g_n\leqslant\liminf_{n\to\infty}\int f_n .
+		\]
+		对 $\{g_n\}$ 用单调收敛定理得 $\int\liminf_k f_k=\lim_n\int g_n$，代入上式即得结论。
+	\end{proof}
+	
+	\begin{theorem}[\bfseries{控制收敛定理}]
+		设 $\{f_n\}\subseteq\mathcal{M}(X,\Sigma)$，$f_n\to f$ a.e.，且存在可积函数 $g$ 使
+		\[
+		|f_n|\leqslant g\quad\text{a.e.}\qquad(n\geqslant1).
+		\]
+		则 $f\in L^{1}(\mu)$，且
+		\[
+		\lim_{n\to\infty}\int f_n\,\dd\mu=\int f\,\dd\mu,\qquad \lim_{n\to\infty}\int|f_n-f|\,\dd\mu=0 .
+		\]
+		（IDA, Ch.11；夏道行 上册）
+	\end{theorem}
+	
+	\begin{proof}
+		在例外集（零测集）上修改 $f_n$ 与 $f$ 的值，可设 $f_n\to f$ 处处成立、$|f_n|\leqslant g$ 处处成立；由零测集上修改不改变积分，结论不变。此时 $|f|=\lim_n|f_n|\leqslant g$，故 $f\in L^{1}(\mu)$。
+		
+		对非负可测函数 $g+f_n\geqslant0$ 用 Fatou 引理，并由线性与 $\int g<+\infty$：
+		\[
+		\int f+\int g=\int(f+g)\leqslant\liminf_{n}\int(g+f_n)=\int g+\liminf_n\int f_n ,
+		\]
+		故 $\int f\leqslant\liminf_n\int f_n$。
+		
+		对非负可测函数 $g-f_n\geqslant0$ 用 Fatou 引理：
+		\[
+		\int g-\int f=\int(g-f)\leqslant\liminf_n\int(g-f_n)=\int g-\limsup_n\int f_n ,
+		\]
+		故 $-\int f\leqslant-\limsup_n\int f_n$，即 $\limsup_n\int f_n\leqslant\int f$。两式合起来得 $\lim_n\int f_n=\int f$。
+		
+		最后对 $h_n:=|f_n-f|$ 用刚证的结论：$h_n\geqslant0$，$h_n\to0$ 处处成立，$|h_n|\leqslant2g$ 且 $2g$ 可积，故 $\int h_n\to\int0=0$。
+	\end{proof}
+	
+	控制收敛定理的第二个结论尤其重要：它把逐点收敛加强为 $\int|\cdot|$ 意义下的收敛，\S2 用它把简单函数逼近定理转化为 $L^{p}$ 中的稠密性。
+	
+	\section{积分为零与几乎处处为零}
+	
+	\begin{theorem}[\bfseries{积分为零的判别}]
+		设 $f:X\to\overline{\R}$ 可测。
+		\begin{enumerate}
+			\item 若 $f\geqslant0$ a.e. 且 $\int f\,\dd\mu=0$，则 $f=0$ a.e.；
+			\item 若 $f\in L^{1}(\mu)$ 且对一切 $A\in\Sigma$ 有 $\int_A f\,\dd\mu=0$，则 $f=0$ a.e.。
+		\end{enumerate}
+	\end{theorem}
+	
+	\begin{proof}
+		1.\ 由零测集上修改不改变积分，不妨设 $f\geqslant0$ 处处成立。对 $n\geqslant1$，由 Chebyshev 不等式
+		\[
+		\mu\{f\geqslant\tfrac1n\}\leqslant n\int f\,\dd\mu=0 .
+		\]
+		而 $\{f>0\}=\bigcup_{n\geqslant1}\{f\geqslant\tfrac1n\}$ 是零测集的可数并，故为零测集（第 2 小节命题）。
+		
+		2.\ 取 $A=\{f\geqslant0\}$。$f\mathbf{1}_A$ 非负可测且 $\int f\mathbf{1}_A\,\dd\mu=\int_A f\,\dd\mu=0$，由第 1 条得 $f\mathbf{1}_A=0$ a.e.，即 $\{f>0\}$ 是零测集。再取 $A=\{f\leqslant0\}$，则 $-f\mathbf{1}_A$ 非负可测且 $\int(-f\mathbf{1}_A)\,\dd\mu=-\int_A f\,\dd\mu=0$，由第 1 条得 $f\mathbf{1}_A=0$ a.e.，即 $\{f<0\}$ 是零测集。于是 $\{f\neq0\}$ 是零测集。
+	\end{proof}
+	
+	\begin{corollary}[\bfseries{积分相同蕴含几乎处处相等}]
+		设 $f,g\in L^{1}(\mu)$，且对一切 $A\in\Sigma$ 有 $\int_A f\,\dd\mu=\int_A g\,\dd\mu$。则 $f=g$ a.e.。
+	\end{corollary}
+	
+	\begin{proof}
+		对 $h=f-g\in L^{1}(\mu)$ 用定理的第二部分：$\int_A h=\int_A f-\int_A g=0$ 对一切 $A$ 成立，故 $h=0$ a.e.。
+	\end{proof}
+	
+	\begin{corollary}[\bfseries{与有界可测函数正交}]
+		设 $f\in L^{1}(\mu)$，且对一切有界可测函数 $\varphi$ 有 $\int f\varphi\,\dd\mu=0$。则 $f=0$ a.e.。
+	\end{corollary}
+	
+	\begin{proof}
+		对 $A\in\Sigma$，取 $\varphi=\mathbf{1}_A$（有界可测），得 $\int_A f\,\dd\mu=0$，由定理第二部分得 $f=0$ a.e.。
+	\end{proof}
+	
+	\begin{corollary}[\bfseries{连续且几乎处处为零}]
+		设 $f:\R\to\R$ 连续，且 $f=0$ $\lambda$-a.e.。则 $f\equiv0$。
+	\end{corollary}
+	
+	\begin{proof}
+		若存在 $x_0$ 使 $f(x_0)\neq0$，令 $c=|f(x_0)|>0$。由连续性存在 $\delta>0$ 使 $|f(x)|\geqslant c/2$ 对一切 $x\in(x_0-\delta,x_0+\delta)$ 成立。由非负积分的单调性与 $\int c/2\cdot\mathbf{1}_{(x_0-\delta,x_0+\delta)}\,\dd\lambda=\frac c2\cdot2\delta>0$ 得
+		\[
+		\int|f|\,\dd\lambda\geqslant\int_{(x_0-\delta,x_0+\delta)}|f|\,\dd\lambda\geqslant c\delta>0 ,
+		\]
+		与“$|f|=0$ a.e. 且积分为零”矛盾。
+	\end{proof}
+	
+	\section{Riemann 可积蕴含 Lebesgue 可积}
+	
+	本小节设 $\lambda$ 为 $\R$ 上的 Lebesgue 测度，$-\infty<a<b<+\infty$；关于 $\lambda$ 的积分写作 $\int\,\dd x$。由（夏道行 上册），$\lambda$ 完备，$\lambda([a,b])=b-a$，且 $\lambda$ 在平移下不变。
+	
+	\begin{definition}[\bfseries{阶梯函数}]
+		设 $a=x_0<x_1<\cdots<x_m=b$，$c_k\in\R$。称
+		\[
+		\varphi=\sum_{k=1}^{m}c_k\mathbf{1}_{(x_{k-1},x_k]}
+		\]
+		为 $[a,b]$ 上的\textbf{阶梯函数}，其\textbf{积分}为 $\sum_{k=1}^{m}c_k(x_k-x_{k-1})$。
+	\end{definition}
+	
+	\begin{proposition}[\bfseries{阶梯函数的 Lebesgue 积分}]
+		设 $\varphi$ 是 $[a,b]$ 上的阶梯函数。则 $\varphi$ 是 Borel 可测的，$\varphi\in L^{1}(\lambda)$，且
+		\[
+		\int_{[a,b]}\varphi\,\dd x=\sum_{k=1}^{m}c_k(x_k-x_{k-1}),
+		\]
+		即 Lebesgue 积分与定义中给出的积分一致。
+	\end{proposition}
+	
+	\begin{proof}
+		区间 $(x_{k-1},x_k]\in\mathcal{B}(\R)$，故 $\varphi$ 是简单函数，Borel 可测。由 $\lambda\bigl((x_{k-1},x_k]\bigr)=x_k-x_{k-1}$ 与第 4 小节非负简单函数积分性质的第 1 条（把 $\varphi$ 分成正部与负部，分别用该条），
+		\[
+		\int_{[a,b]}\varphi\,\dd\lambda=\sum_{k=1}^{m}c_k\lambda\bigl((x_{k-1},x_k]\bigr)=\sum_{k=1}^{m}c_k(x_k-x_{k-1}).
+		\]
+		又 $|\varphi|\leqslant\max_k|c_k|$，故 $\int|\varphi|\leqslant\max_k|c_k|\,(b-a)<+\infty$。
+	\end{proof}
+	
+	\begin{definition}[\bfseries{Riemann 积分（Darboux 形式）}]
+		设 $f:[a,b]\to\R$ 有界，$P:\ a=x_0<x_1<\cdots<x_m=b$ 是分割。令 $m_k=\inf_{[x_{k-1},x_k]}f$、$M_k=\sup_{[x_{k-1},x_k]}f$（$1\leqslant k\leqslant m$），并令
+		\[
+		L(P,f)=\sum_{k=1}^{m}m_k(x_k-x_{k-1}),\qquad U(P,f)=\sum_{k=1}^{m}M_k(x_k-x_{k-1}).
+		\]
+		若 $\sup_P L(P,f)=\inf_P U(P,f)$（上确界、下确界对一切分割取），称 $f$ 在 $[a,b]$ 上 \textbf{Riemann 可积}，公共值记作 $\int_a^b f(x)\,\dd x$。
+	\end{definition}
+	
+	对分割 $P$ 定义阶梯函数
+	\[
+	\underline{\varphi}_P:=\sum_{k=1}^{m}m_k\mathbf{1}_{(x_{k-1},x_k]},\qquad
+	\overline{\varphi}_P:=\sum_{k=1}^{m}M_k\mathbf{1}_{(x_{k-1},x_k]} .
+	\]
+	则 $\underline{\varphi}_P\leqslant f\leqslant\overline{\varphi}_P$ 在 $(a,b]$ 上成立，并且由上一命题
+	\[
+	\int_{[a,b]}\underline{\varphi}_P\,\dd x=L(P,f),\qquad \int_{[a,b]}\overline{\varphi}_P\,\dd x=U(P,f).
+	\]
+	若 $P'$ 是 $P$ 的加细（多添分点），则 $L(P,f)\leqslant L(P',f)$ 与 $U(P',f)\leqslant U(P,f)$ 成立：加细使每个小区间上的下确界不减、上确界不增。
+	
+	\begin{proposition}[\bfseries{Riemann 可积的 Lebesgue 判别形式}]
+		设 $f:[a,b]\to\R$ 有界。则 $f$ Riemann 可积当且仅当对每个 $\varepsilon>0$ 存在分割 $P$ 使
+		\[
+		\int_{[a,b]}\bigl(\overline{\varphi}_P-\underline{\varphi}_P\bigr)\dd x<\varepsilon .
+		\]
+	\end{proposition}
+	
+	\begin{proof}
+		注意 $\int(\overline{\varphi}_P-\underline{\varphi}_P)=U(P,f)-L(P,f)$（两个阶梯函数之差仍是阶梯函数，由上一命题）。
+		
+		设 $f$ Riemann 可积，公共值为 $I$。取分割 $P_1,P_2$ 使 $U(P_1,f)<I+\varepsilon/2$、$L(P_2,f)>I-\varepsilon/2$。设 $P$ 是同时加细 $P_1,P_2$ 的分割，则由加细的单调性
+		\[
+		U(P,f)-L(P,f)\leqslant U(P_1,f)-L(P_2,f)<\varepsilon .
+		\]
+		反之，若某 $P$ 使 $U(P,f)-L(P,f)<\varepsilon$，则 $\inf_P U(P,f)-\sup_P L(P,f)\leqslant U(P,f)-L(P,f)<\varepsilon$。又对任意两个分割 $P,Q$ 及其公共加细 $R$ 有 $L(Q,f)\leqslant L(R,f)\leqslant U(R,f)\leqslant U(P,f)$，故 $\sup_P L(P,f)\leqslant\inf_P U(P,f)$。令 $\varepsilon\to0$ 得二者相等，即 $f$ Riemann 可积。
+	\end{proof}
+	
+	\begin{theorem}[\bfseries{Riemann 可积蕴含 Lebesgue 可积}]
+		设 $f:[a,b]\to\R$ 有界且 Riemann 可积。则 $f$ 关于 $\lambda$ 可测且可积，并且
+		\[
+		\int_{[a,b]}f\,\dd x=\int_a^b f(x)\,\dd x .
+		\]
+	\end{theorem}
+	
+	\begin{proof}
+		记 $I:=\int_a^b f(x)\,\dd x$。由上一命题，取分割 $P_n$ 使 $\int(\overline{\varphi}_n-\underline{\varphi}_n)\,\dd x<1/n$，其中 $\underline{\varphi}_n=\underline{\varphi}_{P_n}$、$\overline{\varphi}_n=\overline{\varphi}_{P_n}$ 是阶梯函数，$\underline{\varphi}_n\leqslant f\leqslant\overline{\varphi}_n$ 在 $(a,b]$ 上成立，且 $\int\underline{\varphi}_n=L(P_n,f)$、$\int\overline{\varphi}_n=U(P_n,f)$。由 $L(P_n,f)\leqslant I\leqslant U(P_n,f)$ 与 $I\leqslant U(P_n,f)<L(P_n,f)+1/n$ 得
+		\[
+		\lim_{n\to\infty}\int\underline{\varphi}_n=I=\lim_{n\to\infty}\int\overline{\varphi}_n .
+		\]
+		
+		令
+		\[
+		A:=\sup_{n\geqslant1}\underline{\varphi}_n,\qquad B:=\inf_{n\geqslant1}\overline{\varphi}_n .
+		\]
+		则 $A,B$ 是 Borel 可测函数，且 $A\leqslant f\leqslant B$ 在 $(a,b]$ 上成立。设 $|f|\leqslant M$，则 $|A|,|B|\leqslant M$，故 $A,B\in L^{1}(\lambda)$，$\int|A|,\int|B|\leqslant M(b-a)$。
+		
+		计算 $\int A$。令 $\Phi_N:=\max_{n\leqslant N}\underline{\varphi}_n$。则 $\Phi_N\nearrow A$ 处处成立，$\Phi_N+M\geqslant0$，由单调收敛定理
+		\[
+		\int(A+M)\,\dd x=\lim_{N\to\infty}\int(\Phi_N+M)\,\dd x .
+		\]
+		由积分的线性（把常数 $M$ 看作 $M\mathbf{1}_{[a,b]}$），上式即 $\int A+M(b-a)=\lim_N\bigl(\int\Phi_N+M(b-a)\bigr)$，故 $\int A=\lim_N\int\Phi_N$。又 $\Phi_N\geqslant\underline{\varphi}_N$，故 $\int\Phi_N\geqslant\int\underline{\varphi}_N$，于是
+		\[
+		\int A\geqslant\lim_{n\to\infty}\int\underline{\varphi}_n=I .
+		\]
+		同理，令 $\Psi_N:=\min_{n\leqslant N}\overline{\varphi}_n$，则 $\Psi_N\searrow B$，即 $-\Psi_N\nearrow-B$，对 $-\Psi_N+M\geqslant0$ 用单调收敛定理得 $\int B=\lim_N\int\Psi_N$。由 $\Psi_N\leqslant\overline{\varphi}_N$ 得
+		\[
+		\int B\leqslant\lim_{n\to\infty}\int\overline{\varphi}_n=I .
+		\]
+		由 $A\leqslant B$ 与积分的单调性，$\int A\leqslant\int B$。三式合起来给出
+		\[
+		I\leqslant\int A\leqslant\int B\leqslant I ,
+		\]
+		故 $\int A=\int B=I$（有限实数）。于是 $B-A\geqslant0$ 且 $\int(B-A)\,\dd x=0$，由积分为零的判别（第 7 小节定理第 1 条，或 Chebyshev 不等式）得 $B=A$ a.e.。
+		
+		由 $A\leqslant f\leqslant B$ 在 $(a,b]$ 上成立得 $\{f\neq A\}\subseteq\{B\neq A\}\cup\{a\}$，后者是零测集，故 $f=A$ a.e.（在点 $a$ 上 $f$ 与 $A$ 的取值不影响结论）。由 $\lambda$ 的完备性与零测集上修改保持可测性的命题，$f$ 关于 $\lambda$ 可测；又 $f=A$ a.e. 且 $A\in L^{1}(\lambda)$，故 $f\in L^{1}(\lambda)$ 且
+		\[
+		\int_{[a,b]}f\,\dd x=\int_{[a,b]}A\,\dd x=I=\int_a^b f(x)\,\dd x .\qedhere
+		\]
+	\end{proof}
+	
+	\begin{corollary}[\bfseries{两个积分的相容性}]
+		设 $f:[a,b]\to\R$ 有界。则 $f$ Riemann 可积蕴含 $f$ 是 Lebesgue 可积的，且两种积分值相等；因而在 Riemann 可积的函数上可以用 Riemann 积分的一切计算法则（线性、区间可加、换元、分部积分）来计算 Lebesgue 积分。
+	\end{corollary}
+	
+	\begin{proof}
+		第一句即上一定理。第二句：Riemann 积分与 Lebesgue 积分在有界 Riemann 可积函数上取值相同，而 Riemann 积分的计算法则只涉及积分值，故可直接搬用。
+	\end{proof}
+	
+	\begin{remark}[\bfseries{反向不成立}]
+		设 $D=\mathbf{1}_{\Q\cap[0,1]}$。则 $D=0$ $\lambda$-a.e.，故 $D$ 关于 $\lambda$ 可积且 $\int_{[0,1]}D\,\dd x=0$。另一方面，对 $[0,1]$ 的任意分割 $P$，每个小区间都含有理点与无理点，故 $D$ 在该小区间上的下确界为 $0$、上确界为 $1$，从而 $L(P,D)=0$、$U(P,D)=1$，$\sup_P L(P,D)=0<1=\inf_P U(P,D)$，$D$ 不 Riemann 可积。于是 Lebesgue 可积函数类真包含 Riemann 可积函数类。
+	\end{remark}
+	
+	\section{Lebesgue 积分的平移不变性与周期函数}
+	
+	\begin{lemma}[\bfseries{平移不变性}]
+		设 $t\in\R$。对一切 Lebesgue 可测集 $A$ 有 $\lambda(A+t)=\lambda(A)$，其中 $A+t=\{x+t:x\in A\}$。若 $f$ 非负可测或 $f\in L^{1}(\lambda)$，则
+		\[
+		\int f(x+t)\,\dd x=\int f(x)\,\dd x ,
+		\]
+		只要其中一个积分有定义。
+	\end{lemma}
+	
+	\begin{proof}
+		$\lambda$ 的平移不变性由（夏道行 上册）的构造给出。
+		
+		设 $f$ 非负。先设 $f$ 是非负简单函数 $\sum_j b_j\mathbf{1}_{B_j}$，则 $f(x+t)=\sum_j b_j\mathbf{1}_{B_j-t}(x)$，由平移不变性
+		\[
+		\int f(x+t)\,\dd x=\sum_j b_j\lambda(B_j-t)=\sum_j b_j\lambda(B_j)=\int f(x)\,\dd x .
+		\]
+		一般非负可测 $f$：取非负简单函数列 $s_n\nearrow f$（简单函数逼近定理），则 $s_n(x+t)\nearrow f(x+t)$，对 $s_n$ 用已证情形并用两次单调收敛定理：
+		\[
+		\int f(x+t)\,\dd x=\lim_n\int s_n(x+t)\,\dd x=\lim_n\int s_n(x)\,\dd x=\int f(x)\,\dd x .
+		\]
+		一般情形对 $f^{+}$、$f^{-}$ 分别用上述结论，再由线性即得。
+	\end{proof}
+	
+	\begin{corollary}[\bfseries{周期函数的积分与区间起点无关}]
+		设 $f:\R\to\R$ 以 $2\pi$ 为周期（即 $f(x+2\pi)=f(x)$ 对一切 $x$ 成立），且 $f$ 在 $[0,2\pi]$ 上可积。则对任意 $a\in\R$，
+		\[
+		\int_{[a,a+2\pi]}f(x)\,\dd x=\int_{[0,2\pi]}f(x)\,\dd x .
+		\]
+	\end{corollary}
+	
+	\begin{proof}
+		由周期性可把 $a$ 换成 $a-2\pi\lfloor a/(2\pi)\rfloor$，故设 $a\in[0,2\pi)$。此时
+		\[
+		[a,a+2\pi]=[a,2\pi]\cup[2\pi,2\pi+a],
+		\]
+		两段只在端点相交，端点集零测，由积分作为集函数的可数可加性
+		\[
+		\int_{[a,a+2\pi]}f\,\dd x=\int_{[a,2\pi]}f\,\dd x+\int_{[2\pi,2\pi+a]}f\,\dd x .
+		\]
+		对第二个积分作平移：由平移不变性，$\int_{[2\pi,2\pi+a]}f(x)\,\dd x=\int_{[0,a]}f(y+2\pi)\,\dd y$，再由周期性 $f(y+2\pi)=f(y)$ 得 $\int_{[2\pi,2\pi+a]}f\,\dd x=\int_{[0,a]}f\,\dd x$。于是
+		\[
+		\int_{[a,a+2\pi]}f\,\dd x=\int_{[a,2\pi]}f\,\dd x+\int_{[0,a]}f\,\dd x=\int_{[0,2\pi]}f\,\dd x .\qedhere
+		\]
+	\end{proof}
+	
+	这一推论使 \S7 中的 Fourier 系数可以在任意长度为一个周期的区间上计算：$\int_{-\pi}^{\pi}$、$\int_0^{2\pi}$、$\int_{\theta}^{\theta+2\pi}$ 给出相同的值。
+	
+	% ============ W2：§2 $L^p$ 空间 ============
+	% 内容：$L^p(I)$（$1\leqslant p\leqslant\infty$）与等价类、$\|\cdot\|_p$ 的定义与范数性；
+	%       Hölder 与 Minkowski 不等式（含 $p=1,q=+\infty$ 与有限和形式）、Hölder 的等号条件；
+	%       Riesz--Fischer 定理（$L^p$ 完备，$1\leqslant p\leqslant+\infty$）；
+	%       简单函数在 $L^p$ 中稠密、$C_\#$ 在 $L^p_\#$ 中稠密；
+	%       共轭指数与对偶配对、范数的上确界表示、有限测度上 $\|\cdot\|_q\leqslant|I|^{\frac1q-\frac1p}\|\cdot\|_p$。
+	% 依赖：§1 的测度、可测函数、Lebesgue 积分、单调收敛定理、Fatou 引理、控制收敛定理、简单函数逼近。
+	
+	\chapter{$L^p$ 空间}
+	
+	§1 建立了 Lebesgue 测度、可测函数与 Lebesgue 积分，并给出了单调收敛定理、Fatou 引理与控制收敛定理。本节在这些工具之上构造 Fourier 分析的工作空间：$L^p(I)$。
+	
+	本节的结果按所涉及的结构分四组。第一组是线性结构与范数：$L^p(I)$ 是线性空间，$\|\cdot\|_p$ 是范数，其中三角不等式就是 Minkowski 不等式，而 Minkowski 不等式由 Hölder 不等式推出。第二组是完备性（Riesz--Fischer 定理）：$L^p(I)$ 中每个 Cauchy 列都在 $L^p(I)$ 中收敛，因此 $L^p(I)$ 是 Banach 空间；这条结论是 §4 中投影定理与 $L^2\cong\ell^2$ 的根据。第三组是稠密性：简单函数在 $L^p$ 中稠密，进而周期连续函数 $C_\#$ 在 $L^p_\#$ 中稠密，由此得到验证 $L^p$ 中一般命题的固定方法。第四组是对偶：共轭指数 $p,q$ 使 $\int_I fg$ 成为 $L^p\times L^q$ 上的配对，范数可以写成该配对的上确界，有限测度区间上不同指数的范数互相控制。
+	
+	本节恒设 $I\subset\R$ 是区间，$\mu$ 是 $I$ 上的 Lebesgue 测度，$|E|:=\mu(E)$ 是集合 $E$ 的测度，$\int_I\cdot\dd\mu$ 是 §1 的 Lebesgue 积分。对 $p\in[1,+\infty]$，记 $q$ 为 $p$ 的共轭指数：
+	\[
+	\frac1p+\frac1q=1,
+	\qquad\text{即}\qquad
+	q=\frac{p}{p-1}\ \ (1<p<+\infty),\qquad q=+\infty\ \ (p=1),\qquad q=1\ \ (p=+\infty).
+	\]
+	按惯例 $1/+\infty=0$。
+	
+	\section{完备化之前：Riemann 世界}
+	
+	$L^p(I)$ 的每一条结论都以完备性为背景，而教材讨论 Fourier 级数时用的空间是 $\Rc^2[0,2\pi]$，它并不完备。为把「$L^p$ 补上了什么」说清楚，本小节先把未完备化时的对象写成定义，再逐条验证它已经具备的结构与它缺少的东西。缺的东西有两处，性质不同：度量意义下的完备性（Cauchy 列可以没有极限）与序意义下的完备性（递增而有界的族可以没有上确界）。这两处分别由 §2.2 的等价类构造与 §2.5 的 Riesz--Fischer 定理、以及 §5 的 Banach 格理论补齐。
+	
+	\begin{definition}[\bfseries{$\Rc^p(I)$、$\Rc^p_\#(\R)$ 与 $\|\cdot\|_p$}]
+		设 $I\subset\R$ 是区间，$1\leqslant p<+\infty$。记
+		\[
+		\Rc^p(I):=\Bigl\{f:I\to\R\ \Bigm|\ f\ \text{Riemann 可积},\ |f|^p\ \text{Riemann 可积}\Bigr\},
+		\qquad
+		\|f\|_p:=\Bigl(\int_I|f|^p\,\dd x\Bigr)^{\frac1p},
+		\]
+		其中 $\int_I\cdot\,\dd x$ 是 §1.8 的 Riemann 积分。设 $p=+\infty$。记
+		\[
+		\Rc^\infty(I):=\bigl\{f:I\to\R\ \bigm|\ f\ \text{有界且 Riemann 可积}\bigr\},
+		\qquad
+		\|f\|_\infty:=\operatorname*{ess\,sup}_{x\in I}|f(x)| .
+		\]
+		设 $f:\R\to\R$ 以 $2\pi$ 为周期。若 $f|_{[-\pi,\pi]}\in\Rc^p[-\pi,\pi]$，则记 $f\in\Rc^p_\#(\R)$，其范数仍记为 $\|f\|_p$，积分在 $[-\pi,\pi]$ 上取。
+		按 §1.8 的定义，Riemann 可积的函数都先假定有界，故 $p=+\infty$ 那一行中的「有界」是冗余的；写出它是为了与 $p<+\infty$ 时「$|f|^p$ 有界」的条件对应。
+		$p=+\infty$ 时用本质上确界而不用 $\sup|f|$：两者对只在零测集上不同的函数给出不同的值，而 $\|\cdot\|_p$ 必须只依赖函数所在的等价类（见下文关于良定义的命题）。
+	\end{definition}
+	
+	先记下 Riemann 可积函数对代数运算与格运算的封闭性。它是向量空间性与格性的全部来源，证明只用到 §1.8 的 Darboux 判别形式。
+	
+	\begin{lemma}[\bfseries{Riemann 可积函数的和、绝对值与幂}]
+		设 $I=[a,b]$，$f,g:I\to\R$ Riemann 可积，$|f|\leqslant M$、$|g|\leqslant M$，$1\leqslant p<+\infty$。则
+		\begin{enumerate}[leftmargin=2.4em]
+			\item 对 $I$ 的任意两个分割 $P,Q$，存在公共加细 $R$ 使
+			\[
+			U(R,f+g)-L(R,f+g)\leqslant\bigl[U(P,f)-L(P,f)\bigr]+\bigl[U(Q,g)-L(Q,g)\bigr];
+			\]
+			特别地 $f+g$ Riemann 可积。
+			\item 对 $I$ 的每个分割 $P$，
+			\[
+			U(P,|f|^p)-L(P,|f|^p)\leqslant pM^{p-1}\bigl[U(P,f)-L(P,f)\bigr];
+			\]
+			特别地 $|f|$（即 $p=1$ 的情形）与 $|f|^p$ Riemann 可积。
+		\end{enumerate}
+	\end{lemma}
+	
+	\begin{proof}
+		\textbf{（1）}沿用 §1.8 的记号：对分割 $P$，$\underline\varphi_P\leqslant f\leqslant\overline\varphi_P$ 于 $(a,b]$ 上成立，$\int\underline\varphi_P=L(P,f)$、$\int\overline\varphi_P=U(P,f)$。设 $R$ 是同时加细 $P$ 与 $Q$ 的分割。在 $(a,b]$ 上
+		\[
+		\underline\varphi_R^{(f)}+\underline\varphi_R^{(g)}\leqslant f+g\leqslant\overline\varphi_R^{(f)}+\overline\varphi_R^{(g)},
+		\]
+		且由 $\inf_J(f+g)\geqslant\inf_Jf+\inf_Jg$、$\sup_J(f+g)\leqslant\sup_Jf+\sup_Jg$（对 $R$ 的每个小区间 $J$）得
+		\[
+		U(R,f+g)-L(R,f+g)
+		\leqslant\int\overline\varphi_R^{(f)}+\int\overline\varphi_R^{(g)}-\int\underline\varphi_R^{(f)}-\int\underline\varphi_R^{(g)} .
+		\]
+		右端即 $\bigl[U(R,f)-L(R,f)\bigr]+\bigl[U(R,g)-L(R,g)\bigr]$；再由加细的单调性（§1.8）它不超过 $\bigl[U(P,f)-L(P,f)\bigr]+\bigl[U(Q,g)-L(Q,g)\bigr]$。
+		
+		\textbf{（2）}固定分割 $P$，简记 $\underline\varphi:=\underline\varphi_P$、$\overline\varphi:=\overline\varphi_P$，则 $|\underline\varphi|\leqslant M$、$\overline\varphi-\underline\varphi\geqslant0$。对 $t,s\in[-M,M]$，由中值定理
+		\[
+		\bigl||t|^p-|s|^p\bigr|\leqslant pM^{p-1}\bigl||t|-|s|\bigr|\leqslant pM^{p-1}|t-s| .
+		\]
+		取 $s=\underline\varphi(x)$、$t=f(x)$ 得 $(a,b]$ 上的逐点不等式
+		\[
+		|\underline\varphi|^p\leqslant|f|^p\leqslant|\underline\varphi|^p+pM^{p-1}\bigl(\overline\varphi-\underline\varphi\bigr).
+		\]
+		左右两端都是关于 $P$ 的阶梯函数（$t\mapsto|t|^p$ 连续），其差的积分为 $pM^{p-1}\bigl[U(P,f)-L(P,f)\bigr]$。又 $|f|^p$ 夹在这两个阶梯函数之间，故
+		$U(P,|f|^p)$ 不超过右端的积分、$L(P,|f|^p)$ 不小于左端的积分，所证不等式成立。
+		给定 $\varepsilon>0$，取 $P$ 使 $U(P,f)-L(P,f)<\varepsilon/pM^{p-1}$（$M=0$ 时 $f\equiv0$，结论平凡），即得
+		$U(P,|f|^p)-L(P,|f|^p)<\varepsilon$；由 §1.8 的判别命题，$|f|^p$ Riemann 可积。$p=1$ 时上面的逐点不等式就是 $|f|\leqslant|\underline\varphi|+(\overline\varphi-\underline\varphi)$，同一论证给出 $|f|$ Riemann 可积。
+	\end{proof}
+	
+	\begin{corollary}[\bfseries{$\Rc^p(I)$ 与 $p$ 无关}]
+		设 $I=[a,b]$，$1\leqslant p\leqslant+\infty$。则作为函数集合
+		\[
+		\Rc^p(I)=\bigl\{f:I\to\R\ \bigm|\ f\ \text{Riemann 可积}\bigr\},
+		\]
+		即 $p$ 不同的 $\Rc^p(I)$ 是同一个函数类，它们的差别只在范数 $\|\cdot\|_p$。
+	\end{corollary}
+	
+	\begin{proof}
+		设 $f$ Riemann 可积，$|f|\leqslant M$。$p<+\infty$ 时由引理的 (2)（用于 $f$ 与 $M$）$|f|^p$ Riemann 可积，故 $f\in\Rc^p(I)$；$p=+\infty$ 时由定义。反向包含由定义。
+	\end{proof}
+	
+	\begin{proposition}[\bfseries{$\Rc^p(I)$ 是向量空间}]
+		设 $1\leqslant p\leqslant+\infty$，$f,g\in\Rc^p(I)$，$\alpha\in\R$。则 $\alpha f\in\Rc^p(I)$、$f+g\in\Rc^p(I)$，且
+		\[
+		\|\alpha f\|_p=|\alpha|\,\|f\|_p,
+		\qquad
+		\|f+g\|_p\leqslant2^{1-\frac1p}\bigl(\|f\|_p+\|g\|_p\bigr)\quad(1\leqslant p<+\infty).
+		\]
+	\end{proposition}
+	
+	\begin{proof}
+		\textbf{（1）$1\leqslant p<+\infty$。}设 $|f|\leqslant M_1$、$|g|\leqslant M_2$，$M:=M_1+M_2$。由引理的 (1) $f+g$ Riemann 可积，且 $|f+g|\leqslant M$；再由引理的 (2)，$|f+g|^p$ Riemann 可积，故 $f+g\in\Rc^p(I)$。数乘：$|\alpha f|^p=|\alpha|^p|f|^p$ Riemann 可积，积分后开 $p$ 次方得 $\|\alpha f\|_p=|\alpha|\,\|f\|_p$（$\alpha=0$ 时两端为 $0$，同样成立）。
+		
+		由 $t\mapsto t^p$ 在 $[0,+\infty)$ 上的凸性（$t=\frac12$ 处）得
+		\[
+		\Bigl(\frac{a+b}2\Bigr)^p\leqslant\frac{a^p+b^p}2
+		\qquad\Longrightarrow\qquad
+		(a+b)^p\leqslant2^{p-1}\bigl(a^p+b^p\bigr)\qquad(a,b\geqslant0).
+		\]
+		取 $a=|f(x)|$、$b=|g(x)|$ 得 $|f+g|^p\leqslant2^{p-1}\bigl(|f|^p+|g|^p\bigr)$ 逐点成立；由积分的单调性，
+		\[
+		\|f+g\|_p^p=\int_I|f+g|^p\dd x\leqslant2^{p-1}\bigl(\|f\|_p^p+\|g\|_p^p\bigr)\leqslant2^{p-1}\bigl(\|f\|_p+\|g\|_p\bigr)^p,
+		\]
+		开 $p$ 次方即得所证不等式。
+		
+		\textbf{（2）$p=+\infty$。}设 $|f|\leqslant M_1$、$|g|\leqslant M_2$，则 $|\alpha f|\leqslant|\alpha|M_1$、$|f+g|\leqslant M_1+M_2$，故两者都有界，Riemann 可积性由引理的 (1)。由本质上确界的定义，$|f|\leqslant\|f\|_\infty$ a.e.、$|g|\leqslant\|g\|_\infty$ a.e.，除去两个零测集之并得
+		$|f+g|\leqslant\|f\|_\infty+\|g\|_\infty$ a.e.，故 $\|f+g\|_\infty\leqslant\|f\|_\infty+\|g\|_\infty$；又 $|\alpha f|\leqslant|\alpha|\|f\|_\infty$ a.e.，且 $\alpha\ne0$ 时把此式用于 $\alpha^{-1}$ 与 $\alpha f$ 得反向不等式，故 $\|\alpha f\|_\infty=|\alpha|\|f\|_\infty$。
+	\end{proof}
+	
+	\begin{proposition}[\bfseries{$\Rc^p(I)$ 是格}]
+		设 $1\leqslant p\leqslant+\infty$，$f,g\in\Rc^p(I)$，并记 $f\vee g:=\max\{f,g\}$、$f\wedge g:=\min\{f,g\}$（逐点取）。则 $f\vee g,f\wedge g\in\Rc^p(I)$，它们分别是 $\{f,g\}$ 在 $\Rc^p(I)$ 中按 a.e.\ 逐点序的上确界与下确界，并且
+		\[
+		f\vee g=\frac{(f+g)+|f-g|}2,
+		\qquad
+		f\wedge g=\frac{(f+g)-|f-g|}2 .
+		\]
+		又 $f\leqslant g$ a.e.\ 蕴含 $f+h\leqslant g+h$ a.e.\ 与 $\alpha f\leqslant\alpha g$ a.e.\ 对 $\alpha\geqslant0$ 成立，故 $\Rc^p(I)$ 按 a.e.\ 逐点序是向量格。
+	\end{proposition}
+	
+	\begin{proof}
+		\textbf{（1）两个恒等式。}对 $a,b\in\R$：$a\geqslant b$ 时两式右端分别为 $\frac{(a+b)+(a-b)}2=a$ 与 $\frac{(a+b)-(a-b)}2=b$；$a<b$ 时为 $b$ 与 $a$。故逐点恒等。
+		
+		\textbf{（2）封闭性。}由上一个命题 $f-g\in\Rc^p(I)$，由引理的 (2)（取 $p=1$）与上一个推论得 $|f-g|\in\Rc^p(I)$；再由上一个命题，$(f+g\pm|f-g|)/2\in\Rc^p(I)$，即 $f\vee g,f\wedge g\in\Rc^p(I)$。
+		
+		\textbf{（3）确界性。}$f\vee g\geqslant f$、$f\vee g\geqslant g$ 逐点成立。若 $h\in\Rc^p(I)$ 满足 $h\geqslant f$ a.e.、$h\geqslant g$ a.e.，则除去两个零测集的并得 $h\geqslant f\vee g$ a.e.，故 $f\vee g$ 是上确界；$\wedge$ 的情形把不等式反向，论证相同。
+		
+		\textbf{（4）向量格。}$f\leqslant g$ a.e.\ 时 $f(x)+h(x)\leqslant g(x)+h(x)$ 除一个零测集外处处成立，故 $f+h\leqslant g+h$ a.e.；$\alpha\geqslant0$ 时同理 $\alpha f\leqslant\alpha g$ a.e.。
+	\end{proof}
+	
+	\begin{proposition}[\bfseries{$\|\cdot\|_p$ 的零点集、等价类与半范数性}]
+		设 $1\leqslant p\leqslant+\infty$，$f,g\in\Rc^p(I)$。则
+		\begin{enumerate}[leftmargin=2.4em]
+			\item $\|f\|_p=0$ 当且仅当 $f=0$ a.e.；特别地单点集的特征函数满足 $\|\chi_{\{x_0\}}\|_p=0$ 而不是零函数。
+			\item 若 $f=g$ a.e.，则 $\|f\|_p=\|g\|_p$；故 $\|\cdot\|_p$ 只依赖函数所在的 a.e.\ 等价类，可在商集上定义。
+			\item $\mathcal N:=\{f\in\Rc^p(I):f=0\ \text{a.e.}\}$ 是 $\Rc^p(I)$ 的线性子空间，且 $\|\cdot\|_p$ 在商空间 $\Rc^p(I)/\mathcal N$（即按 a.e.\ 相等取类所得的 $\Rc^p(I)/$a.e.）上正定。
+			\item 三角不等式：$\|\alpha f\|_p=|\alpha|\|f\|_p$ 已在向量空间的命题中证明；$\|f+g\|_p\leqslant\|f\|_p+\|g\|_p$ 在 $p=1$ 与 $p=+\infty$ 时见下，在 $1<p<+\infty$ 时即 §2.4 的 Minkowski 不等式。于是 $\|\cdot\|_p$ 是 $\Rc^p(I)$ 上的半范数，其零点集为 $\mathcal N$；按 $\mathcal N$ 取商后得到赋范线性空间。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		\textbf{（1）零点集，$p<+\infty$。}由 §1.8 的定理，Riemann 可积的函数 Lebesgue 可积且两种积分相等，故 $\int_I|f|^p\dd x=\int_I|f|^p\dd\mu$；由 §1.7 的积分为零判别，后者为零当且仅当 $|f|^p=0$ a.e.，即 $f=0$ a.e.。反向由 $f=0$ a.e.\ 时 $|f|^p=0$ a.e. 及其积分为零得到。
+		
+		\textbf{（2）零点集，$p=+\infty$。}$\|f\|_\infty=0$ 即 $|f|\leqslant\frac1n$ a.e.\ 对每个 $n$ 成立，即 $f=0$ a.e.。
+		
+		\textbf{（3）良定义。}若 $f=g$ a.e.，则 $|f|^p=|g|^p$ a.e.；由 §1.8 两端各等于相应的 Lebesgue 积分，再由「零测集上修改不改变积分」（§1）得两个 Lebesgue 积分相等，故 $\|f\|_p=\|g\|_p$。$p=+\infty$ 时 $f=g$ a.e.\ 直接给出 $\|f\|_\infty=\|g\|_\infty$。
+		
+		\textbf{（4）子空间与正定性。}$\mathcal N$ 对数乘封闭由齐次性得到，对加法封闭由下面第 (5) 条的三角不等式得到，故是线性子空间。在商空间上 $\|f\|_p=0$ 当且仅当 $f\in\mathcal N$，即 $f$ 是零类，故 $\|\cdot\|_p$ 正定。
+		
+		\textbf{（5）三角不等式的两种情形。}$p=1$ 时 $|f+g|\leqslant|f|+|g|$ 逐点成立，由积分的单调性得 $\|f+g\|_1\leqslant\|f\|_1+\|g\|_1$。$p=+\infty$ 时由 $|f|\leqslant\|f\|_\infty$ a.e.、$|g|\leqslant\|g\|_\infty$ a.e.\ 除去零测集之并得 $|f+g|\leqslant\|f\|_\infty+\|g\|_\infty$ a.e.，故 $\|f+g\|_\infty\leqslant\|f\|_\infty+\|g\|_\infty$。
+	\end{proof}
+	
+	$1<p<+\infty$ 时的三角不等式不能由上面的准三角不等式直接得到，它是 Minkowski 不等式；Riemann 可积函数属于 $L^p(I)$ 且两种积分相等（§1.8），故 §2.4 的 Minkowski 不等式对 $\Rc^p(I)$ 直接适用。至此 $\Rc^p(I)/$a.e.\ 是赋范线性空间。它与 Banach 空间的差别只在完备性，下面两条命题各给出一个反例：一条说 Cauchy 列可以没有极限，一条说递增有界的族可以没有上确界。
+	
+	\begin{proposition}[\bfseries{$\Rc^p(I)/$a.e.\ 度量意义下不完备（$1\leqslant p<+\infty$）}]
+		设 $1\leqslant p<+\infty$，$I=(0,1]$，$f(x):=x^{-\frac1{2p}}$，$f_n:=\min\{f,n\}$（$n\geqslant1$）。则
+		\begin{enumerate}[leftmargin=2.4em]
+			\item $f_n\in\Rc^p(I)$，且 $\|f_n\|_p^p=n^p+n^{-p}\to+\infty$；
+			\item $\{f_n\}$ 在 $\|\cdot\|_p$ 下是 Cauchy 列：$n>m$ 时 $\|f_n-f_m\|_p\leqslant2^{\frac1p}m^{-1}$；
+			\item $\{f_n\}$ 在 $\Rc^p(I)/$a.e.\ 中没有极限；特别地 $p=2$ 时 $f(x)=x^{-\frac14}$，$\|f-f_n\|_2=\dfrac1{n\sqrt3}$。
+		\end{enumerate}
+		因此 $\Rc^p(I)/$a.e.\ 不是 Banach 空间。又 $f\notin\Rc^p(I)$：$f$ 在 $I$ 上无界，而按 §1.8 的定义 Riemann 可积的函数必有界，故 $\Rc^p(I)$ 中没有 $f$ 的位置——$\{f_n\}$ 的极限落在 $\Rc^p(I)$ 之外。
+	\end{proposition}
+	
+	\begin{proof}
+		\textbf{（1）$f_n\in\Rc^p(I)$。}把 $f_n$ 在 $x=0$ 处补充定义为 $0$。在 $(0,n^{-2p})$ 上 $f_n=x^{-\frac1{2p}}$，在 $[n^{-2p},1]$ 上 $f_n=n$，两段在 $x=n^{-2p}$ 处同取值为 $n$，故 $f_n$ 在 $[0,1]$ 上连续。连续函数在闭区间上 Riemann 可积：由一致连续性，振幅 $\omega(\delta)\to0$（$\delta\to0$），而网眼小于 $\delta$ 的分割满足 $U-L\leqslant\omega(\delta)(b-a)$。同样 $|f_n|^p=f_n^p$ 连续，故 $f_n\in\Rc^p(I)$。
+		
+		\textbf{（2）范数的值。}$f_n^p$ 在 $(0,n^{-2p})$ 上等于 $x^{-\frac12}$、在 $[n^{-2p},1]$ 上等于 $n^p$，故
+		\[
+		\|f_n\|_p^p=\int_0^{n^{-2p}}x^{-\frac12}\dd x+n^p\bigl(1-n^{-2p}\bigr)=2n^{-p}+n^p-n^{-p}=n^p+n^{-p}\longrightarrow+\infty .
+		\]
+		
+		\textbf{（3）Cauchy 列。}设 $n>m$。由 $\min\{f,m\}\leqslant\min\{f,n\}\leqslant f$ 得 $0\leqslant f_n-f_m\leqslant f-f_m$ 于 $I$ 上逐点成立，故
+		\[
+		\|f_n-f_m\|_p^p\leqslant\|f-f_m\|_p^p
+		=\int_0^{m^{-2p}}\bigl(x^{-\frac1{2p}}-m\bigr)^p\dd x
+		\leqslant\int_0^{m^{-2p}}x^{-\frac12}\dd x=2m^{-p},
+		\]
+		即 $\|f_n-f_m\|_p\leqslant2^{\frac1p}m^{-1}$；右端与 $n$ 无关且当 $m\to\infty$ 时趋于 $0$，故 $\{f_n\}$ 是 Cauchy 列。
+		
+		\textbf{（4）没有极限。}设 $g\in\Rc^p(I)$ 使 $\|f_n-g\|_p\to0$。由向量空间命题中的准三角不等式
+		\[
+		\|f_n\|_p\leqslant2^{1-\frac1p}\bigl(\|f_n-g\|_p+\|g\|_p\bigr),
+		\]
+		右端有界，与 (2) 中 $\|f_n\|_p\to+\infty$ 矛盾。
+		
+		\textbf{（5）$p=2$ 的算式。}此时 $f(x)=x^{-\frac14}$，$f-f_n=(f-n)^+$，而 $(f-n)^+>0$ 当且仅当 $x<n^{-4}$。于是
+		\[
+		\|f-f_n\|_2^2=\int_0^{n^{-4}}\bigl(x^{-\frac14}-n\bigr)^2\dd x
+		=\Bigl[2x^{\frac12}-\frac83\,nx^{\frac34}+n^2x\Bigr]_0^{n^{-4}}
+		=2n^{-2}-\frac83n^{-2}+n^{-2}=\frac1{3n^2},
+		\]
+		即 $\|f-f_n\|_2=\dfrac1{n\sqrt3}\to0$，与 (3) 的估计相容。
+	\end{proof}
+	
+	序意义下的完备性指：每个非空有上界的子集有上确界（Dedekind 完备，一般定义见 §5）。$\Rc^p(I)$ 在这一点上同样不合格。第一个反例用的是 $[0,1]\cap\Q$ 的枚举，它在逐点序下有效；第二个反例指出，取 a.e.\ 等价类之后第一个反例会退化，须把零测集换成正测度的无处稠密闭集。
+	
+	\begin{proposition}[\bfseries{$\Rc^p(I)$ 按逐点序不是 Dedekind 完备的}]
+		设 $I=[0,1]$，$q_1,q_2,\dots$ 是 $[0,1]\cap\Q$ 的一个枚举，$f_n:=\chi_{\{q_1,\dots,q_n\}}$。则 $0\leqslant f_1\leqslant f_2\leqslant\cdots\leqslant1$，$\{f_n\}$ 在 $\Rc^p(I)$（$1\leqslant p\leqslant+\infty$）中有上界，但没有上确界；它的逐点上确界是 $\chi_{[0,1]\cap\Q}$，而 $\chi_{[0,1]\cap\Q}\notin\Rc^p(I)$（§1.8 的注记已证 $\chi_{[0,1]\cap\Q}$ 不 Riemann 可积）。
+	\end{proposition}
+	
+	\begin{proof}
+		\textbf{（1）$f_n\in\Rc^p(I)$。}单点集的特征函数 Riemann 可积：对 $I$ 的分割 $P$，含 $x_0$ 的那个小区间之外 $\chi_{\{x_0\}}$ 取零，故 $L(P,\chi_{\{x_0\}})=0$，而 $U(P,\chi_{\{x_0\}})$ 等于该小区间的长度；把分割不断加细使网眼趋于零即得 $U\to0$，由 §1.8 的判别命题 $U-L\to0$，故 Riemann 可积。有限个单点集的特征函数之和亦然，故 $f_n$ Riemann 可积，$|f_n|^p=f_n$ 亦然，即 $f_n\in\Rc^p(I)$。
+		
+		\textbf{（2）没有上确界。}$f_n$ 单调递增且 $0\leqslant f_n\leqslant1$，故 $1$ 是上界。设 $u\in\Rc^p(I)$ 是上确界。由 $u\geqslant f_n$ 逐点成立得 $u(q_j)\geqslant1$ 对每个 $j$ 成立。另一方面，取 $x\in[0,1]\setminus\Q$，则 $g:=1-\chi_{\{x\}}\in\Rc^p(I)$ 且 $g(q_j)=1$ 对一切 $j$ 成立、$g\geqslant0$，故 $g$ 也是上界；由上确界的最小性 $u\leqslant g$，即 $u(x)\leqslant0$。由 $x\in[0,1]\setminus\Q$ 任意，$u$ 在每个非退化小区间 $J\subset[0,1]$ 上都取到 $\geqslant1$ 的值（$J$ 含有理点）与 $\leqslant0$ 的值（$J$ 含无理点），故
+		\[
+		U(P,u)\geqslant1,\qquad L(P,u)\leqslant0
+		\]
+		对 $I$ 的每个分割 $P$ 成立，于是 $\sup_PL(P,u)\leqslant0<1\leqslant\inf_PU(P,u)$，$u$ 不 Riemann 可积，与 $u\in\Rc^p(I)$ 矛盾。故上确界不存在。
+	\end{proof}
+	
+	\begin{note}[\bfseries{取等价类之后这个反例会退化}]
+		$\{q_1,\dots,q_n\}$ 是有限集，从而是零测集，故每个 $f_n$ 在 a.e.\ 意义下都是零函数，$\Rc^p(I)/$a.e.\ 中这些类全是零类，其上确界当然存在（就是零类）。要把序不完备性搬到 $\Rc^p(I)/$a.e.\ 上，反例的载体必须有正测度，并且在 a.e.\ 意义下没有 Riemann 可积的代表：取无处稠密而正测度的闭集代替 $[0,1]\cap\Q$。
+	\end{note}
+	
+	\begin{proposition}[\bfseries{$\Rc^p(I)/$a.e.\ 序意义下不完备}]
+		设 $1\leqslant p\leqslant+\infty$，$I=[0,1]$，$q_1,q_2,\dots$ 是 $[0,1]\cap\Q$ 的枚举。取 $r_k>0$ 使 $\sum_{k\geqslant1}2r_k<\frac12$，置
+		\[
+		E:=\bigcup_{k\geqslant1}\bigl((q_k-r_k,q_k+r_k)\cap[0,1]\bigr),\qquad
+		C:=[0,1]\setminus E,\qquad
+		f_n(x):=\bigl(1-n\,d(x,C)\bigr)^+,
+		\]
+		其中 $d(x,C):=\inf\{|x-y|:y\in C\}$，$t^+:=\max\{t,0\}$。则
+		\begin{enumerate}[leftmargin=2.4em]
+			\item $C$ 是 $[0,1]$ 中的闭集，内部为空，且 $|C|>\frac12$；
+			\item $f_n\in\Rc^p(I)$，$0\leqslant f_n\leqslant1$，且 $f_n\uparrow\chi_C$ 逐点成立；
+			\item $\{[f_n]\}$ 在 $\Rc^p(I)/$a.e.\ 中递增、以 $[1]$ 为上界，但没有上确界。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		\textbf{（1）$C$ 的性质。}$E$ 是开集之并，且 $E\supset[0,1]\cap\Q$，故 $E$ 在 $[0,1]$ 中稠密；于是 $C$ 是闭集，且不含任何非退化区间，即内部为空。又由测度的次可加性 $|E|\leqslant\sum_k2r_k<\frac12$，故 $|C|=1-|E|>\frac12$。
+		
+		\textbf{（2）$f_n$ 的性质。}由三角不等式 $|d(x,C)-d(y,C)|\leqslant|x-y|$，故 $d(\cdot,C)$ 连续，从而 $f_n$ 在 $[0,1]$ 上连续；连续函数在闭区间上 Riemann 可积（与上一个命题的 (1) 相同），$f_n^p$ 亦然，故 $f_n\in\Rc^p(I)$。由定义 $0\leqslant f_n\leqslant1$、$f_n$ 随 $n$ 递增。$x\in C$ 时 $d(x,C)=0$，$f_n(x)=1$；$x\notin C$ 时因 $C$ 闭有 $d(x,C)>0$，故 $n>1/d(x,C)$ 时 $f_n(x)=0$。于是 $f_n\uparrow\chi_C$ 逐点成立。
+		
+		\textbf{（3）没有上确界。}由 (2)，$\{[f_n]\}$ 递增且以 $[1]$ 为上界。设 $[u]$（$u\in\Rc^p(I)$）是上确界。
+		由 $u\geqslant f_n$ a.e.\ 对每个 $n$ 成立与 $f_n\uparrow\chi_C$ 逐点，除去可数个零测集的并得 $u\geqslant\chi_C$ a.e.。
+		另一方面，对每个 $k$ 置 $G_k:=\bigcup_{j\leqslant k}\bigl((q_j-r_j,q_j+r_j)\cap[0,1]\bigr)$ 与 $u_k:=1-\chi_{G_k}$。$G_k$ 是有限个区间之并，$u_k$ 是阶梯函数，故 $u_k\in\Rc^p(I)$；又 $G_k\subset E$，故 $u_k=1$ 于 $C$ 上、$u_k\geqslant0$ 处处成立，即 $u_k\geqslant\chi_C$ 逐点，于是 $[u_k]$ 也是 $\{[f_n]\}$ 的上界，由上确界的最小性 $u\leqslant u_k$ a.e.。对 $k$ 取并（可数个零测集之并仍是零测集）得
+		\[
+		u\leqslant\inf_{k}u_k=1-\chi_{\bigcup_kG_k}=1-\chi_E=\chi_C\qquad\text{a.e.}
+		\]
+		与上段合起来，$u=\chi_C$ a.e.。
+		
+		\textbf{（4）导出矛盾。}上面得到一个 Riemann 可积的 $u$ 满足 $u=\chi_C$ a.e.。把 $u$ 换成 $v:=(u\wedge1)\vee0$（由格性 $v\in\Rc^p(I)$，且 $v=\chi_C$ a.e.），则 $0\leqslant v\leqslant1$ 处处成立。对 $I$ 的任意分割 $P$，每个非退化小区间 $J$ 都含 $E$ 的点，而 $v=0$ a.e.\ 于 $E$，故 $J$ 上存在 $v$ 取零的点，于是 $\inf_Jv=0$，从而
+		\[
+		L(P,v)=\sum_J\inf_Jv\,|J|=0\qquad\text{对每个分割 }P ,
+		\]
+		即 $v$ 的 Riemann 积分为 $\sup_PL(P,v)=0$。由 §1.8 的定理，$v$ 的 Lebesgue 积分也是 $0$；又 $v\geqslant0$，由 §1.7 的积分为零判别得 $v=0$ a.e.。于是 $|C|=0$，与 (1) 中 $|C|>\frac12$ 矛盾。故 $\{[f_n]\}$ 没有上确界。
+	\end{proof}
+	
+	\begin{link}[两条线在完备化之前]
+		在同一个函数类上（由前面的推论，$\Rc^p(I)$ 作为集合与 $p$ 无关，就是 $I$ 上 Riemann 可积的函数全体），$\Rc^p(I)$ 已经同时具备三种结构：向量空间（线性运算封闭，$\|\alpha f\|_p=|\alpha|\|f\|_p$）、格（$f\vee g=\frac{(f+g)+|f-g|}{2}$，$f\wedge g=\frac{(f+g)-|f-g|}{2}$）、半范数 $\|\cdot\|_p$（正定性由 a.e.\ 等价类补上，$1<p<+\infty$ 时的三角不等式就是 §2.4 的 Minkowski 不等式）。
+		
+		缺的只是\textbf{完备性}，而它缺了两次，两次的补法不同。
+		
+		\textbf{度量不完备}：存在 Cauchy 列而没有极限（$f_n=\min\{x^{-1/(2p)},n\}$ 就是）。补上它得 $L^p(I)$：等价类构造在 §2.2，完备性是 §2.5 的 Riesz--Fischer 定理。这是 §4 的度量线要做的事，其终点是投影定理与 Parseval 等式。
+		
+		\textbf{序不完备}：存在递增而有界的族没有上确界（$\{[f_n]\}$ 与 $\{1-\chi_{G_k}\}$ 夹出的那个反例）。$L^p(I)$ 把它一并补齐：$L^p$ 是序完备的 Banach 格（§5），而这一点不是从度量完备性单独推出的，是 $L^p$ 的构造同时给出的。
+		
+		两条线在 $\Rc^p(I)$ 上还没有分开：格结构与范数结构同时可用。分开它们的是 $p=2$——只有 $p=2$ 时 $\|\cdot\|_p$ 来自内积（§4.3），此后几何线与序线才成为两种不同的工具。
+	\end{link}
+	
+	\section{$L^p(I)$ 与等价类，$\|\cdot\|_p$ 的定义}
+	
+	\begin{definition}[\bfseries{$\mathcal L^p(I)$ 与 $\|\cdot\|_p$}]
+		设 $1\leqslant p<+\infty$。记
+		\[
+		\mathcal L^p(I):=\Bigl\{f:I\to\R\ \Bigm|\ f\ \text{Lebesgue 可测},\ \int_I|f|^p\,\dd\mu<+\infty\Bigr\},
+		\qquad
+		\|f\|_p:=\Bigl(\int_I|f|^p\dd\mu\Bigr)^{\frac1p}.
+		\]
+		设 $p=+\infty$。对可测函数 $f:I\to\R$ 记
+		\[
+		\|f\|_\infty:=\inf\bigl\{M\in[0,+\infty]\ \bigm|\ |f(x)|\leqslant M\ \text{对 a.e.}\ x\in I\ \text{成立}\bigr\}
+		=\operatorname*{ess\,sup}_{x\in I}|f(x)|,
+		\]
+		称为 $f$ 的\textbf{本质上确界}，并记
+		$\mathcal L^\infty(I):=\bigl\{f:I\to\R\ \text{可测}\ \bigm|\ \|f\|_\infty<+\infty\bigr\}$。
+		若 $f$ 在 $I$ 上有界（特别地，若 $f$ 连续），则 $\|f\|_\infty=\sup_{x\in I}|f(x)|$。
+	\end{definition}
+	
+	\begin{proposition}[\bfseries{$\mathcal L^p(I)$ 是线性空间，$\|\cdot\|_p$ 齐次}]
+		设 $1\leqslant p\leqslant+\infty$，$f,g\in\mathcal L^p(I)$，$\alpha\in\R$。则
+		$\alpha f\in\mathcal L^p(I)$、$f+g\in\mathcal L^p(I)$，且
+		\[
+		\|\alpha f\|_p=|\alpha|\,\|f\|_p .
+		\]
+	\end{proposition}
+	
+	\begin{proof}
+		\textbf{（1）$1\leqslant p<+\infty$。}可测性对加法与数乘封闭（§1）。由 $t\mapsto t^p$ 在 $[0,+\infty)$ 上的凸性，
+		\[
+		\Bigl(\frac{a+b}2\Bigr)^p\leqslant\frac{a^p+b^p}2
+		\qquad\Longrightarrow\qquad
+		(a+b)^p\leqslant2^{p-1}\bigl(a^p+b^p\bigr)\qquad(a,b\geqslant0).
+		\]
+		取 $a=|f(x)|$、$b=|g(x)|$ 得逐点估计
+		$|f(x)+g(x)|^p\leqslant2^{p-1}\bigl(|f(x)|^p+|g(x)|^p\bigr)$；由 §1 积分的单调性与线性性，
+		\[
+		\int_I|f+g|^p\dd\mu\leqslant2^{p-1}\Bigl(\int_I|f|^p\dd\mu+\int_I|g|^p\dd\mu\Bigr)<+\infty,
+		\]
+		故 $f+g\in\mathcal L^p(I)$。又 $|\alpha f|^p=|\alpha|^p|f|^p$，积分后开 $p$ 次方得
+		$\|\alpha f\|_p=|\alpha|\,\|f\|_p$；$\alpha=0$ 时两端为 $0$，同样成立。
+		
+		\textbf{（2）$p=+\infty$。}由 $\|f\|_\infty$ 的定义，$|f|\leqslant\|f\|_\infty$ a.e.、$|g|\leqslant\|g\|_\infty$ a.e.；
+		除去两个零测集的并，得
+		$|f(x)+g(x)|\leqslant\|f\|_\infty+\|g\|_\infty$ a.e.，故 $f+g\in\mathcal L^\infty(I)$ 且
+		$\|f+g\|_\infty\leqslant\|f\|_\infty+\|g\|_\infty<+\infty$。
+		又 $|\alpha f|\leqslant|\alpha|\|f\|_\infty$ a.e.，得 $\|\alpha f\|_\infty\leqslant|\alpha|\|f\|_\infty$；
+		$\alpha\ne0$ 时把此式用于 $\alpha^{-1}$ 与 $\alpha f$ 得反向不等式，故等号成立。
+	\end{proof}
+	
+	\begin{definition}[\bfseries{几乎处处相等}]
+		$I$ 上的两个可测函数 $f,g$ 称为\textbf{几乎处处相等}，记 $f=g$ a.e.，若
+		$\bigl|\{x\in I:\ f(x)\ne g(x)\}\bigr|=0$。记 $f\leqslant g$ a.e. 表示 $\{x\in I: f(x)>g(x)\}$ 是零测集。
+	\end{definition}
+	
+	\begin{proposition}[\bfseries{a.e.\ 相等是等价关系，且与代数运算相容}]
+		在 $I$ 上的可测函数之间，关系“$=$\ a.e.”是等价关系。又若 $f=f'$ a.e.、$g=g'$ a.e.，则
+		\[
+		f+g=f'+g'\ \ \text{a.e.},\qquad \alpha f=\alpha f'\ \ \text{a.e.}\quad(\alpha\in\R),\qquad
+		|f|=|f'|\ \ \text{a.e.}
+		\]
+	\end{proposition}
+	
+	\begin{proof}
+		自反性与对称性由定义直接得到。传递性：若 $f=g$ a.e.、$g=h$ a.e.，则
+		$\{f\ne h\}\subset\{f\ne g\}\cup\{g\ne h\}$，右端是两个零测集之并，由 §1 测度的次可加性它也是零测集，故 $f=h$ a.e.。
+		
+		相容性：$\{f+g\ne f'+g'\}\subset\{f\ne f'\}\cup\{g\ne g'\}$ 是零测集；
+		$\alpha\ne0$ 时 $\{\alpha f\ne\alpha f'\}=\{f\ne f'\}$ 是零测集，$\alpha=0$ 时两个函数都是零函数；
+		$\{|f|\ne|f'|\}\subset\{f\ne f'\}$ 是零测集。
+	\end{proof}
+	
+	于是按 a.e.\ 相等把 $\mathcal L^p(I)$ 分成等价类，所得的商集仍记其元素为 $f$。
+	
+	\begin{definition}[\bfseries{$L^p(I)$}]
+		设 $1\leqslant p\leqslant+\infty$。记
+		\[
+		L^p(I):=\mathcal L^p(I)\big/\sim,\qquad f\sim g\iff f=g\ \text{a.e.},
+		\]
+		即 $L^p(I)$ 的元素是 a.e.\ 相等的可测函数所成的等价类；元素仍写为 $f$，
+		并定义 $\|f\|_p$ 为等价类中任一代表的 $\|\cdot\|_p$。
+	\end{definition}
+	
+	范数在等价类上良定义：若 $f=g$ a.e.，则 $|f|^p=|g|^p$ a.e.，由 §1 的积分性质
+	$\int_I|f|^p\dd\mu=\int_I|g|^p\dd\mu$，故 $\|f\|_p$ 只依赖 $f$ 所在的等价类。$p=+\infty$ 时同理。
+	
+	\begin{proposition}[\bfseries{$\|\cdot\|_p$ 的核与正定性}]
+		设 $1\leqslant p\leqslant+\infty$，$f\in\mathcal L^p(I)$。则
+		\[
+		\|f\|_p=0\quad\Longleftrightarrow\quad f=0\ \text{a.e.}
+		\]
+		因此 $\mathcal N:=\{f\in\mathcal L^p(I): f=0\ \text{a.e.}\}$ 是 $\mathcal L^p(I)$ 的线性子空间，
+		而 $L^p(I)=\mathcal L^p(I)/\mathcal N$，$\|\cdot\|_p$ 在商空间上正定：$\|f\|_p=0$ 蕴含 $f$ 是 $L^p(I)$ 的零元素。
+	\end{proposition}
+	
+	\begin{proof}
+		\textbf{（1）$p<+\infty$。}记 $E:=\{x\in I: f(x)\ne0\}$。由 §1 的结论“非负可测函数积分为零蕴含它 a.e.\ 为零”，
+		$\int_I|f|^p\dd\mu=0$ 当且仅当 $|f|^p=0$ a.e.，当且仅当 $|E|=0$，即 $f=0$ a.e.。
+		反向：若 $f=0$ a.e.，则 $|f|^p=0$ a.e.，故积分为 $0$。
+		
+		\textbf{（2）$p=+\infty$。}$\|f\|_\infty=0$ 即对每个 $n$ 有 $|f|\leqslant1/n$ a.e.，即 $|f|=0$ a.e.，故 $f=0$ a.e.。
+		
+		\textbf{（3）核与商。}由 (1)、(2)，$\mathcal N$ 恰是 $\|\cdot\|_p$ 的零点集。由齐次性
+		$\mathcal N$ 对数乘封闭；由三角不等式（§2.4 的 Minkowski 不等式）$\mathcal N$ 对加法封闭，
+		故 $\mathcal N$ 是线性子空间。按 $\mathcal N$ 作商即把 a.e.\ 相等的函数等同，得到 $L^p(I)$；
+		在商空间上 $\|f\|_p=0$ 当且仅当 $f\in\mathcal N$，即 $f$ 是零类。
+	\end{proof}
+	
+	若不取等价类而在 $\mathcal L^p(I)$ 上直接使用 $\|\cdot\|_p$，则由上一个命题，
+	单点集的特征函数 $\chi_{\{x_0\}}$ 满足 $\|\chi_{\{x_0\}}\|_p=0$ 而 $\chi_{\{x_0\}}\ne0$，
+	此时 $\|\cdot\|_p$ 只是半范数，$d(f,g):=\|f-g\|_p$ 不是度量，极限也不唯一。
+	取等价类只修正正定性；完备性不由它给出，而要由 §2.5 的 Riesz--Fischer 定理给出。
+	
+	\section{Hölder 不等式}
+	
+	Hölder 不等式是关于配对 $(f,g)\mapsto\int_I fg\dd\mu$ 的估计：它用两个因子的范数控制乘积的积分。
+	先从一条标量不等式开始。
+	
+	\begin{lemma}[\bfseries{Young 不等式}]
+		设 $1<p,q<+\infty$ 为共轭指数，$a,b\geqslant0$。则
+		\[
+		ab\leqslant\frac{a^p}{p}+\frac{b^q}{q},
+		\]
+		且等号成立当且仅当 $a^p=b^q$。
+	\end{lemma}
+	
+	\begin{proof}
+		若 $a=0$ 或 $b=0$，左端为 $0$，右端非负，且等号成立当且仅当另一个数也为 $0$，此时 $a^p=b^q$。
+		以下设 $a,b>0$。由 $\ln$ 在 $(0,+\infty)$ 上严格凹，取 $t=\frac1p$、$1-t=\frac1q$，用
+		\[
+		\ln\bigl(ta^p+(1-t)b^q\bigr)\geqslant t\ln(a^p)+(1-t)\ln(b^q)
+		\]
+		得
+		\[
+		\ln\Bigl(\frac{a^p}{p}+\frac{b^q}{q}\Bigr)\geqslant\frac1p\cdot p\ln a+\frac1q\cdot q\ln b=\ln(ab).
+		\]
+		$\ln$ 严格递增，去掉 $\ln$ 即得 $ab\leqslant\frac{a^p}{p}+\frac{b^q}{q}$。由于 $\ln$ 严格凹，
+		等号成立当且仅当 $a^p=b^q$。
+	\end{proof}
+	
+	\begin{theorem}[\bfseries{Hölder 不等式}]
+		设 $1\leqslant p\leqslant+\infty$，$q$ 为 $p$ 的共轭指数，$f\in L^p(I)$，$g\in L^q(I)$。则 $fg\in L^1(I)$，且
+		\[
+		\Bigl|\int_I f(x)g(x)\,\dd\mu(x)\Bigr|
+		\leqslant\int_I|f(x)g(x)|\,\dd\mu(x)
+		\leqslant\|f\|_p\,\|g\|_q .
+		\]
+	\end{theorem}
+	
+	\begin{proof}
+		第一项不等式由 $|\int_I h\dd\mu|\leqslant\int_I|h|\dd\mu$（§1）得到，以下证第二项。
+		
+		\textbf{（1）$1<p,q<+\infty$。}若 $\|f\|_p=0$，由 §2.2 的命题 $f=0$ a.e.，故 $fg=0$ a.e.，
+		$\int_I|fg|\dd\mu=0\leqslant\|f\|_p\|g\|_q$。$\|g\|_q=0$ 同理。以下设 $\|f\|_p>0$、$\|g\|_q>0$，置
+		\[
+		F:=\frac{f}{\|f\|_p},\qquad G:=\frac{g}{\|g\|_q},
+		\qquad\text{则}\qquad
+		\int_I|F|^p\dd\mu=1=\int_I|G|^q\dd\mu .
+		\]
+		在 Young 不等式中取 $a=|F(x)|$、$b=|G(x)|$ 得逐点估计
+		$|F(x)G(x)|\leqslant\frac{|F(x)|^p}{p}+\frac{|G(x)|^q}{q}$。两端在 $I$ 上积分（右端非负可测，积分有意义且有限），
+		得 $FG\in L^1(I)$ 且
+		\[
+		\int_I|FG|\dd\mu\leqslant\frac1p\int_I|F|^p\dd\mu+\frac1q\int_I|G|^q\dd\mu=\frac1p+\frac1q=1 .
+		\]
+		两端乘以正数 $\|f\|_p\|g\|_q$，并用 $fg=\|f\|_p\|g\|_q\,FG$，即得
+		$\int_I|fg|\dd\mu\leqslant\|f\|_p\|g\|_q<+\infty$，故 $fg\in L^1(I)$。
+		
+		\textbf{（2）$p=1$、$q=+\infty$。}由 $\|g\|_\infty$ 的定义，$|g|\leqslant\|g\|_\infty$ a.e.，故
+		\[
+		\int_I|f g|\dd\mu\leqslant\|g\|_\infty\int_I|f|\dd\mu=\|f\|_1\|g\|_\infty<+\infty,
+		\]
+		即 $fg\in L^1(I)$，且所证不等式成立。$p=+\infty$、$q=1$ 的情形由对称性同理。
+	\end{proof}
+	
+	\begin{proposition}[\bfseries{Hölder 不等式的等号条件}]
+		设 $1<p,q<+\infty$ 为共轭指数，$f\in L^p(I)$、$g\in L^q(I)$ 均不为零。则
+		$\int_I|fg|\dd\mu=\|f\|_p\|g\|_q$ 成立，当且仅当存在常数 $\lambda>0$ 使
+		\[
+		|f(x)|^p=\lambda\,|g(x)|^q\qquad\text{对 a.e.}\ x\in I\ \text{成立}.
+		\]
+		进一步，$\bigl|\int_I fg\dd\mu\bigr|=\|f\|_p\|g\|_q$ 成立，当且仅当上述条件成立且 $fg\geqslant0$ a.e.。
+		$p=1$、$q=+\infty$ 时相应条件是：$|g|=\|g\|_\infty$ a.e. 于 $\{f\ne0\}$，且 $fg\geqslant0$ a.e.。
+	\end{proposition}
+	
+	\begin{proof}
+		上述两个条件分别由引理（Young 不等式）的等号条件与
+		“非负可测函数积分为零蕴含它 a.e.\ 为零”（§1）逐点化得到，推导与定理证明中的归一化步骤一致：
+		等号成立当且仅当 $\frac{|F|^p}{p}+\frac{|G|^q}{q}-|FG|=0$ a.e.，即 $|F|^p=|G|^q$ a.e.；
+		再由 $\int_I|fg|\dd\mu=\bigl|\int_I fg\dd\mu\bigr|$ 等价于 $fg\geqslant0$ a.e.，得第二句。
+	\end{proof}
+	
+	等号条件中“$|f|$ 与 $|g|$ 成比例”的说法只在 $p=q=2$ 时正确；一般地成比例的是
+	$|f|^p$ 与 $|g|^q$。这一形式在 §2.4 的 Minkowski 不等式取等条件与 §2.7 的嵌入常数最优性中各用一次。
+	
+	\section{Minkowski 不等式，$\|\cdot\|_p$ 是范数}
+	
+	\begin{theorem}[\bfseries{Minkowski 不等式}]
+		设 $1\leqslant p\leqslant+\infty$，$f,g\in L^p(I)$。则 $f+g\in L^p(I)$，且
+		\[
+		\|f+g\|_p\leqslant\|f\|_p+\|g\|_p .
+		\]
+		更一般地，对 $f_1,\dots,f_n\in L^p(I)$ 有
+		$\bigl\|\sum_{k=1}^n f_k\bigr\|_p\leqslant\sum_{k=1}^n\|f_k\|_p$。
+	\end{theorem}
+	
+	\begin{proof}
+		$f+g\in L^p(I)$ 已由 §2.2 的命题证明，以下证不等式。
+		
+		\textbf{（1）$p=1$。}由 §1 积分的单调性与线性性，
+		$\int_I|f+g|\dd\mu\leqslant\int_I\bigl(|f|+|g|\bigr)\dd\mu=\|f\|_1+\|g\|_1$。
+		
+		\textbf{（2）$1<p<+\infty$。}由 $|f+g|\leqslant|f|+|g|$ 与积分对非负函数的单调性，只需对
+		$S:=|f|+|g|$ 证明 $\|S\|_p\leqslant\|f\|_p+\|g\|_p$。记 $A:=\int_I S^p\dd\mu=\|S\|_p^p$。
+		若 $A=0$，则 $S=0$ a.e.，即 $f=g=0$ a.e.，结论为 $0\leqslant0$。以下设 $0<A<+\infty$。
+		
+		把 $S^p=S^{p-1}S=S^{p-1}|f|+S^{p-1}|g|$ 代入并用 §1 的积分线性性，
+		\[
+		A=\int_I S^{p-1}|f|\dd\mu+\int_I S^{p-1}|g|\dd\mu .
+		\]
+		$S\in L^p(I)$ 蕴含 $S^{p-1}\in L^q(I)$（因 $(p-1)q=p$），故两项都可对指数 $p$ 与 $q$ 用 Hölder 不等式；
+		又 $(S^{p-1})^q=S^p$，得
+		\[
+		\int_I S^{p-1}|f|\dd\mu
+		\leqslant\Bigl(\int_I S^p\dd\mu\Bigr)^{\frac1q}\Bigl(\int_I|f|^p\dd\mu\Bigr)^{\frac1p}
+		=A^{\frac1q}\|f\|_p,
+		\qquad
+		\int_I S^{p-1}|g|\dd\mu\leqslant A^{\frac1q}\|g\|_p .
+		\]
+		相加得 $A\leqslant A^{\frac1q}\bigl(\|f\|_p+\|g\|_p\bigr)$。两端除以正数 $A^{\frac1q}$，并用
+		$1-\frac1q=\frac1p$，得 $A^{\frac1p}\leqslant\|f\|_p+\|g\|_p$，即 $\|S\|_p\leqslant\|f\|_p+\|g\|_p$。
+		
+		\textbf{（3）$p=+\infty$。}由 $|f|\leqslant\|f\|_\infty$ a.e.、$|g|\leqslant\|g\|_\infty$ a.e.，
+		除去两个零测集之并得 $|f+g|\leqslant\|f\|_\infty+\|g\|_\infty$ a.e.，故
+		$\|f+g\|_\infty\leqslant\|f\|_\infty+\|g\|_\infty$。
+		
+		\textbf{（4）有限和。}对 $n$ 归纳：$n=2$ 即已证的两项情形；若对 $n-1$ 成立，则
+		\[
+		\Bigl\|\sum_{k=1}^n f_k\Bigr\|_p\leqslant\Bigl\|\sum_{k=1}^{n-1}f_k\Bigr\|_p+\|f_n\|_p
+		\leqslant\sum_{k=1}^{n-1}\|f_k\|_p+\|f_n\|_p .
+		\]
+	\end{proof}
+	
+	Minkowski 不等式的取等条件可用 Hölder 的等号条件读出：$1<p<+\infty$ 时，等号成立当且仅当
+	$|f|$ 与 $|g|$ a.e.\ 成比例且 $fg\geqslant0$ a.e.（$\|f\|_p$ 或 $\|g\|_p$ 为零时等号自然成立）；
+	$p=1$ 时等号成立当且仅当 $fg\geqslant0$ a.e.。
+	这与有限维中的情形一致：那里 $\|x+y\|=\|x\|+\|y\|$ 当且仅当 $x,y$ 同向共线。
+	
+	\begin{proposition}[\bfseries{$(L^p(I),\|\cdot\|_p)$ 是赋范线性空间}]
+		设 $1\leqslant p\leqslant+\infty$。则 $(L^p(I),\|\cdot\|_p)$ 是 $\R$ 上的赋范线性空间，即
+		\begin{enumerate}[leftmargin=2.4em]
+			\item $L^p(I)$ 对加法与数乘封闭，且 $\|\alpha f\|_p=|\alpha|\,\|f\|_p$；
+			\item $\|f\|_p\geqslant0$，且 $\|f\|_p=0$ 当且仅当 $f=0$（在 $L^p(I)$ 中）；
+			\item $\|f+g\|_p\leqslant\|f\|_p+\|g\|_p$。
+		\end{enumerate}
+	\end{proposition}
+	
+	\begin{proof}
+		(1) 即 §2.2 的命题与数乘在等价类上良定义（$\alpha f$ 的类只依赖 $f$ 的类）；
+		(2) 由 §2.2 的核与正定性命题，$\|\cdot\|_p$ 在 $L^p(I)$ 上正定；
+		(3) 即 Minkowski 不等式。三条合起来正是范数的定义。
+	\end{proof}
+	
+	\begin{corollary}[\bfseries{$L^p$ 范数的次序性质}]
+		设 $1\leqslant p\leqslant+\infty$，$f,g\in L^p(I)$ 且 $|f|\leqslant|g|$ a.e.。则
+		$\|f\|_p\leqslant\|g\|_p$；特别地 $\bigl\|\,|f|\,\bigr\|_p=\|f\|_p$。
+	\end{corollary}
+	
+	\begin{proof}
+		$p<+\infty$ 时由 $|f|^p\leqslant|g|^p$ a.e. 与 §1 积分的单调性，开 $p$ 次方即得。
+		$p=+\infty$ 时由 $|f|\leqslant|g|\leqslant\|g\|_\infty$ a.e. 得 $\|f\|_\infty\leqslant\|g\|_\infty$。
+		第二式由 $|f|=|f|$ a.e. 与 $|f|=|\,|f|\,|$ 得到。
+	\end{proof}
+	
+	这条性质说明 $\|\cdot\|_p$ 与 a.e.\ 的序结构相容：绝对值的取法不改变范数，且范数对 a.e.\ 的大小保持。
+	§5 将把这一条与 Banach 格的定义对照。
+	
+	\begin{link}[$L^p$ 同时是 Banach 格与赋范空间：两条线在此分岔]
+		由 §2.4 的 Minkowski 不等式与上一推论的次序性质，$\|\cdot\|_p$ 是 $L^p(I)$ 上的\textbf{格范数}：
+		$\bigl\|\,|f|\,\bigr\|_p=\|f\|_p$，且 $|f|\leqslant|g|$ a.e.\ 蕴含 $\|f\|_p\leqslant\|g\|_p$；
+		配合下一小节的 Riesz--Fischer 定理，$L^p(I)$ 是 Banach 格，而不只是一个赋范空间。
+		两条线在这里分岔：序线（绝对值 $|f|$、正负分解 $f=f^+-f^-$、不相交可加性，见 §5）对一切 $1\leqslant p\leqslant+\infty$ 都可用；
+		几何线（内积、正交、投影，见 §4）只对 $p=2$ 可用——$p\ne2$ 时 $\|\cdot\|_p$ 不满足平行四边形律，
+		因而不来自任何内积。$L^p$ 上的这两套结构服务于同一批函数，而 $p=2$ 是它们唯一的交点。
+	\end{link}
+	
+	\section{Riesz--Fischer 定理：$L^p$ 完备}
+	
+	由 Minkowski 不等式，$L^p(I)$ 中有 Cauchy 列的概念。下面的定理说明 Cauchy 列的极限仍在 $L^p(I)$ 中。
+	证明分两步：先证绝对可和的 $L^p$ 级数收敛，再对一般 Cauchy 列取其差分级数绝对可和的子列。
+	
+	\begin{lemma}[\bfseries{绝对可和的 $L^p$ 级数收敛}]
+		设 $1\leqslant p<+\infty$，$f_k\in L^p(I)$ 且 $\sum_{k=1}^\infty\|f_k\|_p<+\infty$。记
+		$S_n:=\sum_{k=1}^n f_k$。则
+		\begin{enumerate}[leftmargin=2.4em]
+			\item $\sum_{k=1}^\infty|f_k(x)|<+\infty$ 对 a.e.\ $x\in I$ 成立；令
+			$g:=\sum_{k=1}^\infty|f_k|$、$f:=\sum_{k=1}^\infty f_k$（后者在 a.e.\ 处有定义），则
+			$g\in L^p(I)$、$f\in L^p(I)$，且
+			\[
+			\|g\|_p\leqslant\sum_{k=1}^\infty\|f_k\|_p,
+			\qquad
+			\|f-S_n\|_p\longrightarrow0\quad(n\to\infty);
+			\]
+			\item 若另有 $h\in L^p(I)$ 使 $\|S_n-h\|_p\to0$，则 $h=f$ a.e.。
+		\end{enumerate}
+	\end{lemma}
+	
+	\begin{proof}
+		记 $M:=\sum_{k=1}^\infty\|f_k\|_p<+\infty$。
+		
+		\textbf{（1）$g\in L^p(I)$ 且 $\|g\|_p\leqslant M$。}
+		对每个 $n$，由 Minkowski 不等式的有限和形式
+		\[
+		\Bigl\|\sum_{k=1}^n|f_k|\Bigr\|_p\leqslant\sum_{k=1}^n\|f_k\|_p\leqslant M,
+		\qquad\text{即}\qquad
+		\int_I\Bigl(\sum_{k=1}^n|f_k(x)|\Bigr)^p\dd\mu\leqslant M^p .
+		\]
+		函数列 $h_n:=\bigl(\sum_{k=1}^n|f_k|\bigr)^p$ 非负可测且逐点单调递增，其积分一致有界。
+		由 §1 的单调收敛定理，
+		\[
+		\int_I g(x)^p\dd\mu=\int_I\lim_{n\to\infty}h_n\dd\mu=\lim_{n\to\infty}\int_I h_n\dd\mu\leqslant M^p<+\infty .
+		\]
+		故 $g\in L^p(I)$ 且 $\|g\|_p\leqslant M$。又 $g<+\infty$ a.e.，即 $\sum_k|f_k(x)|<+\infty$ 对 a.e.\ $x$ 成立；
+		在其余点上 $f(x):=\sum_kf_k(x)$ 绝对收敛，$|f|\leqslant g$ a.e.，故 $f$ 可测且 $f\in L^p(I)$。
+		
+		\textbf{（2）$\|f-S_n\|_p\to0$。}
+		由 $|f-S_n|=\bigl|\sum_{k>n}f_k\bigr|\leqslant\sum_{k>n}|f_k|\leqslant g$ a.e.，且
+		$\sum_{k>n}|f_k(x)|\to0$ 对 a.e.\ $x$（收敛级数的余项趋于零），得
+		$|f-S_n|^p\leqslant g^p$ a.e. 且 $|f-S_n|^p\to0$ a.e.。由 §1 的控制收敛定理（控制函数 $g^p\in L^1(I)$），
+		\[
+		\lim_{n\to\infty}\int_I|f-S_n|^p\dd\mu=0,
+		\qquad\text{即}\qquad
+		\|f-S_n\|_p\to0 .
+		\]
+		
+		\textbf{（3）极限唯一。}若 $\|S_n-h\|_p\to0$，则由 Minkowski 不等式
+		$\|f-h\|_p\leqslant\|f-S_n\|_p+\|S_n-h\|_p\to0$，故 $\|f-h\|_p=0$；
+		由 §2.2 的正定性得 $f=h$ a.e.，即在 $L^p(I)$ 中 $f=h$。
+	\end{proof}
+	
+	\begin{theorem}[\bfseries{Riesz--Fischer 定理：$L^p(I)$ 完备}]
+		设 $1\leqslant p<+\infty$，$I$ 是区间。则赋范线性空间 $\bigl(L^p(I),\|\cdot\|_p\bigr)$ 完备：
+		其中每个 Cauchy 列都在 $L^p(I)$ 中收敛。因此 $L^p(I)$ 是 Banach 空间。
+		这一结论的经典出处是（IDA, Ch.13）与（夏道行 上册）。
+	\end{theorem}
+	
+	\begin{proof}
+		设 $\{f_n\}\subset L^p(I)$ 是 Cauchy 列。
+		
+		\textbf{第一步：取一个范数差可和的子列。}
+		对每个正整数 $j$，由 Cauchy 性存在 $n_j$ 使 $\|f_m-f_{n_j}\|_p<2^{-j}$ 对一切 $m\geqslant n_j$ 成立；
+		把 $n_j$ 取得严格递增。则子列 $\{f_{n_j}\}$ 满足
+		\[
+		\|f_{n_{j+1}}-f_{n_j}\|_p<2^{-j},
+		\qquad\text{故}\qquad
+		\sum_{j=1}^\infty\|f_{n_{j+1}}-f_{n_j}\|_p\leqslant\sum_{j=1}^\infty2^{-j}=1<+\infty .
+		\]
+		
+		\textbf{第二步：子列收敛。}
+		令 $u_j:=f_{n_{j+1}}-f_{n_j}\in L^p(I)$。部分和满足
+		$\sum_{j=1}^Ju_j=f_{n_{J+1}}-f_{n_1}$，故由上一个引理（用于级数 $\{u_j\}$），
+		存在 $F:=\sum_{j=1}^\infty u_j\in L^p(I)$ 使
+		$\bigl\|F-\sum_{j=1}^Ju_j\bigr\|_p\to0$，即
+		\[
+		\bigl\|f_{n_{J+1}}-(f_{n_1}+F)\bigr\|_p\longrightarrow0\qquad(J\to\infty).
+		\]
+		令 $f:=f_{n_1}+F\in L^p(I)$，则子列满足 $\|f_{n_j}-f\|_p\to0$。
+		
+		\textbf{第三步：子列的极限是全列的极限。}
+		对任意 $n$ 与 $j$，由 Minkowski 不等式
+		\[
+		\|f_n-f\|_p\leqslant\|f_n-f_{n_j}\|_p+\|f_{n_j}-f\|_p .
+		\]
+		给定 $\varepsilon>0$，先由 Cauchy 性取 $N$ 使 $m,n\geqslant N$ 时 $\|f_m-f_n\|_p<\varepsilon/2$；
+		再取 $j$ 充分大使 $n_j\geqslant N$ 且 $\|f_{n_j}-f\|_p<\varepsilon/2$。于是当 $n\geqslant N$ 时
+		$\|f_n-f\|_p<\varepsilon$，即 $\|f_n-f\|_p\to0$。完备性得证。
+	\end{proof}
+	
+	\begin{link}[完备性：教材 21.3 能用 Parseval 与 $L^2\cong\ell^2$ 的前提]
+		Riesz--Fischer 定理给出的完备性，正是教材 21.3 把 Parseval 等式与 $L^2_\#\cong\ell^2$ 陈述为\textbf{等距同构}\/的前提：
+		Parseval 等式本身只给出等距，满射性要用完备性——坐标序列中每个 $\ell^2$ 元素对应的部分和 $T_n=\sum_{k\leqslant n}c_k\psi_k$
+		是 $L^2_\#$ 中的 Cauchy 列，只有完备性才能把它收到 $L^2_\#$ 之内的极限。教材 21.3 的讨论在 $\mathcal R^2[0,2\pi]$ 上进行，
+		而 $\mathcal R^2$ \textbf{不}完备（$L^2_\#$ 才是它的完备化），所以在那里只能得到等距\textbf{嵌入}，
+		"完备系"严格强于"完全系"：定理 21.3.5 成立而定理 21.3.6 不成立，后者需要的正是完备性。
+	\end{link}
+	
+	\begin{corollary}[\bfseries{a.e.\ 收敛子列与 $L^\infty$ 的完备性}]
+		\begin{enumerate}[leftmargin=2.4em]
+			\item 设 $1\leqslant p<+\infty$，$f_n,f\in L^p(I)$ 且 $\|f_n-f\|_p\to0$。则存在子列 $\{f_{n_j}\}$ 使
+			$f_{n_j}\to f$ a.e.；由此 $L^p$ 中的极限在 a.e.\ 意义下唯一。
+			\item $L^\infty(I)$ 也完备：其中每个 Cauchy 列都收敛，故 $L^\infty(I)$ 是 Banach 空间。
+			\item 取 $I=\mathbb N$ 与计数测度，则 $L^p(\mathbb N)$ 即序列空间 $\ell^p$；由本条与 Riesz--Fischer 定理，
+			$\ell^p$（$1\leqslant p\leqslant+\infty$）是 Banach 空间。
+		\end{enumerate}
+	\end{corollary}
+	
+	\begin{proof}
+		\textbf{（1）}取 Riesz--Fischer 定理证明中第二步的子列：引理给出
+		$\sum_j|u_j|<+\infty$ a.e.，故 $f_{n_j}=f_{n_1}+\sum_{i<j}u_i\to f$ a.e.。
+		\textbf{（2）}设 $\{f_n\}$ 是 $L^\infty(I)$ 的 Cauchy 列，取子列使
+		$\|f_{n_{j+1}}-f_{n_j}\|_\infty<2^{-j}$。对每个 $j$，集合
+		$N_j:=\{|f_{n_{j+1}}-f_{n_j}|>2^{-j}\}$ 是零测集；令 $N:=\bigcup_jN_j$，则 $|N|=0$。
+		在 $I\setminus N$ 上，$j>k$ 时由三角不等式
+		\[
+		|f_{n_j}(x)-f_{n_k}(x)|\leqslant\sum_{i=k}^{j-1}|f_{n_{i+1}}(x)-f_{n_i}(x)|\leqslant\sum_{i=k}^{j-1}2^{-i}\leqslant2^{-k+1},
+		\]
+		故 $\{f_{n_j}\}$ 在 $I\setminus N$ 上一致 Cauchy，存在有界函数 $f_0$ 使 $f_{n_j}\to f_0$
+		在 $I\setminus N$ 上一致收敛；把 $f_0$ 在 $N$ 上补充定义为 $0$，得可测函数 $f$，且 $f=f_0$ a.e.，
+		故 $f\in L^\infty(I)$。对任意 $\varepsilon>0$，取 $J$ 使 $j,k\geqslant J$ 时
+		$\|f_{n_j}-f_{n_k}\|_\infty<\varepsilon/2$，再令 $j\to\infty$ 得
+		$\|f_{n_k}-f\|_\infty\leqslant\varepsilon/2$（$k\geqslant J$）；
+		最后由 Riesz--Fischer 定理证明第三步的 $\varepsilon/2$ 论证得 $\|f_n-f\|_\infty\to0$。
+		\textbf{（3）}计数测度下积分即求和，按定义 $\ell^p=L^p(\mathbb N)$。
+	\end{proof}
+	
+	\section{稠密性：简单函数与周期连续函数}
+	
+	完备性给出极限所在的空间，稠密性给出逼近极限的函数类。下面的第一条稠密性在 §2.4 之后即可证明，
+	它的证明方式是处理 $L^p$ 中一般命题的标准做法：先在简单函数上验证，再用范数的三角不等式过渡。
+	
+	\begin{theorem}[\bfseries{简单函数在 $L^p(I)$ 中稠密}]
+		设 $1\leqslant p<+\infty$，$I$ 是区间。对任意 $f\in L^p(I)$ 与任意 $\varepsilon>0$，存在简单函数 $s$
+		（即有限个可测集的特征函数的有限线性组合）使 $\|f-s\|_p<\varepsilon$，且可要求
+		$|s(x)|\leqslant|f(x)|$ 对 a.e.\ $x$ 成立。若 $f$ 有界，还可要求 $\|s\|_\infty\leqslant\|f\|_\infty$。
+	\end{theorem}
+	
+	\begin{proof}
+		\textbf{第一步：$f\geqslant0$。}对每个正整数 $n$，置
+		\[
+		s_n:=\sum_{k=1}^{n2^n}\frac{k-1}{2^n}\,\chi_{\bigl\{\frac{k-1}{2^n}\leqslant f<\frac{k}{2^n}\bigr\}}
+		\;+\;n\,\chi_{\{f\geqslant n\}} .
+		\]
+		各层集 $\{\frac{k-1}{2^n}\leqslant f<\frac{k}{2^n}\}$ 与 $\{f\geqslant n\}$ 可测（§1），且两两不交，
+		故 $s_n$ 是非负简单函数，满足 $0\leqslant s_n\leqslant f$ 与 $s_n\leqslant n$。
+		由于 $f\in L^p(I)$，$f<+\infty$ a.e.；在 $f(x)<+\infty$ 的点上，只要 $n>f(x)$ 就有
+		$f(x)-s_n(x)\leqslant2^{-n}$，故 $s_n\to f$ a.e.，且 $|f-s_n|^p\leqslant f^p\in L^1(I)$。
+		由 §1 的控制收敛定理（控制函数 $f^p$），
+		\[
+		\lim_{n\to\infty}\int_I|f-s_n|^p\dd\mu=0,
+		\qquad\text{即}\qquad
+		\|f-s_n\|_p\to0 .
+		\]
+		
+		\textbf{第二步：一般 $f$。}写 $f=f^+-f^-$（§1 的正部与负部），则 $f^\pm\geqslant0$ 且 $f^\pm\leqslant|f|$，
+		故 $f^\pm\in L^p(I)$。由第一步取非负简单函数 $s_n^\pm$ 使 $\|f^\pm-s_n^\pm\|_p\to0$，
+		令 $s_n:=s_n^+-s_n^-$，则 $s_n$ 是简单函数，且由 Minkowski 不等式
+		\[
+		\|f-s_n\|_p\leqslant\|f^+-s_n^+\|_p+\|f^--s_n^-\|_p\longrightarrow0 .
+		\]
+		又由第一步 $0\leqslant s_n^\pm\leqslant f^\pm\leqslant|f|$，故 $|s_n|\leqslant|f|$ a.e.，由此得
+		$\|s_n\|_\infty\leqslant\|f\|_\infty$。给定 $\varepsilon>0$ 取 $n$ 充分大即可。
+	\end{proof}
+	
+	把 $\R$ 上以 $2\pi$ 为周期、在 $[-\pi,\pi]$ 上 $p$ 次可积的函数按 a.e.\ 相等取类，得
+	\[
+	L^p_\#:=\bigl\{f:\R\to\R\ \bigm|\ f\ \text{以}\ 2\pi\ \text{为周期},\ f|_{[-\pi,\pi]}\in L^p[-\pi,\pi]\bigr\}\Big/\text{a.e.},
+	\]
+	其范数仍记为 $\|f\|_p:=\bigl(\int_{-\pi}^{\pi}|f|^p\dd\mu\bigr)^{\frac1p}$。
+	并记 $C_\#$ 为以 $2\pi$ 为周期的连续函数全体。由于 $[-\pi,\pi]$ 的测度有限且周期连续函数有界，
+	$C_\#\subset L^p_\#$（$1\leqslant p\leqslant+\infty$）。
+	
+	\begin{theorem}[\bfseries{$C_\#$ 在 $L^p_\#$ 中稠密}]
+		设 $1\leqslant p<+\infty$。对任意 $f\in L^p_\#$ 与任意 $\varepsilon>0$，存在 $g\in C_\#$ 使
+		$\|f-g\|_p<\varepsilon$；即 $C_\#$ 在 $L^p_\#$ 中稠密。
+	\end{theorem}
+	
+	\begin{proof}[证明思路]
+		把 $[-\pi,\pi]$ 的两个端点等同，则 $2\pi$ 周期函数即圆周 $\mathbb T=\R/2\pi\Z$ 上的函数，
+		而 $\|f\|_p^p=\int_{(-\pi,\pi)}|f|^p\dd\mu$。
+		
+		第一步：由 §2.6 的简单函数稠密性，只需对简单函数作逼近，而简单函数是有限个
+		$\chi_J$（$J\subset\mathbb T$ 是圆周上的区间）的线性组合。
+		
+		第二步：固定圆周上的区间 $J$ 与 $\delta>0$。构造 $g_\delta$ 如下：在 $J$ 内部距两端各超过 $\delta$ 处取 $1$，
+		在 $J$ 的两端各长 $\delta$ 的区间上线性地从 $1$ 降到 $0$，在 $J$ 外取 $0$；当 $J$ 的长度不超过 $2\delta$ 时取
+		$g_\delta\equiv0$。在 $\mathbb T$ 的两个端点处 $J$ 内部与外部都趋于 $0$，故 $g_\delta$ 在圆周上连续，
+		从而是 $2\pi$ 周期的连续函数；又 $0\leqslant g_\delta\leqslant1$，且 $\{g_\delta\ne\chi_J\}$ 含于长度之和为 $2\delta$
+		的两段区间内，故
+		\[
+		\|\chi_J-g_\delta\|_p^p\leqslant2\delta .
+		\]
+		$J=\mathbb T$ 时取 $g_\delta\equiv1$。
+		
+		第三步：对简单函数的每个 $\chi_J$ 取上述 $g_\delta$，用 Minkowski 不等式合并各段估计
+		（与 §2.6 第二步的做法相同），取 $\delta$ 充分小即得 $\|f-g\|_p<\varepsilon$。
+	\end{proof}
+	
+	\begin{note}[\bfseries{稠密性的用法}]
+		记 $\mathcal A$ 为 $C_\#$ 中的三角多项式全体。上面的定理说明
+		$\overline{C_\#}=L^p_\#$，而 $\mathcal A\subset C_\#$；因此只要在 $C_\#$ 上验证一条
+		只涉及范数与连续性的命题，再用范数的三角不等式过渡，就得到它在 $L^p_\#$ 上的版本。
+		§4 中标准正交系的完备性（Weierstrass 第二定理给出 $\overline{\mathcal A}=C_\#$）、
+		§7 中 Fejér 和的 $L^p$ 收敛，都是这一做法的实例。
+	\end{note}
+	
+	\section{$p$ 与 $q$ 的对偶}
+	
+	Hölder 不等式说明配对 $(f,g)\mapsto\int_I fg\dd\mu$ 是 $L^p\times L^q$ 上的有界双线性型。
+	本小节把这一配对与范数联系起来：$L^p$ 的范数可以写成配对在 $L^q$ 单位球上的上确界，
+	而对 $p=q=2$ 这一配对就是 §4 的内积。
+	
+	\begin{theorem}[\bfseries{范数的对偶表示}]
+		设 $1\leqslant p\leqslant+\infty$，$q$ 为共轭指数，$f\in L^p(I)$。则
+		\[
+		\|f\|_p=\sup\Bigl\{\Bigl|\int_I f g\dd\mu\Bigr|\ \Bigm|\ g\in L^q(I),\ \|g\|_q\leqslant1\Bigr\}.
+		\]
+		$1\leqslant p<+\infty$ 时上确界可取到：$p=1$ 时取 $g=\sgn f$；
+		$1<p<+\infty$ 时取 $g=\|f\|_p^{1-p}|f|^{p-1}\sgn f$（$f\ne0$）。
+	\end{theorem}
+	
+	\begin{proof}
+		\textbf{（1）上界。}对 $\|g\|_q\leqslant1$，由 Hölder 不等式
+		$\bigl|\int_I fg\dd\mu\bigr|\leqslant\|f\|_p\|g\|_q\leqslant\|f\|_p$，故上确界不超过 $\|f\|_p$。
+		
+		\textbf{（2）$p=1$。}$g:=\sgn f$ 可测且 $|g|\leqslant1$，故 $\|g\|_\infty\leqslant1$，且
+		$\int_I fg\dd\mu=\int_I|f|\dd\mu=\|f\|_1$。上确界等于 $\|f\|_1$ 且被取到。
+		
+		\textbf{（3）$1<p<+\infty$。}$f=0$ 时两端为 $0$。设 $f\ne0$，置
+		\[
+		g:=\|f\|_p^{1-p}\,|f|^{p-1}\sgn f,
+		\]
+		即
+		\[
+		g(x)=
+		\begin{cases}
+			\|f\|_p^{1-p}\,|f(x)|^{p-2}f(x), & f(x)\ne0,\\[2pt]
+			0, & f(x)=0 .
+		\end{cases}
+		\]
+		则 $g$ 可测，$fg=\|f\|_p^{1-p}|f|^p$ a.e.，故
+		$\int_I fg\dd\mu=\|f\|_p^{1-p}\|f\|_p^p=\|f\|_p$。又由 $(p-1)q=p$，
+		\[
+		\int_I|g|^q\dd\mu=\|f\|_p^{(1-p)q}\int_I|f|^{(p-1)q}\dd\mu
+		=\|f\|_p^{-p}\|f\|_p^p=1,
+		\]
+		即 $\|g\|_q=1$。故上确界被取到，等于 $\|f\|_p$。
+		
+		\textbf{（4）$p=+\infty$。}$f=0$ a.e. 时两端为 $0$。设 $0<\|f\|_\infty<+\infty$，任取
+		$\varepsilon\in(0,\|f\|_\infty)$，置 $E:=\{|f|>\|f\|_\infty-\varepsilon\}$，则 $|E|>0$。
+		取 $E$ 的有限测度子集 $E_0\subset E$ 使 $|E_0|>0$（$|E|<+\infty$ 时取 $E_0=E$；
+		$|E|=+\infty$ 时取 $E_0=E\cap[-n,n]$，$n$ 充分大），并令 $g:=\sgn(f)\chi_{E_0}/|E_0|$。
+		则 $g\in L^1(I)$、$\|g\|_1=1$，且
+		\[
+		\int_I fg\dd\mu=\frac1{|E_0|}\int_{E_0}|f|\dd\mu\geqslant\|f\|_\infty-\varepsilon .
+		\]
+		由 $\varepsilon>0$ 任意小得上确界不小于 $\|f\|_\infty$，与 (1) 合并即得等式。
+	\end{proof}
+	
+	\begin{theorem}[\bfseries{$L^q$ 等距嵌入 $(L^p)^*$}]
+		设 $1\leqslant p\leqslant+\infty$，$q$ 为共轭指数。对 $g\in L^q(I)$ 定义
+		\[
+		\Phi_g:L^p(I)\to\R,\qquad \Phi_g(f):=\int_I f g\dd\mu .
+		\]
+		则 $\Phi_g$ 是 $L^p(I)$ 上的有界线性泛函，$\|\Phi_g\|=\|g\|_q$；映射 $g\mapsto\Phi_g$ 是 $L^q(I)$ 到
+		$(L^p(I))^*$ 的线性等距。
+	\end{theorem}
+	
+	\begin{proof}
+		线性性由 §1 积分的线性性得到；有界性与 $\|\Phi_g\|\leqslant\|g\|_q$ 即 Hölder 不等式。
+		反向不等式即上一个定理：把 $p$ 与 $q$ 互换，得到
+		\[
+		\|g\|_q=\sup\Bigl\{\Bigl|\int_I f g\dd\mu\Bigr|\ \Bigm|\ \|f\|_p\leqslant1\Bigr\}=\|\Phi_g\|,
+		\]
+		其中 $1<q<+\infty$ 时用定理的 (3)，$q=1$（即 $p=+\infty$）时用 (2)，$q=+\infty$（即 $p=1$）时用 (4)。
+		等距性蕴含 $g\mapsto\Phi_g$ 是单射，从而是到其像上的线性等距。
+	\end{proof}
+	
+	\begin{proposition}[\bfseries{有限测度区间上范数的相互控制}]
+		设 $|I|<+\infty$，$1\leqslant q<p\leqslant+\infty$。则 $L^p(I)\subset L^q(I)$，且对任意 $f\in L^p(I)$
+		\[
+		\|f\|_q\leqslant|I|^{\frac1q-\frac1p}\,\|f\|_p
+		\qquad\Bigl(\frac1{+\infty}:=0\Bigr),
+		\]
+		即包含映射 $L^p(I)\hookrightarrow L^q(I)$ 是范数不超过 $|I|^{\frac1q-\frac1p}$ 的连续线性映射。
+		这个常数是最优的：$|f|$ 为 a.e.\ 常数时等号成立。
+	\end{proposition}
+	
+	\begin{proof}
+		\textbf{（1）$p<+\infty$。}指数 $\frac pq>1$ 的共轭指数为 $\frac{p}{p-q}$。由 Hölder 不等式用于
+		$|f|^q\in L^{p/q}(I)$ 与常值函数 $1\in L^{p/(p-q)}(I)$，
+		\[
+		\int_I|f|^q\dd\mu\leqslant\Bigl(\int_I|f|^p\dd\mu\Bigr)^{\frac qp}
+		\Bigl(\int_I1\,\dd\mu\Bigr)^{1-\frac qp}
+		=\|f\|_p^q\,|I|^{1-\frac qp}<+\infty .
+		\]
+		两端取 $\frac1q$ 次方，即得 $\|f\|_q\leqslant|I|^{\frac1q-\frac1p}\|f\|_p$。
+		
+		\textbf{（2）$p=+\infty$。}由 $|f|\leqslant\|f\|_\infty$ a.e. 得
+		$\int_I|f|^q\dd\mu\leqslant\|f\|_\infty^q|I|$，两端取 $\frac1q$ 次方得所证。
+		
+		\textbf{（3）最优性。}若 $|f|=c>0$ a.e.，则 $\|f\|_q=c|I|^{\frac1q}$、
+		$\|f\|_p=c|I|^{\frac1p}$，所证不等式取等号。反之，若所证不等式取等号，
+		则 Hölder 不等式取等号；其等号条件（指数 $\frac pq$ 与 $\frac{p}{p-q}$ 共轭）给出
+		$|f|^{q\cdot\frac pq}=\lambda\cdot1$ a.e.，即 $|f|^p=\lambda$ a.e.，也就是 $|f|$ 为 a.e.\ 常数。
+		因此这个常数是最优的。
+	\end{proof}
+	
+	\begin{corollary}[\bfseries{有限测度上的包含链}]
+		设 $|I|<+\infty$。则
+		\[
+		L^\infty(I)\subset L^p(I)\subset L^q(I)\subset L^1(I)\qquad(1\leqslant q\leqslant p\leqslant+\infty),
+		\]
+		且各包含映射的范数不超过 $|I|^{\frac1q-\frac1p}$。特别地，当 $|I|=1$ 时 $\|\cdot\|_p$ 关于 $p$ 单调不增。
+		若 $|I|=+\infty$，包含关系不成立：在 $\R$ 上取 $f(x)=\frac1{1+|x|}$，则 $f\in L^2(\R)$ 而 $f\notin L^1(\R)$。
+	\end{corollary}
+	
+	\begin{proof}
+		包含链即上一个命题逐段用于相邻的两个指数。反例：
+		\[
+		\int_\R\frac{\dd\mu}{(1+|x|)^2}=2\int_0^\infty\frac{\dd x}{(1+x)^2}=2<+\infty,
+		\qquad
+		\int_\R\frac{\dd\mu}{1+|x|}=2\int_0^\infty\frac{\dd x}{1+x}=+\infty,
+		\]
+		故 $f\in L^2(\R)\setminus L^1(\R)$，这说明链式包含依赖 $|I|<+\infty$ 这一条件。
+	\end{proof}
+	
+	最后记下对偶的一个完整形式。对 $1\leqslant p<+\infty$，上一个定理中的等距映射是满射，
+	即每个有界线性泛函都等于某个 $g\in L^q$ 的配对，故 $(L^p(I))^*=L^q(I)$（等距同构）；
+	$p=+\infty$ 时不成立，$(L^\infty(I))^*$ 严格大于 $L^1(I)$。满射性的证明需要把泛函表示为
+	关于 $\mu$ 的密度，属于测度论的范围，本文不展开；本文只用上面已证的估计方向与范数的上确界表示。
+	出处见（IDA, Ch.13）与（夏道行 上册）。
+	
+	\begin{link}[$p=1$、$p=2$、$p=+\infty$ 三点在两条线上的位置]
+		$p=2$：$(L^2)^*=L^2$ 由内积给出（§4 的 Riesz 表示），而 $L^2$ 又是 Banach 格，
+		故 Parseval、正交投影与正负分解在这里同时可用——两条线唯一的交点。
+		$p=1$：$(L^1)^*=L^\infty$ 是等距同构，$L^1$ 是抽象 $L^1$ 空间的典型（不相交可加性 $\|f+g\|_1=\|f\|_1+\|g\|_1$），
+		但 $\|\cdot\|_1$ 不严格凸、不满足平行四边形律，序线可用而几何线不可用。
+		$p=+\infty$：对偶端不对称，$(L^\infty)^*$ 严格大于 $L^1$；教材 21.2 的 $\|D_n\|_1$ 与 $\|S_n\|$ 都落在 $p=1$ 这一侧。
+	\end{link}
+	
+	
+	
+	
+	
+	
+\end{document}

@@ -1,0 +1,443 @@
+\documentclass[oneside]{book}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{eso-pic}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{euscript}
+\usepackage{mathrsfs}
+\usepackage{soul}
+\usepackage[normalem]{ulem}
+\usepackage{ctex}
+\usepackage{tikz}
+\usepackage{fancyhdr} % 用于自定义页眉页脚
+\usepackage{lipsum}
+\usepackage{transparent}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{geometry}
+\usepackage{cancel}
+\usepackage{enumitem}
+\usetikzlibrary{positioning}
+
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{geometry}
+\geometry{a4paper,left=2.8cm,right=2.8cm,top=2.7cm,bottom=2.7cm}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage[breakable]{tcolorbox}
+\usepackage[colorlinks=true,allcolors=blue]{hyperref}
+
+\usepackage{cleveref}
+
+
+\theoremstyle{definition}
+\newtheorem*{notation}{Notation}
+\newtheorem*{properties}{Properties}
+
+% ---------- 注解框 ----------
+\newtcolorbox{note}[1][注]{breakable, colback=white, colframe=black,
+	boxrule=0.5pt, arc=0pt, left=7pt, right=7pt, top=5pt, bottom=5pt,
+	fonttitle=\bfseries\small, coltitle=black, colbacktitle=white, title={#1}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rc}{\mathcal{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\inner}[2]{\langle #1,#2\rangle}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\spann}{span}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\Ker}{ker}
+\newcommand{\Ltwo}{L^2}
+\newtcolorbox{link}[1][与教材的对应]{breakable, colback=blue!4!white, colframe=blue!55!black,
+	boxrule=0.6pt, arc=2pt, left=7pt, right=7pt, top=5pt, bottom=5pt,
+	fonttitle=\bfseries\small, coltitle=white, colbacktitle=blue!55!black, title={#1}}
+\providecommand{\Q}{\mathbb{Q}}
+
+\makeatletter
+\renewcommand{\sectionmark}[1]{%
+	\markright{\ifnum\c@secnumdepth>\z@\thesection\quad\fi #1}}
+\makeatother
+
+
+% 双面排版：右侧页左边距3cm，左侧页右边距3cm，上下边距2.5cm
+\geometry{a4paper, left=3cm, right=3cm, top=2.5cm, bottom=2.5cm}
+\AddToShipoutPictureBG*{%
+	\AtPageLowerLeft{%
+		\transparent{0.6}% 透明度：0.3（0-1之间）
+		\includegraphics[
+		width=\paperwidth,
+		height=\paperheight
+		]{background.jpg}% 你的图片路径
+	}%
+}
+\title{多元函数积分学\\ Fourier Analysis}
+\author{Donmianchen\\哈尔滨工业大学\\数学学院\\2026}
+
+
+
+
+% 1) 声明：一份定义，两处使用
+\newcommand{\styleA}{\zihao{-4}\kaishu}    % a：小四楷体
+\newcommand{\styleB}{\zihao{-4}\heiti}     % b：小四黑体
+
+% 2) 手动调用（你原来想要的 \a{正文}）
+\DeclareTextFontCommand{\a}{\styleA}
+\DeclareTextFontCommand{\b}{\styleB}
+
+
+\makeatletter
+\newenvironment{pf}[1][\proofname]{\par
+	\pushQED{\qed}%
+	\normalfont\topsep4\p@\@plus4\p@\relax
+	\trivlist
+	\item[\hskip\labelsep\itshape #1\@addpunct{.}]\ignorespaces
+	\itshape            % ← 加在这里：只影响证明正文
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+
+\theoremstyle{definition}
+
+
+
+
+
+\makeatletter
+\newtheoremstyle{cth}
+{}          % 上方间距
+{}          % 下方间距
+{}             % 正文字体
+{}             % 缩进
+{\bfseries\heiti}   % 标题字体
+{.}            % 标题后标点
+{1em}          % 标题后间距
+{\thmname{#1}\thmnumber{ #2}%          ← 标题格式
+	\if\relax\detokenize{#3}\relax
+	\def\@currentlabelname{#1}%        % 无注：名称 = Definition
+	\else
+	\protected@edef\@currentlabelname{#3}%     % 名称 = 偏导数
+	\thmnote{\heiti（#3）}%                     % 注（含括号）加粗
+	\protected@edef\thm@autokey{\@currenvir:#3}%  % 键 = definition:偏导数 ★
+	\label{\thm@autokey}%                        % 自动打标签 ★
+	\fi}
+\makeatother
+
+\theoremstyle{cth}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{reremark}{Re:Remark}[section]
+\newtheorem*{ap}{Another proof}
+\newtheorem*{sol}{Solution}
+\newtheorem*{solution}{Solution}
+\newtheorem*{analysis}{Analysis}
+\newtheorem*{algorithm}{Algorithm}
+
+
+% 3) 定理环境：把声明塞进样式
+\newtheoremstyle{cnthm}
+{}{}{\itshape}{}{\bfseries\heiti}{．}{1em}{}
+
+\theoremstyle{cnthm}
+\newtheorem{example}{Example}[section]
+
+
+
+\makeatletter
+\newenvironment{thmpf}[1][]{%
+	\begin{theorem}[#1]%
+		\def\pfp{\end{theorem}\begin{pf}}%
+	}{%
+	\end{pf}%
+}
+\makeatother
+\makeatletter
+\newenvironment{lempf}[1][]{%
+	\begin{lemma}[#1]%
+		\def\pfp{\end{lemma}\begin{pf}}%
+	}{%
+	\end{pf}%
+}
+\makeatother
+\makeatletter
+\newenvironment{colpf}[1][]{%
+	\begin{corollary}[#1]%
+		\def\pfp{\end{corollary}\begin{pf}}%
+	}{%
+	\end{pf}%
+}
+\makeatother
+
+
+\graphicspath{{figures/}}
+\begin{document}
+	
+	\AddToShipoutPictureBG{%
+		\AtPageLowerLeft{%
+			\transparent{0.08}% 透明度：0.3（0-1之间）
+			\includegraphics[
+			width=\paperwidth,
+			height=\paperheight
+			]{background.jpg}% 你的图片路径
+		}%
+	}
+	
+	\AddToShipoutPictureFG{
+		% 你的原有定位逻辑完全保留，仅嵌套在钩子中
+		\begin{textblock*}{2cm}(% 图片宽度：2cm（可按需调整）
+			\dimexpr\paperwidth - 2cm - 1cm\relax,  % X坐标：页面宽度 - 图片宽度 - 右边距（1cm是图片到页边的距离）
+			1cm  % Y坐标：距离页面顶部1cm（可按需调整，避免与页眉重叠）
+			)
+			\includegraphics[width=2cm]{mutsumiww.png}  % 插入图片（example-image是LaTeX自带示例图，直接用）
+		\end{textblock*}
+	}
+	\AddToShipoutPictureFG{
+		% 你的原有定位逻辑完全保留，仅嵌套在钩子中
+		\begin{textblock*}{2cm}(% 图片宽度：2cm（可按需调整）
+			\dimexpr\paperwidth - 2cm - 3cm\relax,  % X坐标：页面宽度 - 图片宽度 - 右边距（1cm是图片到页边的距离）
+			1cm  % Y坐标：距离页面顶部1cm（可按需调整，避免与页眉重叠）
+			)
+			\includegraphics[width=2cm]{hit1.png}  % 插入图片（example-image是LaTeX自带示例图，直接用）
+		\end{textblock*}
+	}
+	
+	
+	
+	\maketitle
+	\chapter*{使用须知}
+	本文为我学习多元函数积分学时的笔记。特点为例子众多，也许可以帮助你理解一些性质。
+	
+	以下是参这篇文档的参考书目：
+	\begin{enumerate}
+		\item 丘维声.高等代数(上册)[M].北京：清华大学出版社.
+		\item 丘维声.高等代数(下册)[M].北京：清华大学出版社.
+		\item 史济怀等.数学分析教程(下册)[M]合肥：中国科学技术大学出版社.
+		\item 裴礼文.数学分析中的典型问题与方法[M]北京：高等教育出版社.
+		\item 楼红卫等.101计划-数学分析(下册)[M]北京：高等教育出版社.
+	\end{enumerate}
+	
+	
+	我的 QQ 号：3862617862，邮箱是3862617862@qq.com.发现问题麻烦联系我下，我会找到哈尔滨工业大学薪火笔记社进行笔记的更新迭代。
+	
+	如有不足烦请谅解，希望这本复习笔记能够帮到大家！
+	%		\begin{figure}[h]  % 位置参数控制图片优先放置的位置
+		%		\centering  % 图片居中对齐
+		%		\includegraphics[width=0.4\textwidth, keepaspectratio]{thank.jpg}  % 插入图片
+		%		\caption{囔囔囔(雪莉音效)}  % 图片标题（会自动编号）
+		%		\label{fig:thank}  % 标签（用于交叉引用，如\ref{fig:标签名}）
+		%	\end{figure}
+	
+	\hfill Donmianchen
+	
+	\hfill 2026 年 10 月 19 日
+	
+
+
+	
+	
+	\tableofcontents
+	
+	
+	
+	
+	
+	
+	\chapter{多元函数的极限和连续}
+	\section{多元函数的极限}
+		
+		\begin{definition}[重极限]
+		
+			设$z=f(P)=f(x,y)$在$E\subset \mathbb{R}^2$上定义，$A$是一个定常数，$P_0=(x_0,y_0)$是$E$的极限点，若$\forall \epsilon >0,\exists \delta >0,s.t.$ $\displaystyle |f(P)-A|=|f(x,y)-A|<\epsilon $
+			,其中
+			$ \displaystyle (x,y)\in E \text{且} 0<\rho =d(P,P_0)<\delta$
+			,则称当$P=(x,y)\to P_0=()x_0,y_0$时，函数$f(x,y)$存在重极限，极限值为$A$，记作
+			$\displaystyle\lim\limits_{(x,y)\to (x_0,y_0)}f(x,y)=\lim\limits_{\substack{x\to x_0\\ y \to y_0}}f(x,y)=A$
+		
+		\end{definition}
+		
+		\begin{example}[\nameref{definition:重极限} 沿不同曲线逼近一致]
+			
+			考虑当$x\to o,y \to 0$时函数$\displaystyle\frac{xy}{x^2+y^2}$的极限。
+			
+			考虑动点$(x,y)$沿直线$y=kx$趋于$(0,0)$时，$\displaystyle \left.\frac{xy}{x^2+y^2}\right |_{y=kx}=\frac{kx^2}{(1+kk^2)x^2}=\frac{k}{1+k^2}$.
+			
+			与k有关，于是重极限不存在。
+			
+		\end{example}
+		
+		\begin{example}[\nameref{definition:重极限} 极坐标上关于\theta 一致]
+			
+			考虑重极限
+			$\displaystyle I=\lim\limits_{\substack{x\to 0\\y\to 0}}x^2y^2ln(x^2+y^2)$,令$x=rcos\theta,y=rsin\theta$
+			,于是
+			$\displaystyle I=\lim\limits_{\substack{x\to 0\\ y \to 0}}x^2y^2ln(x^2+y^2)=\lim\limits_{(r,\theta)\to (0,0)}r^4cos^2\theta sin^2\theta\lim\limits_{(r,\theta)\to (0,0)}ln(r^2)\leq 2r^4ln(r)=0$
+			
+			
+		\end{example}
+		
+		\begin{thmpf}[极限值的唯一性]
+			
+		设 $u_{0}$ 是 $E$ 的聚点，$f:E\to\mathbb R^{m}$ 在 $u_{0}$ 处分别以 $v_{0}$ 与 $v_{1}$ 为极限。则 $v_{0}=v_{1}$
+		
+		\pfp
+		
+		任给 $\varepsilon>0$。存在 $\delta_{0},\delta_{1}>0$，使 $0<\|u-u_{0}\|<\delta_{0}$ 时 $\|f(u)-v_{0}\|<\varepsilon$，$0<\|u-u_{0}\|<\delta_{1}$ 时 $\|f(u)-v_{1}\|<\varepsilon$。令 $\delta=\min\{\delta_{0},\delta_{1}\}$。由 $u_{0}$ 是 $E$ 的聚点，$\mathring B(u_{0},\delta)\cap E\neq\varnothing$，取其中一点 $u$，则
+		$\displaystyle\|v_{0}-v_{1}\|\leqslant\|v_{0}-f(u)\|+\|f(u)-v_{1}\|<2\varepsilon$ 
+		由 $\varepsilon$ 的任意性得 $\|v_{0}-v_{1}\|=0$，即 $v_{0}=v_{1}$
+		
+		\end{thmpf}
+		
+		\begin{thmpf}[极限的局部有界性]
+			
+			若 $\displaystyle\lim\limits_{u\to u_{0}}f(u)=v_{0}$，则存在 $\delta>0$ 使 $f\bigl(\mathring B(u_{0},\delta)\cap E\bigr)$ 有界，且 $\|f(u)\|\leqslant\|v_{0}\|+1$ 在此集合上成立
+			
+			\pfp
+			
+			在极限定义中取 $\varepsilon=1$，得 $\delta>0$ 使 $0<\|u-u_{0}\|<\delta$ 时 $\|f(u)-v_{0}\|<1$，于是
+			$\|f(u)\|\leqslant\|f(u)-v_{0}\|+\|v_{0}\|<\|v_{0}\|+1$
+			
+		\end{thmpf}
+		
+		\begin{thmpf}[极限的四则运算]
+			
+			设 $\displaystyle f,g:E\to\mathbb R$，$\lim\limits_{u\to u_{0}}f(u)=a$，$\lim\limits_{u\to u_{0}}g(u)=b$。则
+			\begin{enumerate}
+				\item 对任意 $\lambda,\mu\in\mathbb R$，$\lim_{u\to u_{0}}\bigl(\lambda f(u)+\mu g(u)\bigr)=\lambda a+\mu b$；
+				\item $\lim_{u\to u_{0}}f(u)g(u)=ab$；
+				\item 若 $b\neq0$，则存在 $\delta>0$ 使 $u\in\mathring B(u_{0},\delta)\cap E$ 时 $g(u)\neq0$，且 $\lim_{u\to u_{0}}\frac{f(u)}{g(u)}=\frac{a}{b}$。
+			\end{enumerate}
+			
+			\pfp
+			
+			(1) 若 $\lambda=\mu=0$，两边都是 $0$。否则令 $M=|\lambda|+|\mu|>0$。任给 $\varepsilon>0$，取 $\delta>0$ 使 $0<\|u-u_{0}\|<\delta$ 时
+			$\displaystyle
+			|f(u)-a|<\frac{\varepsilon}{M}, |g(u)-b|<\frac{\varepsilon}{M},
+			$
+			则
+			$\displaystyle
+			|\lambda f(u)+\mu g(u)-(\lambda a+\mu b)|
+			\leqslant|\lambda|\,|f(u)-a|+|\mu|\,|g(u)-b|<\varepsilon .
+			$
+			
+			(2) 由局部有界性，存在 $\delta_{1}>0$ 与 $M>0$ 使 $0<\|u-u_{0}\|<\delta_{1}$ 时 $|f(u)|\leqslant M$。任给 $\varepsilon>0$，取 $\delta\in(0,\delta_{1}]$ 使 $0<\|u-u_{0}\|<\delta$ 时
+			$\displaystyle
+			|g(u)-b|<\frac{\varepsilon}{2M}, |f(u)-a|<\frac{\varepsilon}{2(|b|+1)},
+			$
+			则
+			$\displaystyle
+			|f(u)g(u)-ab|\leqslant|f(u)|\,|g(u)-b|+|b|\,|f(u)-a|
+			<\frac{\varepsilon}{2}+\frac{|b|\,\varepsilon}{2(|b|+1)}<\varepsilon .
+			$
+			
+			(3) 取 $\delta_{1}>0$ 使 $0<\|u-u_{0}\|<\delta_{1}$ 时 $|g(u)-b|<\frac{|b|}{2}$，则 $|g(u)|>\frac{|b|}{2}\neq0$。任给 $\varepsilon>0$，取 $\delta\in(0,\delta_{1}]$ 使 $0<\|u-u_{0}\|<\delta$ 时
+			$\displaystyle
+			|f(u)-a|<\frac{|b|\,\varepsilon}{4},\qquad |g(u)-b|<\frac{|b|^{2}\varepsilon}{4(|a|+1)},
+			$
+			于是
+			$\displaystyle
+			\left|\frac{f(u)}{g(u)}-\frac{a}{b}\right|
+			=\frac{|bf(u)-ag(u)|}{|g(u)|\,|b|}
+			\leqslant\frac{2}{|b|^{2}}\Bigl(|b|\,|f(u)-a|+|a|\,|g(u)-b|\Bigr)
+			<\frac{\varepsilon}{2}+\frac{\varepsilon}{2}=\varepsilon .
+			$
+			
+		\end{thmpf}
+		
+		极限值的唯一性，局部有界性，四则运算的分别进行性，上下极限的运算性质，保序性，极限收敛原理
+		
+		
+		
+		
+		
+		
+		
+		
+			
+	
+	\chapter{多元函数微分学}
+	\section{偏导数与全微分}
+		
+		\begin{definition}[偏导数]
+			
+			设$f(x,y)$在$(x_0,y_0)$点邻域内有定义，若极限
+			$\displaystyle \lim\limits_{\Delta x \to 0} \frac{f(x_0+\Delta x,y_0)-f(x_0,y_0)}{\Delta x}$
+			存在，则称其为$f(x,y)$在点$(x_0,y_0)$处关于$x$的\textbf{偏导数}，记作
+			$\displaystyle \frac{\partial f(x_0,y_0)}{\partial x}\text{或}\left.\frac{\partial f}{\partial x}\right |_{(x_0,y_0)}\text{或}f_x'(x_0,y_0)$
+			或 
+			$f_1'(x_0,y_0)$
+			而
+			$\displaystyle \frac{\partial f(x,y)}{\partial x}$
+			 、
+			$\displaystyle \frac{\partial f}{\partial x}$
+			 、
+			$\displaystyle f_x'(x,y)\text{、} f_1'(x,y)$
+			是$D$上的二元函数，简记作
+			$\displaystyle \frac{\partial f}{\partial x}$
+			或
+			$\displaystyle f_x'$
+			
+		\end{definition}
+			
+			\begin{example}[\nameref{definition:偏导数}的一般例子]
+				
+				$u=x^ysinz(x>0)$的一阶偏导数:
+				
+				\[\frac{\partial u}{\partial x}=yx^{y-1}sinz \qquad \frac{\partial u}{\partial y}=x^ylnxsinz \qquad \frac{\partial u}{\partial z}=x^ycosz\]
+				
+			\end{example}
+			
+			\begin{example}[\nameref{definition:偏导数}只说明沿坐标轴方向连续]
+				
+				$f(x,y)=\begin{dcases}
+						1,  &xy\neq 0\\
+						0,  &xy=0
+					\end{dcases}$
+				
+				有$f_x'(0,0)=f_y'(0,0)=0$，但函数在$(0,0)$不连续
+				
+			\end{example}
+		
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+\end{document}

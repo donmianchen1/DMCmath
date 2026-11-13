@@ -1,0 +1,7 @@
+#temp files
+* .aux
+*.dvi
+*.log
+*.out
+*.synctex.gz
+*.toc

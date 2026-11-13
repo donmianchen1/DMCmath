@@ -1,0 +1,372 @@
+\documentclass[oneside]{book}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{eso-pic}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{euscript}
+\usepackage{mathrsfs}
+\usepackage{soul}
+\usepackage[normalem]{ulem}
+\usepackage{ctex}
+\usepackage{tikz}
+\usepackage{fancyhdr} % 用于自定义页眉页脚
+\usepackage{lipsum}
+\usepackage{transparent}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{geometry}
+\usepackage{cancel}
+\usepackage{enumitem}
+\usetikzlibrary{positioning}
+
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{geometry}
+\geometry{a4paper,left=2.8cm,right=2.8cm,top=2.7cm,bottom=2.7cm}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage[breakable]{tcolorbox}
+\usepackage[colorlinks=true,allcolors=blue]{hyperref}
+
+\usepackage{cleveref}
+
+
+\theoremstyle{definition}
+\newtheorem*{notation}{Notation}
+\newtheorem*{properties}{Properties}
+
+% ---------- 注解框 ----------
+\newtcolorbox{note}[1][注]{breakable, colback=white, colframe=black,
+	boxrule=0.5pt, arc=0pt, left=7pt, right=7pt, top=5pt, bottom=5pt,
+	fonttitle=\bfseries\small, coltitle=black, colbacktitle=white, title={#1}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rc}{\mathcal{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\inner}[2]{\langle #1,#2\rangle}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\spann}{span}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\Ker}{ker}
+\newcommand{\Ltwo}{L^2}
+\newtcolorbox{link}[1][与教材的对应]{breakable, colback=blue!4!white, colframe=blue!55!black,
+	boxrule=0.6pt, arc=2pt, left=7pt, right=7pt, top=5pt, bottom=5pt,
+	fonttitle=\bfseries\small, coltitle=white, colbacktitle=blue!55!black, title={#1}}
+\providecommand{\Q}{\mathbb{Q}}
+
+\makeatletter
+\renewcommand{\sectionmark}[1]{%
+	\markright{\ifnum\c@secnumdepth>\z@\thesection\quad\fi #1}}
+\makeatother
+
+
+% 双面排版：右侧页左边距3cm，左侧页右边距3cm，上下边距2.5cm
+\geometry{a4paper, left=3cm, right=3cm, top=2.5cm, bottom=2.5cm}
+\AddToShipoutPictureBG*{%
+	\AtPageLowerLeft{%
+		\transparent{0.6}% 透明度：0.3（0-1之间）
+		\includegraphics[
+		width=\paperwidth,
+		height=\paperheight
+		]{background.jpg}% 你的图片路径
+	}%
+}
+\title{多元函数积分学\\ Fourier Analysis}
+\author{Donmianchen\\哈尔滨工业大学\\数学学院\\2026}
+
+
+
+
+% 1) 声明：一份定义，两处使用
+\newcommand{\styleA}{\zihao{-4}\kaishu}    % a：小四楷体
+\newcommand{\styleB}{\zihao{-4}\heiti}     % b：小四黑体
+
+% 2) 手动调用（你原来想要的 \a{正文}）
+\DeclareTextFontCommand{\a}{\styleA}
+\DeclareTextFontCommand{\b}{\styleB}
+
+
+\makeatletter
+\newenvironment{pf}[1][\proofname]{\par
+	\pushQED{\qed}%
+	\normalfont\topsep4\p@\@plus4\p@\relax
+	\trivlist
+	\item[\hskip\labelsep\itshape #1\@addpunct{.}]\ignorespaces
+	\itshape            % ← 加在这里：只影响证明正文
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+
+\theoremstyle{definition}
+
+
+
+
+
+\makeatletter
+\newtheoremstyle{cth}
+{}          % 上方间距
+{}          % 下方间距
+{}             % 正文字体
+{}             % 缩进
+{\bfseries\heiti}   % 标题字体
+{.}            % 标题后标点
+{1em}          % 标题后间距
+{\thmname{#1}\thmnumber{ #2}%          ← 标题格式
+	\if\relax\detokenize{#3}\relax
+	\def\@currentlabelname{#1}%        % 无注：名称 = Definition
+	\else
+	\protected@edef\@currentlabelname{#3}%     % 名称 = 偏导数
+	\thmnote{\heiti（#3）}%                     % 注（含括号）加粗
+	\protected@edef\thm@autokey{\@currenvir:#3}%  % 键 = definition:偏导数 ★
+	\label{\thm@autokey}%                        % 自动打标签 ★
+	\fi}
+\makeatother
+
+\theoremstyle{cth}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{reremark}{Re:Remark}[section]
+\newtheorem*{ap}{Another proof}
+\newtheorem*{sol}{Solution}
+\newtheorem*{solution}{Solution}
+\newtheorem*{analysis}{Analysis}
+\newtheorem*{algorithm}{Algorithm}
+
+
+% 3) 定理环境：把声明塞进样式
+\newtheoremstyle{cnthm}
+{}{}{\itshape}{}{\bfseries\heiti}{．}{1em}{}
+
+\theoremstyle{cnthm}
+\newtheorem{example}{Example}[section]
+
+
+
+\makeatletter
+\newenvironment{thmpf}[1][]{%
+	\begin{theorem}[#1]%
+		\def\pfp{\end{theorem}\begin{pf}}%
+	}{%
+	\end{pf}%
+}
+\makeatother
+\makeatletter
+\newenvironment{lempf}[1][]{%
+	\begin{lemma}[#1]%
+		\def\pfp{\end{lemma}\begin{pf}}%
+	}{%
+	\end{pf}%
+}
+\makeatother
+\makeatletter
+\newenvironment{colpf}[1][]{%
+	\begin{corollary}[#1]%
+		\def\pfp{\end{corollary}\begin{pf}}%
+	}{%
+	\end{pf}%
+}
+\makeatother
+
+
+\graphicspath{{figures/}}
+\begin{document}
+	
+	\AddToShipoutPictureBG{%
+		\AtPageLowerLeft{%
+			\transparent{0.08}% 透明度：0.3（0-1之间）
+			\includegraphics[
+			width=\paperwidth,
+			height=\paperheight
+			]{background.jpg}% 你的图片路径
+		}%
+	}
+	
+	\AddToShipoutPictureFG{
+		% 你的原有定位逻辑完全保留，仅嵌套在钩子中
+		\begin{textblock*}{2cm}(% 图片宽度：2cm（可按需调整）
+			\dimexpr\paperwidth - 2cm - 1cm\relax,  % X坐标：页面宽度 - 图片宽度 - 右边距（1cm是图片到页边的距离）
+			1cm  % Y坐标：距离页面顶部1cm（可按需调整，避免与页眉重叠）
+			)
+			\includegraphics[width=2cm]{37.png}  % 插入图片（example-image是LaTeX自带示例图，直接用）
+		\end{textblock*}
+	}
+	\AddToShipoutPictureFG{
+		% 你的原有定位逻辑完全保留，仅嵌套在钩子中
+		\begin{textblock*}{2cm}(% 图片宽度：2cm（可按需调整）
+			\dimexpr\paperwidth - 2cm - 3cm\relax,  % X坐标：页面宽度 - 图片宽度 - 右边距（1cm是图片到页边的距离）
+			1cm  % Y坐标：距离页面顶部1cm（可按需调整，避免与页眉重叠）
+			)
+			\includegraphics[width=2cm]{hit1.png}  % 插入图片（example-image是LaTeX自带示例图，直接用）
+		\end{textblock*}
+	}
+	
+	
+	
+	\maketitle
+	\chapter*{使用须知}
+	本文为我学习常微分方程时的笔记。特点为例子众多，也许可以帮助你理解一些性质。
+	
+	以下是参这篇文档的参考书目：
+	\begin{enumerate}
+		\item 1
+	\end{enumerate}
+	
+	
+	我的 QQ 号：3862617862，邮箱是3862617862@qq.com.发现问题麻烦联系我下，我会找到哈尔滨工业大学薪火笔记社进行笔记的更新迭代。
+	
+	如有不足烦请谅解，希望这本复习笔记能够帮到大家！
+	%		\begin{figure}[h]  % 位置参数控制图片优先放置的位置
+		%		\centering  % 图片居中对齐
+		%		\includegraphics[width=0.4\textwidth, keepaspectratio]{thank.jpg}  % 插入图片
+		%		\caption{囔囔囔(雪莉音效)}  % 图片标题（会自动编号）
+		%		\label{fig:thank}  % 标签（用于交叉引用，如\ref{fig:标签名}）
+		%	\end{figure}
+	
+	\hfill Donmianchen
+	
+	\hfill 2026 年 10 月 19 日
+	
+
+
+	
+	
+	\tableofcontents
+	
+	
+	
+	
+	
+	
+	\chapter{微分方程的基本概念}
+	\section{微分方程的定义}
+		
+		\begin{definition}[微分方程]
+		
+			微分方程是联系着自变量和未知函数以及未知函数导数的方程。
+		
+		\end{definition}
+		
+		\begin{definition}[常微分方程]
+			
+			称如下形式的方程为常微分方程：$\displaystyle F(x,y,y',...,y^{(n)})=0,n\geq 1$
+			，其中$F$为已知函数，自变量$x$在实数集$\mathbb{R}$的某个区间上变化，未知函数$y\in \mathbb{R}$，正整数$n$称作该常微分方程的阶。
+			
+		\end{definition}
+		
+		\begin{example}[以下方程不是常微分方程]
+			
+			$y'=f(y(x-1))\qquad y'=y(y(x))$
+			
+		\end{example}
+		
+		\begin{definition}[线性常微分方程]
+			
+			在\nameref{definition:常微分方程}中，若$F$关于$x,y',..,y^{(n)}$是线性的，则称该方程为线性常微分方程，简称为线性微分方程。
+			
+		\end{definition}
+		
+		\begin{definition}[方程的解]
+			
+			设$J$为$\mathbb{R}$中的区间，称函数$y=\Phi (x)(x\in J)$为方程$\displaystyle F(x,y,y',...,y^{(n)})=0,n\geq 1$的解，若
+			$F(x,\Phi (x),\Phi '(x),..,\Phi ^{(n)})\equiv ,x\in J$，此时，称$J$为解的存在区间。
+			
+			若微分方程的解不包含任意常数，则称它为微分方程的一个特解。
+			
+			假设$y=\Phi (x;c_1,c_2,...,c_n)$是上述方程的解，其中$c_1,c_2,..,c_n$为任意常数，若它们相互独立，即jacobi行列式
+			$\displaystyle \det{\frac{\partial (\Phi,\Phi ',...,\Phi ^{(n-1)})}{\partial (c_1,c_2,...,c_n)}\neq 0,x\in J}$
+			,则称其为上述方程的通解。
+			
+			由隐式方程给出的通解称通积分，由隐式方程给出的特解称特积分。
+			
+		\end{definition}
+		
+		\begin{definition}[初值问题]
+			
+			设$y=\Phi (x)$是方程$\displaystyle F(x,y,y',...,y^{(n)})=0,n\geq 1$的解，且满足
+			$\Phi (x_0)=y_0,...,\Phi ^{(n-1)}(x_0)=y_0^{(n-1)}$
+			，称其为初始条件，并称$y=\Phi (x)$为上述方程满足上述初始条件的解。
+			
+			称此类问题为初值问题，称$y=\Phi (x)$为该初值问题的解。
+			
+		\end{definition}
+
+	\section{微分方程的几何解释}
+
+		\begin{definition}[积分曲线]
+			考虑一阶微分方程$\displaystyle \frac{dy}{dx}=f(x,y)$，其中$f$
+			在平面区域$G$上连续，设$y=\Phi (x),x\in J$是该方程的一个解，$J\subset \mathbb{R}$是区间，则平面点集
+			$\Gamma =\{(x,y)|y=\Phi (x),x\in J \}$为平面上一条可微曲线，称这条曲线为解曲线或积分曲线。
+		\end{definition}
+		
+		\begin{definition}[线素场]
+			在区域$G$中的每一个点$P$处作一段以$f(P)$为斜率的小线段$l(P)$，称$l(P)$为方程$\displaystyle \frac{dy}{dx}=f(x,y)$
+			在点$P$处的线素。称区域$G$连同它上面的全体线素为上述方程的线素场或方向场。
+		\end{definition}
+		
+		\begin{example}[建立给定曲线族的积分方程]
+			\textbf{I.}$y=(x-C)^3$
+			
+			需要注意求解此类问题需要使获得的方程的阶数尽可能低。
+			
+			由$y'=3(x-C)^2$可得$y'=3y^{\frac{2}{3}}$
+			
+			但由$y''=6(x-C)$可得$y=(\frac{y''}{6})^3$
+			
+			两个方程都有解$y=(x-C)^3$，但$\displaystyle y=(\frac{y''}{6})^3$有通解$\displaystyle \int \frac{dy}{\sqrt{9y^{\frac{4}{3}}+C_2}}=\pm x+C_3$
+			,当$C_2=0$时才有$y=(x-C)^3$
+			
+			多余的阶数会使解空间的大小爆增。在一些特殊的方程中，阶数和解的常数数量相等，我们之后证明它（如果这里没有链接，提醒我补一下）
+			
+			\textbf{II.}$y=sin(x+C)$
+			
+			由$y'=cos(x+C)$可得$y^2+y'^2=1$，它的通解为上述方程，特解为$y\equiv 1 \text{和} y\equiv -1$
+			
+			由$y''=-sin(x+C)$可得$y''=-y$，它的通解为$y=C_1cosx+C_2sinx$，这再次说明上面的结论。
+			
+		\end{example}
+		
+	
+	\chapter{初等积分法}
+	\section{变量分离方程}
+	\section{齐次方程}
+	\section{一阶线性微分方程}
+	\section{全微分方程及积分因子}
+	\section{一阶隐式微分方程}
+	\section{典型应用举例}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+\end{document}
